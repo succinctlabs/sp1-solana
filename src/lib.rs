@@ -63,8 +63,8 @@ fn process_vk(vk: &Groth16VerifyingKey) -> Result<PreparedVerifyingKey, Groth16E
     Ok(PreparedVerifyingKey {
         vk: vk.clone(),
         alpha_g1_beta_g2: pairing(vk.g1.alpha.into(), vk.g2.beta.into()),
-        gamma_g2_neg_pc: vk.g2.gamma.neg().into(),
-        delta_g2_neg_pc: vk.g2.delta.neg().into(),
+        gamma_g2_neg_pc: (-vk.g2.gamma).into(),
+        delta_g2_neg_pc: (-vk.g2.delta).into(),
     })
 }
 
