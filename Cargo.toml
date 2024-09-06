@@ -4,3 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+bn = { git = "https://github.com/sp1-patches/bn", branch = "bhargav/gnark-bn254-verifier", package = "substrate-bn" }
+thiserror = "1.0.63"
