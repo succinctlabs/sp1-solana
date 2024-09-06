@@ -3,24 +3,24 @@ use thiserror::Error;
 use bn::{pairing, pairing_batch, AffineG1, AffineG2, Fr, Gt, G1, G2};
 
 #[derive(Clone, PartialEq)]
-pub(crate) struct Groth16G1 {
-    pub(crate) alpha: AffineG1,
-    pub(crate) beta: AffineG1,
-    pub(crate) delta: AffineG1,
-    pub(crate) k: Vec<AffineG1>,
+pub struct Groth16G1 {
+    pub alpha: AffineG1,
+    pub beta: AffineG1,
+    pub delta: AffineG1,
+    pub k: Vec<AffineG1>,
 }
 
 #[derive(Clone, PartialEq)]
-pub(crate) struct Groth16G2 {
-    pub(crate) beta: AffineG2,
-    pub(crate) delta: AffineG2,
-    pub(crate) gamma: AffineG2,
+pub struct Groth16G2 {
+    pub beta: AffineG2,
+    pub delta: AffineG2,
+    pub gamma: AffineG2,
 }
 
 #[derive(Clone, PartialEq)]
-pub(crate) struct PedersenVerifyingKey {
-    pub(crate) g: AffineG2,
-    pub(crate) g_root_sigma_neg: AffineG2,
+pub struct PedersenVerifyingKey {
+    pub g: AffineG2,
+    pub g_root_sigma_neg: AffineG2,
 }
 
 #[derive(Clone, PartialEq)]
