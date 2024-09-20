@@ -1,0 +1,19 @@
+[package]
+name = "solana-verifier"
+version = "0.1.0"
+edition = "2021"
+authors = ["Bhargav Annem"]
+description = "A Groth16 verifier implementation"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/0xWOLAND/groth16-verifier"
+readme = "README.md"
+keywords = ["cryptography", "zero-knowledge", "groth16", "verifier"]
+categories = ["cryptography"]
+
+[dependencies]
+ark-bn254 = "0.4.0"
+ark-serialize = "0.4.2"
+borsh = "1.5.1"
+solana-bn254 = { git = "https://github.com/anza-xyz/agave" }
+solana-program = { git = "https://github.com/anza-xyz/agave" }
+thiserror = "1.0.63"
