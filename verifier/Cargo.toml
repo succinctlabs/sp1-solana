@@ -14,9 +14,11 @@ categories = ["cryptography"]
 ark-bn254 = "0.4.0"
 ark-serialize = "0.4.2"
 borsh = "1.5.1"
-# solana-bn254 = { git = "https://github.com/anza-xyz/agave" }
 solana-bn254 = { path = "../../agave/curves/bn254" }
-# solana-program = { git = "https://github.com/anza-xyz/agave" }
-solana-program = { path = "../../agave/sdk/program" }
+groth16-solana = { git = "https://github.com/0xWOLAND/groth16-solana" }
 thiserror = "1.0.63"
 ark-ff = "0.4.2"
+
+[patch.crates-io]
+solana-program = { git = "https://github.com/anza-xyz/agave" }
+solana-bn254 = { git = "https://github.com/anza-xyz/agave" }

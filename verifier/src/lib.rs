@@ -2,12 +2,8 @@ use ark_bn254::{Fq, Fq2, G2Affine};
 use ark_ff::PrimeField;
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
 use borsh::BorshSerialize;
-use solana_bn254::compression::prelude::{
-    alt_bn128_g1_decompress, alt_bn128_g2_decompress, convert_endianness,
-};
-use solana_bn254::prelude::{alt_bn128_addition, alt_bn128_multiplication, alt_bn128_pairing};
-use solana_program::entrypoint::ProgramResult;
-use solana_program::program_error::ProgramError;
+use groth16_solana::groth16::Groth16Verifyingkey;
+use solana_bn254::compression::prelude::convert_endianness;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -70,72 +66,13 @@ pub fn decompress_g1(g1_bytes: &[u8; 32]) -> Result<[u8; 64], Error> {
     println!("g1 bytes: {:?}", g1_bytes);
     let g1_bytes = gnark_commpressed_x_to_ark_commpressed_x(&g1_bytes.to_vec())?;
     let g1_bytes = convert_endianness::<32, 32>(&g1_bytes.as_slice().try_into().unwrap());
-    alt_bn128_g1_decompress(&g1_bytes).map_err(|_| Error::G1CompressionError)
+    groth16_solana::decompression::decompress_g1(&g1_bytes).map_err(|_| Error::G1CompressionError)
 }
 
 pub fn decompress_g2(g2_bytes: &[u8; 64]) -> Result<[u8; 128], Error> {
     let g2_bytes = gnark_commpressed_x_to_ark_commpressed_x(&g2_bytes.to_vec())?;
     let g2_bytes = convert_endianness::<64, 64>(&g2_bytes.as_slice().try_into().unwrap());
-    alt_bn128_g2_decompress(&g2_bytes).map_err(|_| Error::G2CompressionError)
-}
-
-impl From<Error> for ProgramError {
-    fn from(error: Error) -> Self {
-        ProgramError::Custom(error as u32)
-    }
-}
-
-impl<'a, const N_PUBLIC: usize> Verifier<'a, N_PUBLIC> {
-    pub fn new(
-        proof: &'a Proof,
-        public: &'a PublicInputs<N_PUBLIC>,
-        vk: &'a VerificationKey,
-    ) -> Self {
-        Self { proof, public, vk }
-    }
-
-    pub fn verify(&self) -> ProgramResult {
-        println!("prepared public inputs");
-        let prepared_public = self.prepare_public_inputs()?;
-        println!("prepared public inputs: {:?}", prepared_public);
-        self.perform_pairing(&prepared_public)
-    }
-
-    fn prepare_public_inputs(&self) -> Result<[u8; 64], Error> {
-        let mut prepared = self.vk.vk_ic[0];
-        for (i, input) in self.public.inputs.iter().enumerate() {
-            let mul_res =
-                alt_bn128_multiplication(&[&self.vk.vk_ic[i + 1][..], &input[..]].concat())
-                    .map_err(|_| Error::ArithmeticError)?;
-            prepared = alt_bn128_addition(&[&mul_res[..], &prepared[..]].concat())
-                .unwrap()
-                .try_into()
-                .map_err(|_| Error::ArithmeticError)?;
-        }
-        Ok(prepared)
-    }
-
-    fn perform_pairing(&self, prepared_public: &[u8; 64]) -> ProgramResult {
-        let pairing_input = [
-            self.proof.pi_a.as_slice(),
-            self.proof.pi_b.as_slice(),
-            prepared_public.as_slice(),
-            self.vk.vk_gamma_g2.as_slice(),
-            self.proof.pi_c.as_slice(),
-            self.vk.vk_delta_g2.as_slice(),
-            self.vk.vk_alpha_g1.as_slice(),
-            self.vk.vk_beta_g2.as_slice(),
-        ]
-        .concat();
-
-        let pairing_res = alt_bn128_pairing(&pairing_input).map_err(|_| Error::PairingError)?;
-
-        if pairing_res[31] != 1 {
-            return Err(Error::VerificationError.into());
-        }
-
-        Ok(())
-    }
+    groth16_solana::decompression::decompress_g2(&g2_bytes).map_err(|_| Error::G2CompressionError)
 }
 
 const GNARK_MASK: u8 = 0b11 << 6;
@@ -283,17 +220,40 @@ fn load_public_inputs_from_bytes(buffer: &[u8]) -> Result<PublicInputs<2>, Error
     })
 }
 
-pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), ProgramError> {
-    println!("public_inputs length: {:?}", public_inputs.len());
+pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), Error> {
     println!("Loading proof from bytes...");
     let proof = load_proof_from_bytes(proof)?;
-    println!("Loading verifying key from bytes...");
+    println!("Loading Groth16 verifying key from bytes...");
     let vk = load_groth16_verifying_key_from_bytes(vk)?;
     println!("Loading public inputs from bytes...");
     let public_inputs = load_public_inputs_from_bytes(public_inputs)?;
 
-    println!("Creating verifier...");
-    let verifier = Verifier::new(&proof, &public_inputs, &vk);
+    println!("Preparing Groth16 verifying key...");
+    let vk = Groth16Verifyingkey {
+        nr_pubinputs: vk.nr_pubinputs as usize,
+        vk_alpha_g1: vk.vk_alpha_g1,
+        vk_beta_g2: vk.vk_beta_g2,
+        vk_gamme_g2: vk.vk_gamma_g2,
+        vk_delta_g2: vk.vk_delta_g2,
+        vk_ic: vk.vk_ic.as_slice(),
+    };
+
+    println!("Creating Groth16 verifier...");
+    let mut verifier = groth16_solana::groth16::Groth16Verifier::new(
+        &proof.pi_a,
+        &proof.pi_b,
+        &proof.pi_c,
+        &public_inputs.inputs,
+        &vk,
+    )
+    .map_err(|_| Error::VerificationError)?;
+
     println!("Verifying proof...");
-    verifier.verify()
+    if verifier.verify().map_err(|_| Error::VerificationError)? {
+        println!("Verification successful.");
+        Ok(())
+    } else {
+        println!("Verification failed.");
+        Err(Error::VerificationError)
+    }
 }
