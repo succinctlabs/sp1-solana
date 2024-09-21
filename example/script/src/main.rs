@@ -109,6 +109,12 @@ fn main() {
         .unwrap()
         .to_bytes_be();
 
+    println!("vkey_hash length: {:?}", vkey_hash.len());
+    println!(
+        "committed_values_digest length: {:?}",
+        committed_values_digest.len()
+    );
+
     // // Prepare input for the verifier program
     // let mut stdin = SP1Stdin::new();
     // stdin.write_slice(&raw_proof);
