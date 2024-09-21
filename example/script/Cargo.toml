@@ -16,3 +16,7 @@ solana-verifier = { path = "../../verifier" }
 
 [build-dependencies]
 sp1-helper = "2.0.0"
+
+[patch.crates-io]
+solana-program = { git = "https://github.com/anza-xyz/agave" }
+solana-bn254 = { git = "https://github.com/anza-xyz/agave" }
