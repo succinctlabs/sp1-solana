@@ -79,16 +79,16 @@ fn main() {
     let client = ProverClient::new();
     let (pk, _) = client.setup(elf);
 
-    // // Generate a proof for the specified program
-    // let proof = client
-    //     .prove(&pk, stdin)
-    //     .groth16()
-    //     .run()
-    //     .expect("Groth16 proof generation failed");
+    // Generate a proof for the specified program
+    let proof = client
+        .prove(&pk, stdin)
+        .groth16()
+        .run()
+        .expect("Groth16 proof generation failed");
 
     // Save the generated proof to a binary file
     let proof_file = format!("../binaries/{}_proof.bin", args.elf);
-    // proof.save(&proof_file).unwrap();
+    proof.save(&proof_file).unwrap();
 
     // Load the saved proof and convert it to a Groth16 proof
     let (raw_proof, public_inputs) = SP1ProofWithPublicValues::load(&proof_file)
