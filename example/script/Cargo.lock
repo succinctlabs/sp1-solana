@@ -1850,6 +1850,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "example-usage"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "hex",
+ "num-bigint 0.4.6",
+ "num-traits",
+ "solana-verifier",
+ "sp1-helper",
+ "sp1-prover",
+ "sp1-sdk",
+ "strum 0.25.0",
+ "strum_macros 0.25.3",
+]
+
+[[package]]
 name = "eyre"
 version = "0.6.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4156,22 +4172,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3f87cc11a0140b4b0da0ffc889885760c61b13672d80a908920b2c0df078fa14"
 dependencies = [
  "rayon",
-]
-
-[[package]]
-name = "recursive-script"
-version = "0.1.0"
-dependencies = [
- "clap",
- "hex",
- "num-bigint 0.4.6",
- "num-traits",
- "solana-verifier",
- "sp1-helper",
- "sp1-prover",
- "sp1-sdk",
- "strum 0.25.0",
- "strum_macros 0.25.3",
 ]
 
 [[package]]

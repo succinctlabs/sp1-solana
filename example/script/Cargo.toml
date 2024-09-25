@@ -1,5 +1,5 @@
 [package]
-name = "recursive-script"
+name = "example-usage"
 authors = ["Bhargav Annem"]
 version = "0.1.0"
 edition = "2021"
