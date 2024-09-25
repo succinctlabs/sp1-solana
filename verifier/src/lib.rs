@@ -1,5 +1,5 @@
-use ark_bn254::{Fq, Fq2, G2Affine};
-use ark_ff::PrimeField;
+use ark_bn254::{Fq, Fq2, G1Affine, G2Affine};
+use ark_ff::{BigInteger, PrimeField};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
 use borsh::BorshSerialize;
 use groth16_solana::groth16::Groth16Verifyingkey;
@@ -63,14 +63,21 @@ pub struct PublicInputs<const N: usize> {
 }
 
 pub fn decompress_g1(g1_bytes: &[u8; 32]) -> Result<[u8; 64], Error> {
-    println!("g1 bytes: {:?}", g1_bytes);
     let g1_bytes = gnark_commpressed_x_to_ark_commpressed_x(&g1_bytes.to_vec())?;
+    let g1 =
+        G1Affine::deserialize_compressed(&g1_bytes[..]).map_err(|_| Error::G1CompressionError)?;
+    let mut g1_bytes = [0u8; 32];
+    g1.serialize_compressed(&mut g1_bytes[..])
+        .map_err(|_| Error::G1CompressionError)?;
     let g1_bytes = convert_endianness::<32, 32>(&g1_bytes.as_slice().try_into().unwrap());
     groth16_solana::decompression::decompress_g1(&g1_bytes).map_err(|_| Error::G1CompressionError)
 }
 
 pub fn decompress_g2(g2_bytes: &[u8; 64]) -> Result<[u8; 128], Error> {
     let g2_bytes = gnark_commpressed_x_to_ark_commpressed_x(&g2_bytes.to_vec())?;
+    let g2 =
+        G2Affine::deserialize_compressed(&g2_bytes[..]).map_err(|_| Error::G2CompressionError)?;
+    println!("g2: {:?}", g2);
     let g2_bytes = convert_endianness::<64, 64>(&g2_bytes.as_slice().try_into().unwrap());
     groth16_solana::decompression::decompress_g2(&g2_bytes).map_err(|_| Error::G2CompressionError)
 }
@@ -130,24 +137,36 @@ pub fn gnark_uncompressed_bytes_to_g2_point(buf: &[u8]) -> Result<G2Affine, Erro
     Ok(G2Affine::new_unchecked(Fq2::new(x0, x1), Fq2::new(y0, y1)))
 }
 
-fn negate_g2(g2_bytes: &[u8; 128]) -> Result<[u8; 128], Error> {
-    let mut bytes = [0u8; 128];
-    println!("g2 bytes: {:?}", g2_bytes);
-    // let g2 = ark_bn254::G2Affine::deserialize_uncompressed_unchecked(&g2_bytes[..]).unwrap();
-    let g2 = gnark_uncompressed_bytes_to_g2_point(g2_bytes)?;
-    let negated_g2 = -g2;
-    negated_g2
-        .serialize_uncompressed(&mut bytes[..])
-        .map_err(|_| Error::G2CompressionError)?;
+pub(crate) fn uncompressed_bytes_to_g1_point(buf: &[u8]) -> Result<G1Affine, Error> {
+    if buf.len() != 64 {
+        return Err(Error::InvalidInput);
+    };
 
-    Ok(bytes)
+    let (x_bytes, y_bytes) = buf.split_at(32);
+
+    let x = Fq::from_be_bytes_mod_order(&x_bytes.to_vec());
+    let y = Fq::from_be_bytes_mod_order(&y_bytes.to_vec());
+
+    Ok(G1Affine::new_unchecked(x, y))
+}
+
+fn negate_g1(g1_bytes: &[u8; 64]) -> Result<[u8; 64], Error> {
+    let g1 = -uncompressed_bytes_to_g1_point(g1_bytes)?;
+    let mut g1_bytes = [0u8; 64];
+    g1.serialize_uncompressed(&mut g1_bytes[..])
+        .map_err(|_| Error::G1CompressionError)?;
+    Ok(convert_endianness::<32, 64>(
+        &g1_bytes.as_slice().try_into().unwrap(),
+    ))
 }
 
 pub(crate) fn load_proof_from_bytes(buffer: &[u8]) -> Result<Proof, Error> {
     Ok(Proof {
-        pi_a: buffer[..64]
-            .try_into()
-            .map_err(|_| Error::G1CompressionError)?,
+        pi_a: negate_g1(
+            &buffer[..64]
+                .try_into()
+                .map_err(|_| Error::G1CompressionError)?,
+        )?,
         pi_b: buffer[64..192]
             .try_into()
             .map_err(|_| Error::G2CompressionError)?,
@@ -161,13 +180,9 @@ pub(crate) fn load_groth16_verifying_key_from_bytes(
     buffer: &[u8],
 ) -> Result<VerificationKey, Error> {
     // Note that g1_beta and g1_delta are not used in the verification process.
-    println!("Decompressing g1_alpha from buffer slice...");
     let g1_alpha = decompress_g1(buffer[..32].try_into().unwrap())?;
-    println!("Decompressing g2_beta from buffer slice...");
     let g2_beta = decompress_g2(buffer[64..128].try_into().unwrap())?;
-    println!("Decompressing g2_gamma from buffer slice...");
     let g2_gamma = decompress_g2(buffer[128..192].try_into().unwrap())?;
-    println!("Decompressing g2_delta from buffer slice...");
     let g2_delta = decompress_g2(buffer[224..288].try_into().unwrap())?;
 
     let num_k = u32::from_be_bytes([buffer[288], buffer[289], buffer[290], buffer[291]]);
@@ -201,7 +216,7 @@ pub(crate) fn load_groth16_verifying_key_from_bytes(
 
     Ok(VerificationKey {
         vk_alpha_g1: g1_alpha,
-        vk_beta_g2: negate_g2(&g2_beta)?,
+        vk_beta_g2: g2_beta,
         vk_gamma_g2: g2_gamma,
         vk_delta_g2: g2_delta,
         vk_ic: k.clone(),
@@ -212,23 +227,27 @@ pub(crate) fn load_groth16_verifying_key_from_bytes(
 fn load_public_inputs_from_bytes(buffer: &[u8]) -> Result<PublicInputs<2>, Error> {
     let mut bytes = [0u8; 64];
     bytes[1..].copy_from_slice(&buffer); // vkey_hash is 31 bytes
-    Ok(PublicInputs::<2> {
+    let out = PublicInputs::<2> {
         inputs: [
             bytes[..32].try_into().map_err(|_| Error::InvalidInput)?, // vkey_hash
             bytes[32..].try_into().map_err(|_| Error::InvalidInput)?, //  committed_values_digest
         ],
-    })
+    };
+
+    let vkey_hash = Fq::from_be_bytes_mod_order(&out.inputs[0]);
+    let committed_values_digest = Fq::from_be_bytes_mod_order(&out.inputs[1]);
+
+    println!("vkey_hash: {:?}", vkey_hash);
+    println!("committed_values_digest: {:?}", committed_values_digest);
+
+    Ok(out)
 }
 
 pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), Error> {
-    println!("Loading proof from bytes...");
     let proof = load_proof_from_bytes(proof)?;
-    println!("Loading Groth16 verifying key from bytes...");
     let vk = load_groth16_verifying_key_from_bytes(vk)?;
-    println!("Loading public inputs from bytes...");
     let public_inputs = load_public_inputs_from_bytes(public_inputs)?;
 
-    println!("Preparing Groth16 verifying key...");
     let vk = Groth16Verifyingkey {
         nr_pubinputs: vk.nr_pubinputs as usize,
         vk_alpha_g1: vk.vk_alpha_g1,
@@ -238,7 +257,6 @@ pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(),
         vk_ic: vk.vk_ic.as_slice(),
     };
 
-    println!("Creating Groth16 verifier...");
     let mut verifier = groth16_solana::groth16::Groth16Verifier::new(
         &proof.pi_a,
         &proof.pi_b,
@@ -248,8 +266,10 @@ pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(),
     )
     .map_err(|_| Error::VerificationError)?;
 
-    println!("Verifying proof...");
-    if verifier.verify().map_err(|_| Error::VerificationError)? {
+    if verifier
+        .verify_unchecked()
+        .map_err(|_| Error::VerificationError)?
+    {
         println!("Verification successful.");
         Ok(())
     } else {

@@ -18,5 +18,7 @@ solana-verifier = { path = "../../verifier" }
 sp1-helper = "2.0.0"
 
 [patch.crates-io]
-solana-program = { git = "https://github.com/anza-xyz/agave" }
-solana-bn254 = { git = "https://github.com/anza-xyz/agave" }
+# solana-program = { git = "https://github.com/anza-xyz/agave" }
+solana-program = { path = "/home/bhargav/agave/sdk/program" }
+# solana-bn254 = { git = "https://github.com/anza-xyz/agave" }
+solana-bn254 = { path = "/home/bhargav/agave/curves/bn254" }
