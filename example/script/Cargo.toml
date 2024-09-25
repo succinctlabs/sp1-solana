@@ -1,6 +1,6 @@
 [package]
-version = "0.1.0"
 name = "recursive-script"
+version = "0.1.0"
 edition = "2021"
 
 [dependencies]
@@ -8,11 +8,12 @@ clap = { version = "4.0", features = ["derive", "env"] }
 hex = "0.4.3"
 num-bigint = "0.4.6"
 num-traits = "0.2.19"
+solana-verifier = { path = "../../verifier" }
 sp1-prover = "2.0.0"
 sp1-sdk = "2.0.0"
 strum = "0.25"
 strum_macros = "0.25"
-solana-verifier = { path = "../../verifier" }
 
 [build-dependencies]
 sp1-helper = "2.0.0"
+sp1-sdk = "2.0.0"
