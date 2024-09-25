@@ -4,7 +4,6 @@ use num_traits::Num;
 use solana_verifier::{verify_proof, Verifier};
 use sp1_sdk::{proto::network::ProofMode, utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
 use std::str::FromStr;
-use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter, EnumString};
 
 /// The ELF (executable and linkable format) file for the Succinct RISC-V zkVM.
@@ -14,7 +13,8 @@ pub const SHA2_ELF: &[u8] = include_bytes!("../../elfs/sha2-riscv32im-succinct-z
 pub const TENDERMINT_ELF: &[u8] =
     include_bytes!("../../elfs/tendermint-riscv32im-succinct-zkvm-elf");
 
-const GROTH16_VK_BYTES: &[u8] = include_bytes!("../../../../.sp1/circuits/v2.0.0/groth16_vk.bin");
+pub(crate) const GROTH16_VK_BYTES: &[u8] =
+    include_bytes!("../../../../.sp1/circuits/v2.0.0/groth16_vk.bin");
 
 #[derive(clap::Parser)]
 #[command(name = "zkVM Proof Generator")]
@@ -112,9 +112,50 @@ fn main() {
     verify_proof(
         &raw_proof,
         &[vkey_hash.to_vec(), committed_values_digest.to_vec()].concat(),
-        &GROTH16_VK_BYTES,
+        GROTH16_VK_BYTES,
     )
     .expect("Proof verification failed");
 
     println!("Successfully verified proof for the program!")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use num_bigint::BigUint;
+    use num_traits::Num;
+    use strum::IntoEnumIterator;
+
+    #[test]
+    fn test_programs() {
+        Elf::iter().for_each(|program| {
+            let proof_file = format!("../binaries/{}_proof.bin", program.to_string());
+
+            let (raw_proof, public_inputs) = SP1ProofWithPublicValues::load(&proof_file)
+                .map(|sp1_proof_with_public_values| {
+                    let proof = sp1_proof_with_public_values
+                        .proof
+                        .try_as_groth_16()
+                        .unwrap();
+                    (hex::decode(proof.raw_proof).unwrap(), proof.public_inputs)
+                })
+                .expect("Failed to load proof");
+
+            // Convert public inputs to byte representations
+            let vkey_hash = BigUint::from_str_radix(&public_inputs[0], 10)
+                .unwrap()
+                .to_bytes_be();
+            let committed_values_digest = BigUint::from_str_radix(&public_inputs[1], 10)
+                .unwrap()
+                .to_bytes_be();
+
+            let result = verify_proof(
+                &raw_proof,
+                &[vkey_hash.to_vec(), committed_values_digest.to_vec()].concat(),
+                GROTH16_VK_BYTES,
+            );
+
+            assert!(result.is_ok(), "Proof verification failed for {}", program);
+        });
+    }
 }
