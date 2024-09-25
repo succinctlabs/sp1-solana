@@ -64,20 +64,12 @@ pub struct PublicInputs<const N: usize> {
 
 pub fn decompress_g1(g1_bytes: &[u8; 32]) -> Result<[u8; 64], Error> {
     let g1_bytes = gnark_commpressed_x_to_ark_commpressed_x(&g1_bytes.to_vec())?;
-    let g1 =
-        G1Affine::deserialize_compressed(&g1_bytes[..]).map_err(|_| Error::G1CompressionError)?;
-    let mut g1_bytes = [0u8; 32];
-    g1.serialize_compressed(&mut g1_bytes[..])
-        .map_err(|_| Error::G1CompressionError)?;
     let g1_bytes = convert_endianness::<32, 32>(&g1_bytes.as_slice().try_into().unwrap());
     groth16_solana::decompression::decompress_g1(&g1_bytes).map_err(|_| Error::G1CompressionError)
 }
 
 pub fn decompress_g2(g2_bytes: &[u8; 64]) -> Result<[u8; 128], Error> {
     let g2_bytes = gnark_commpressed_x_to_ark_commpressed_x(&g2_bytes.to_vec())?;
-    let g2 =
-        G2Affine::deserialize_compressed(&g2_bytes[..]).map_err(|_| Error::G2CompressionError)?;
-    println!("g2: {:?}", g2);
     let g2_bytes = convert_endianness::<64, 64>(&g2_bytes.as_slice().try_into().unwrap());
     groth16_solana::decompression::decompress_g2(&g2_bytes).map_err(|_| Error::G2CompressionError)
 }
@@ -227,20 +219,13 @@ pub(crate) fn load_groth16_verifying_key_from_bytes(
 fn load_public_inputs_from_bytes(buffer: &[u8]) -> Result<PublicInputs<2>, Error> {
     let mut bytes = [0u8; 64];
     bytes[1..].copy_from_slice(&buffer); // vkey_hash is 31 bytes
-    let out = PublicInputs::<2> {
+
+    Ok(PublicInputs::<2> {
         inputs: [
             bytes[..32].try_into().map_err(|_| Error::InvalidInput)?, // vkey_hash
             bytes[32..].try_into().map_err(|_| Error::InvalidInput)?, //  committed_values_digest
         ],
-    };
-
-    let vkey_hash = Fq::from_be_bytes_mod_order(&out.inputs[0]);
-    let committed_values_digest = Fq::from_be_bytes_mod_order(&out.inputs[1]);
-
-    println!("vkey_hash: {:?}", vkey_hash);
-    println!("committed_values_digest: {:?}", committed_values_digest);
-
-    Ok(out)
+    })
 }
 
 pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), Error> {
@@ -266,10 +251,7 @@ pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(),
     )
     .map_err(|_| Error::VerificationError)?;
 
-    if verifier
-        .verify_unchecked()
-        .map_err(|_| Error::VerificationError)?
-    {
+    if verifier.verify().map_err(|_| Error::VerificationError)? {
         println!("Verification successful.");
         Ok(())
     } else {

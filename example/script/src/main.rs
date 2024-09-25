@@ -109,30 +109,6 @@ fn main() {
         .unwrap()
         .to_bytes_be();
 
-    println!("vkey_hash length: {:?}", vkey_hash.len());
-    println!(
-        "committed_values_digest length: {:?}",
-        committed_values_digest.len()
-    );
-
-    // // Prepare input for the verifier program
-    // let mut stdin = SP1Stdin::new();
-    // stdin.write_slice(&raw_proof);
-    // stdin.write_slice(&vkey_hash);
-    // stdin.write_slice(&committed_values_digest);
-
-    // // Setup the verifier program
-    // let (pk, vk) = client.setup(proof_elf);
-    // // Generate a proof for the verifier program
-    // let proof = client
-    //     .prove(&pk, stdin)
-    //     .groth16()
-    //     .run()
-    //     .expect("Groth16 proof generation failed");
-
-    // // Verify the proof of the verifier program
-    // client.verify(&proof, &vk).expect("verification failed");
-
     verify_proof(
         &raw_proof,
         &[vkey_hash.to_vec(), committed_values_digest.to_vec()].concat(),
