@@ -437,9 +437,9 @@ checksum = "7c02d123df017efcdfbd739ef81735b36c5ba83ec3c59c80a9d7ecc718f92e50"
 
 [[package]]
 name = "async-trait"
-version = "0.1.82"
+version = "0.1.83"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a27b8a3a6e1a44fa4c8baf1f653e4172e81486d4941f2237e20dc2d0cf4ddff1"
+checksum = "721cae7de5c34fbb2acd27e21e6d2cf7b886dce0c27388d46c4e6c47ea4318dd"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -686,9 +686,9 @@ dependencies = [
 
 [[package]]
 name = "blake3"
-version = "1.5.1"
+version = "1.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30cca6d3674597c30ddf2c587bf8d9d65c9a84d2326d941cc79c9842dfe0ef52"
+checksum = "d82033247fd8e890df8f740e407ad4d038debb9eb1f40533fffb32e7d17dc6f7"
 dependencies = [
  "arrayref",
  "arrayvec",
@@ -696,7 +696,7 @@ dependencies = [
  "cfg-if",
  "constant_time_eq",
  "digest 0.10.7",
- "rayon",
+ "rayon-core",
 ]
 
 [[package]]
@@ -732,11 +732,11 @@ dependencies = [
 
 [[package]]
 name = "borsh"
-version = "0.10.3"
+version = "0.10.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4114279215a005bc675e386011e594e1d9b800918cea18fcadadcce864a2046b"
+checksum = "115e54d64eb62cdebad391c19efc9dce4981c690c85a33a12199d99bb9546fee"
 dependencies = [
- "borsh-derive 0.10.3",
+ "borsh-derive 0.10.4",
  "hashbrown 0.13.2",
 ]
 
@@ -752,9 +752,9 @@ dependencies = [
 
 [[package]]
 name = "borsh-derive"
-version = "0.10.3"
+version = "0.10.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0754613691538d51f329cce9af41d7b7ca150bc973056f1156611489475f54f7"
+checksum = "831213f80d9423998dd696e2c5345aba6be7a0bd8cd19e31c5243e13df1cef89"
 dependencies = [
  "borsh-derive-internal",
  "borsh-schema-derive-internal",
@@ -779,9 +779,9 @@ dependencies = [
 
 [[package]]
 name = "borsh-derive-internal"
-version = "0.10.3"
+version = "0.10.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "afb438156919598d2c7bad7e1c0adf3d26ed3840dbc010db1a882a65583ca2fb"
+checksum = "65d6ba50644c98714aa2a70d13d7df3cd75cd2b523a2b452bf010443800976b3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -790,9 +790,9 @@ dependencies = [
 
 [[package]]
 name = "borsh-schema-derive-internal"
-version = "0.10.3"
+version = "0.10.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "634205cc43f74a1b9046ef87c4540ebda95696ec0f315024860cad7c5b0f5ccd"
+checksum = "276691d96f063427be83e6692b86148e488ebba9f48f77788724ca027ba3b6d4"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2185,6 +2185,7 @@ dependencies = [
 [[package]]
 name = "groth16-solana"
 version = "0.0.3"
+source = "git+https://github.com/0xWOLAND/groth16-solana#db82addc31e22e8146b8dd81166f87e4053a7044"
 dependencies = [
  "ark-bn254",
  "ark-ec",
@@ -2512,9 +2513,9 @@ dependencies = [
 
 [[package]]
 name = "hyper-util"
-version = "0.1.8"
+version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da62f120a8a37763efb0cf8fdf264b884c7b8b9ac8660b900c8661030c00e6ba"
+checksum = "41296eb09f183ac68eec06e03cdbea2e759633d4067b2f6552fc2e009bcad08b"
 dependencies = [
  "bytes",
  "futures-channel",
@@ -2525,7 +2526,6 @@ dependencies = [
  "pin-project-lite",
  "socket2",
  "tokio",
- "tower 0.4.13",
  "tower-service",
  "tracing",
 ]
@@ -2807,9 +2807,9 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "libc"
-version = "0.2.158"
+version = "0.2.159"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d8adc4bb1803a324070e64a98ae98f38934d91957a99cfb3a43dcbc01bc56439"
+checksum = "561d97a539a36e26a9a5fad1ea11a3039a67714694aaa379433e580854bc3dc5"
 
 [[package]]
 name = "libgit2-sys"
@@ -3806,9 +3806,9 @@ dependencies = [
 
 [[package]]
 name = "pkg-config"
-version = "0.3.30"
+version = "0.3.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d231b230927b5e4ad203db57bbcbee2802f6bce620b1e4a9024a07d94e2907ec"
+checksum = "953ec861398dccce10c670dfeaf3ec4911ca479e9c02154b3a215178c5f566f2"
 
 [[package]]
 name = "portable-atomic"
@@ -3892,7 +3892,7 @@ version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ecf48c7ca261d60b74ab1a7b20da18bede46776b2e55535cb958eb595c5fa7b"
 dependencies = [
- "toml_edit 0.22.21",
+ "toml_edit 0.22.22",
 ]
 
 [[package]]
@@ -4176,9 +4176,9 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.5.4"
+version = "0.5.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0884ad60e090bf1345b93da0a5de8923c93884cd03f40dfcfddd3b4bee661853"
+checksum = "355ae415ccd3a04315d3f8246e86d67689ea74d88d915576e1589a351062a13b"
 dependencies = [
  "bitflags 2.6.0",
 ]
@@ -4990,8 +4990,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-account-info"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
+dependencies = [
+ "bincode",
+ "serde",
+ "solana-program-error",
+ "solana-program-memory",
+ "solana-pubkey",
+]
+
+[[package]]
 name = "solana-atomic-u64"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "parking_lot",
 ]
@@ -4999,6 +5012,7 @@ dependencies = [
 [[package]]
 name = "solana-bn254"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "ark-bn254",
  "ark-ec",
@@ -5012,6 +5026,7 @@ dependencies = [
 [[package]]
 name = "solana-clock"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "serde",
  "serde_derive",
@@ -5021,6 +5036,7 @@ dependencies = [
 [[package]]
 name = "solana-decode-error"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "num-traits",
 ]
@@ -5028,10 +5044,12 @@ dependencies = [
 [[package]]
 name = "solana-define-syscall"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 
 [[package]]
 name = "solana-hash"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "borsh 1.5.1",
  "bs58",
@@ -5048,6 +5066,7 @@ dependencies = [
 [[package]]
 name = "solana-instruction"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "bincode",
  "borsh 1.5.1",
@@ -5064,6 +5083,7 @@ dependencies = [
 [[package]]
 name = "solana-msg"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "solana-define-syscall",
 ]
@@ -5071,12 +5091,13 @@ dependencies = [
 [[package]]
 name = "solana-program"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "base64 0.22.1",
  "bincode",
  "bitflags 2.6.0",
  "blake3",
- "borsh 0.10.3",
+ "borsh 0.10.4",
  "borsh 1.5.1",
  "bs58",
  "bv",
@@ -5100,6 +5121,7 @@ dependencies = [
  "serde_derive",
  "sha2 0.10.8",
  "sha3",
+ "solana-account-info",
  "solana-atomic-u64",
  "solana-clock",
  "solana-decode-error",
@@ -5115,6 +5137,7 @@ dependencies = [
  "solana-sdk-macro",
  "solana-secp256k1-recover",
  "solana-serde-varint",
+ "solana-serialize-utils",
  "solana-sha256-hasher",
  "solana-short-vec",
  "thiserror",
@@ -5124,6 +5147,7 @@ dependencies = [
 [[package]]
 name = "solana-program-error"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "borsh 1.5.1",
  "num-traits",
@@ -5138,6 +5162,7 @@ dependencies = [
 [[package]]
 name = "solana-program-memory"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "num-traits",
  "solana-define-syscall",
@@ -5146,12 +5171,14 @@ dependencies = [
 [[package]]
 name = "solana-program-option"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 
 [[package]]
 name = "solana-pubkey"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
- "borsh 0.10.3",
+ "borsh 0.10.4",
  "borsh 1.5.1",
  "bs58",
  "bytemuck",
@@ -5173,10 +5200,12 @@ dependencies = [
 [[package]]
 name = "solana-sanitize"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 
 [[package]]
 name = "solana-sdk-macro"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "bs58",
  "proc-macro2",
@@ -5187,6 +5216,7 @@ dependencies = [
 [[package]]
 name = "solana-secp256k1-recover"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "libsecp256k1",
  "solana-define-syscall",
@@ -5196,13 +5226,25 @@ dependencies = [
 [[package]]
 name = "solana-serde-varint"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "serde",
 ]
 
 [[package]]
+name = "solana-serialize-utils"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
+dependencies = [
+ "solana-instruction",
+ "solana-pubkey",
+ "solana-sanitize",
+]
+
+[[package]]
 name = "solana-sha256-hasher"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "sha2 0.10.8",
  "solana-define-syscall",
@@ -5212,6 +5254,7 @@ dependencies = [
 [[package]]
 name = "solana-short-vec"
 version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#c2964109643362b51372004c84c97064e96d7524"
 dependencies = [
  "serde",
 ]
@@ -5966,18 +6009,18 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "1.0.63"
+version = "1.0.64"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0342370b38b6a11b6cc11d6a805569958d54cfa061a29969c3b5ce2ea405724"
+checksum = "d50af8abc119fb8bb6dbabcfa89656f46f84aa0ac7688088608076ad2b459a84"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.63"
+version = "1.0.64"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a4558b58466b9ad7ca0f102865eccc95938dca1a74a856f2b57b6629050da261"
+checksum = "08904e7672f5eb876eaaf87e0ce17857500934f4981c4a0ab2b4aa98baac7fc3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -6132,7 +6175,7 @@ dependencies = [
  "serde",
  "serde_spanned",
  "toml_datetime",
- "toml_edit 0.22.21",
+ "toml_edit 0.22.22",
 ]
 
 [[package]]
@@ -6157,15 +6200,15 @@ dependencies = [
 
 [[package]]
 name = "toml_edit"
-version = "0.22.21"
+version = "0.22.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3b072cee73c449a636ffd6f32bd8de3a9f7119139aff882f44943ce2986dc5cf"
+checksum = "4ae48d6208a266e853d946088ed816055e556cc6028c5e8e2b84d9fa5dd7c7f5"
 dependencies = [
  "indexmap 2.5.0",
  "serde",
  "serde_spanned",
  "toml_datetime",
- "winnow 0.6.18",
+ "winnow 0.6.20",
 ]
 
 [[package]]
@@ -6174,11 +6217,6 @@ version = "0.4.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b8fa9be0de6cf49e536ce1851f987bd21a43b771b09473c3549a6c853db37c1c"
 dependencies = [
- "futures-core",
- "futures-util",
- "pin-project",
- "pin-project-lite",
- "tokio",
  "tower-layer",
  "tower-service",
 ]
@@ -6867,9 +6905,9 @@ dependencies = [
 
 [[package]]
 name = "winnow"
-version = "0.6.18"
+version = "0.6.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "68a9bda4691f099d435ad181000724da8e5899daa10713c2d432552b9ccd3a6f"
+checksum = "36c1fec1a2bb5866f07c25f68c26e565c4c200aebb96d7e55710c19d3e8ac49b"
 dependencies = [
  "memchr",
 ]
