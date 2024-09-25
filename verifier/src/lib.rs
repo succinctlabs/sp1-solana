@@ -1,6 +1,6 @@
 use ark_bn254::{Fq, Fq2, G1Affine, G2Affine};
-use ark_ff::{BigInteger, PrimeField};
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
+use ark_ff::PrimeField;
+use ark_serialize::CanonicalSerialize;
 use borsh::BorshSerialize;
 use groth16_solana::groth16::Groth16Verifyingkey;
 use solana_bn254::compression::prelude::convert_endianness;
@@ -34,6 +34,7 @@ const SCALAR_LEN: usize = 32;
 const G1_LEN: usize = 64;
 const G2_LEN: usize = 128;
 
+#[allow(dead_code)]
 pub struct Verifier<'a, const N_PUBLIC: usize> {
     proof: &'a Proof,
     public: &'a PublicInputs<N_PUBLIC>,
@@ -63,13 +64,13 @@ pub struct PublicInputs<const N: usize> {
 }
 
 pub fn decompress_g1(g1_bytes: &[u8; 32]) -> Result<[u8; 64], Error> {
-    let g1_bytes = gnark_commpressed_x_to_ark_commpressed_x(&g1_bytes.to_vec())?;
+    let g1_bytes = gnark_commpressed_x_to_ark_commpressed_x(g1_bytes)?;
     let g1_bytes = convert_endianness::<32, 32>(&g1_bytes.as_slice().try_into().unwrap());
     groth16_solana::decompression::decompress_g1(&g1_bytes).map_err(|_| Error::G1CompressionError)
 }
 
 pub fn decompress_g2(g2_bytes: &[u8; 64]) -> Result<[u8; 128], Error> {
-    let g2_bytes = gnark_commpressed_x_to_ark_commpressed_x(&g2_bytes.to_vec())?;
+    let g2_bytes = gnark_commpressed_x_to_ark_commpressed_x(g2_bytes)?;
     let g2_bytes = convert_endianness::<64, 64>(&g2_bytes.as_slice().try_into().unwrap());
     groth16_solana::decompression::decompress_g2(&g2_bytes).map_err(|_| Error::G2CompressionError)
 }
@@ -99,11 +100,11 @@ fn gnark_flag_to_ark_flag(msb: u8) -> Result<u8, Error> {
     Ok(msb & !ARK_MASK | ark_flag)
 }
 
-fn gnark_commpressed_x_to_ark_commpressed_x(x: &Vec<u8>) -> Result<Vec<u8>, Error> {
+fn gnark_commpressed_x_to_ark_commpressed_x(x: &[u8]) -> Result<Vec<u8>, Error> {
     if x.len() != 32 && x.len() != 64 {
         return Err(Error::InvalidInput);
     }
-    let mut x_copy = x.clone();
+    let mut x_copy = x.to_owned();
 
     let msb = gnark_flag_to_ark_flag(x_copy[0])?;
     x_copy[0] = msb;
@@ -121,10 +122,10 @@ pub fn gnark_uncompressed_bytes_to_g2_point(buf: &[u8]) -> Result<G2Affine, Erro
     let (x0_bytes, x1_bytes) = x_bytes.split_at(32);
     let (y0_bytes, y1_bytes) = y_bytes.split_at(32);
 
-    let x0 = Fq::from_be_bytes_mod_order(&x0_bytes.to_vec());
-    let x1 = Fq::from_be_bytes_mod_order(&x1_bytes.to_vec());
-    let y0 = Fq::from_be_bytes_mod_order(&y0_bytes.to_vec());
-    let y1 = Fq::from_be_bytes_mod_order(&y1_bytes.to_vec());
+    let x0 = Fq::from_be_bytes_mod_order(x0_bytes);
+    let x1 = Fq::from_be_bytes_mod_order(x1_bytes);
+    let y0 = Fq::from_be_bytes_mod_order(y0_bytes);
+    let y1 = Fq::from_be_bytes_mod_order(y1_bytes);
 
     Ok(G2Affine::new_unchecked(Fq2::new(x0, x1), Fq2::new(y0, y1)))
 }
@@ -136,8 +137,8 @@ pub(crate) fn uncompressed_bytes_to_g1_point(buf: &[u8]) -> Result<G1Affine, Err
 
     let (x_bytes, y_bytes) = buf.split_at(32);
 
-    let x = Fq::from_be_bytes_mod_order(&x_bytes.to_vec());
-    let y = Fq::from_be_bytes_mod_order(&y_bytes.to_vec());
+    let x = Fq::from_be_bytes_mod_order(x_bytes);
+    let y = Fq::from_be_bytes_mod_order(y_bytes);
 
     Ok(G1Affine::new_unchecked(x, y))
 }
@@ -218,7 +219,7 @@ pub(crate) fn load_groth16_verifying_key_from_bytes(
 
 fn load_public_inputs_from_bytes(buffer: &[u8]) -> Result<PublicInputs<2>, Error> {
     let mut bytes = [0u8; 64];
-    bytes[1..].copy_from_slice(&buffer); // vkey_hash is 31 bytes
+    bytes[1..].copy_from_slice(buffer); // vkey_hash is 31 bytes
 
     Ok(PublicInputs::<2> {
         inputs: [
