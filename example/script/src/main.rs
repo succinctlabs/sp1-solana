@@ -1,8 +1,8 @@
 use clap::Parser;
+use groth16_solana::verify_proof;
 use num_bigint::BigUint;
 use num_traits::Num;
-use solana_verifier::{verify_proof, Verifier};
-use sp1_sdk::{proto::network::ProofMode, utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
+use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
 use std::str::FromStr;
 use strum_macros::{Display, EnumIter, EnumString};
 

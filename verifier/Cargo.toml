@@ -1,11 +1,11 @@
 [package]
-name = "solana-verifier"
+name = "groth16-solana"
 version = "0.1.0"
 edition = "2021"
 authors = ["Bhargav Annem"]
 description = "A Groth16 verifier implementation"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/succinctlabs/groth16-verifier"
+repository = "https://github.com/succinctlabs/groth16-solana"
 readme = "README.md"
 keywords = ["cryptography", "zero-knowledge", "groth16", "verifier"]
 categories = ["cryptography"]
