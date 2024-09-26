@@ -15,6 +15,8 @@ Add `solana-verifier` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-solana-verifier = { git = "https://github.com/0xWOLAND/groth16-verifier" }
+solana-verifier = { git = "https://github.com/succinctlabs/groth16-verifier" }
 ```
 
+## Acknowledgements
+This crate uses the [`groth16-solana`](https://github.com/Lightprotocol/groth16-solana/) crate from Light Protocol Labs for the actual Groth16 proof verification, and the [`ark-bn254`](https://github.com/arkworks-rs/algebra) crate for the elliptic curve operations.
