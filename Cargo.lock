@@ -520,7 +520,7 @@ dependencies = [
 [[package]]
 name = "groth16-solana"
 version = "0.0.3"
-source = "git+https://github.com/0xWOLAND/groth16-solana#db82addc31e22e8146b8dd81166f87e4053a7044"
+source = "git+https://github.com/sp1-patches/groth16-solana?branch=patch-v0.0.3#db82addc31e22e8146b8dd81166f87e4053a7044"
 dependencies = [
  "ark-bn254",
  "ark-ec",
