@@ -64,13 +64,13 @@ pub struct PublicInputs<const N: usize> {
 }
 
 pub fn decompress_g1(g1_bytes: &[u8; 32]) -> Result<[u8; 64], Error> {
-    let g1_bytes = gnark_commpressed_x_to_ark_commpressed_x(g1_bytes)?;
+    let g1_bytes = gnark_compressed_x_to_ark_compressed_x(g1_bytes)?;
     let g1_bytes = convert_endianness::<32, 32>(&g1_bytes.as_slice().try_into().unwrap());
     groth16_solana::decompression::decompress_g1(&g1_bytes).map_err(|_| Error::G1CompressionError)
 }
 
 pub fn decompress_g2(g2_bytes: &[u8; 64]) -> Result<[u8; 128], Error> {
-    let g2_bytes = gnark_commpressed_x_to_ark_commpressed_x(g2_bytes)?;
+    let g2_bytes = gnark_compressed_x_to_ark_compressed_x(g2_bytes)?;
     let g2_bytes = convert_endianness::<64, 64>(&g2_bytes.as_slice().try_into().unwrap());
     groth16_solana::decompression::decompress_g2(&g2_bytes).map_err(|_| Error::G2CompressionError)
 }
@@ -100,7 +100,7 @@ fn gnark_flag_to_ark_flag(msb: u8) -> Result<u8, Error> {
     Ok(msb & !ARK_MASK | ark_flag)
 }
 
-fn gnark_commpressed_x_to_ark_commpressed_x(x: &[u8]) -> Result<Vec<u8>, Error> {
+fn gnark_compressed_x_to_ark_compressed_x(x: &[u8]) -> Result<Vec<u8>, Error> {
     if x.len() != 32 && x.len() != 64 {
         return Err(Error::InvalidInput);
     }
