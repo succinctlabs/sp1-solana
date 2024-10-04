@@ -1850,7 +1850,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "example-usage"
+name = "example"
 version = "0.1.0"
 dependencies = [
  "clap",
@@ -1859,7 +1859,6 @@ dependencies = [
  "num-bigint 0.4.6",
  "num-traits",
  "sp1-helper",
- "sp1-prover",
  "sp1-sdk",
  "strum 0.25.0",
  "strum_macros 0.25.3",

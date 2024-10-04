@@ -1,5 +1,5 @@
 [package]
-name = "example-usage"
+name = "example"
 authors = ["Bhargav Annem"]
 version = "0.1.0"
 edition = "2021"

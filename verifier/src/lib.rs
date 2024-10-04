@@ -6,6 +6,8 @@ use groth16_solana::groth16::Groth16Verifyingkey;
 use solana_bn254::compression::prelude::convert_endianness;
 use thiserror::Error;
 
+pub(crate) const GROTH16_VK_BYTES: &[u8] = include_bytes!("../../groth16_vk.bin");
+
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("G1 compression error")]
@@ -229,9 +231,9 @@ fn load_public_inputs_from_bytes(buffer: &[u8]) -> Result<PublicInputs<2>, Error
     })
 }
 
-pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), Error> {
+pub fn verify_proof(proof: &[u8], public_inputs: &[u8]) -> Result<(), Error> {
     let proof = load_proof_from_bytes(proof)?;
-    let vk = load_groth16_verifying_key_from_bytes(vk)?;
+    let vk = load_groth16_verifying_key_from_bytes(GROTH16_VK_BYTES)?;
     let public_inputs = load_public_inputs_from_bytes(public_inputs)?;
 
     let vk = Groth16Verifyingkey {

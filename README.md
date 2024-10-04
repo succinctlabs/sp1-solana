@@ -2,6 +2,10 @@
 
 A Groth16 verifier implementation for Solana using BN254 precompiles. This crate verifies Groth16 proofs generated with SP1, leveraging Solana's BN254 precompiles for efficient cryptographic operations.
 
+> [!CAUTION]
+>
+> This repository is under active development and is not yet ready for production use.
+
 ## Features
 
 - **Groth16 Proof Verification**: Implements the Groth16 protocol for zero-knowledge proof verification.
