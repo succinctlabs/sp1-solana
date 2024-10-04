@@ -1,10 +1,25 @@
 use ark_bn254::{Fq, Fq2, G1Affine, G2Affine};
 use ark_ff::PrimeField;
 use ark_serialize::CanonicalSerialize;
-use borsh::BorshSerialize;
+use borsh::{BorshDeserialize, BorshSerialize};
 use groth16_solana::groth16::Groth16Verifyingkey;
-use solana_bn254::compression::prelude::convert_endianness;
 use thiserror::Error;
+
+pub fn convert_endianness<const CHUNK_SIZE: usize, const ARRAY_SIZE: usize>(
+    bytes: &[u8; ARRAY_SIZE],
+) -> [u8; ARRAY_SIZE] {
+    let reversed: [_; ARRAY_SIZE] = bytes
+        .chunks_exact(CHUNK_SIZE)
+        .flat_map(|chunk| chunk.iter().rev().copied())
+        .enumerate()
+        .fold([0u8; ARRAY_SIZE], |mut acc, (i, v)| {
+            acc[i] = v;
+            acc
+        });
+    reversed
+}
+
+pub const GROTH16_VK_BYTES: &[u8] = include_bytes!("../vk/groth16_vk.bin");
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -61,6 +76,12 @@ pub struct VerificationKey {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PublicInputs<const N: usize> {
     pub inputs: [[u8; SCALAR_LEN]; N],
+}
+
+#[derive(BorshSerialize, BorshDeserialize)]
+pub struct SP1ProofFixture {
+    pub proof: Vec<u8>,
+    pub public_inputs: Vec<u8>,
 }
 
 pub fn decompress_g1(g1_bytes: &[u8; 32]) -> Result<[u8; 64], Error> {
@@ -260,3 +281,30 @@ pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(),
         Err(Error::VerificationError)
     }
 }
+
+// pub fn verify_proof_sp1(
+//     sp1_proof_with_public_values: SP1ProofWithPublicValues,
+//     vk: &[u8],
+// ) -> Result<(), Error> {
+//     let proof = sp1_proof_with_public_values
+//         .proof
+//         .try_as_groth_16()
+//         .expect("Failed to convert proof to Groth16 proof");
+
+//     // Load the saved proof and convert it to a Groth16 proof
+//     let (raw_proof, public_inputs) = (hex::decode(proof.raw_proof).unwrap(), proof.public_inputs);
+
+//     // Convert public inputs to byte representations.
+//     let vkey_hash = BigUint::from_str_radix(&public_inputs[0], 10)
+//         .unwrap()
+//         .to_bytes_be();
+//     let committed_values_digest = BigUint::from_str_radix(&public_inputs[1], 10)
+//         .unwrap()
+//         .to_bytes_be();
+
+//     verify_proof(
+//         &raw_proof,
+//         &[vkey_hash.to_vec(), committed_values_digest.to_vec()].concat(),
+//         vk,
+//     )
+// }

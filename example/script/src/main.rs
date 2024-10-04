@@ -1,5 +1,5 @@
 use clap::Parser;
-use groth16_solana::verify_proof;
+use groth16_solana::{verify_proof, SP1ProofFixture};
 use num_bigint::BigUint;
 use num_traits::Num;
 use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
@@ -15,6 +15,30 @@ pub const TENDERMINT_ELF: &[u8] =
 
 pub(crate) const GROTH16_VK_BYTES: &[u8] =
     include_bytes!("../../../../.sp1/circuits/v2.0.0/groth16_vk.bin");
+
+pub fn proof_to_fixture(sp1_proof_with_public_values: SP1ProofWithPublicValues) -> SP1ProofFixture {
+    let proof = sp1_proof_with_public_values
+        .proof
+        .try_as_groth_16()
+        .expect("Failed to convert proof to Groth16 proof");
+
+    let raw_proof = hex::decode(proof.raw_proof).unwrap();
+
+    // Convert public inputs to byte representations.
+    let vkey_hash = BigUint::from_str_radix(&proof.public_inputs[0], 10)
+        .unwrap()
+        .to_bytes_be();
+    let committed_values_digest = BigUint::from_str_radix(&proof.public_inputs[1], 10)
+        .unwrap()
+        .to_bytes_be();
+
+    let public_inputs = [vkey_hash.to_vec(), committed_values_digest.to_vec()].concat();
+
+    SP1ProofFixture {
+        proof: raw_proof,
+        public_inputs,
+    }
+}
 
 #[derive(clap::Parser)]
 #[command(name = "zkVM Proof Generator")]
@@ -79,16 +103,26 @@ fn main() {
     let client = ProverClient::new();
     let (pk, _) = client.setup(elf);
 
-    // Generate a proof for the specified program
-    let proof = client
-        .prove(&pk, stdin)
-        .groth16()
-        .run()
-        .expect("Groth16 proof generation failed");
+    // // Generate a proof for the specified program
+    // let proof = client
+    //     .prove(&pk, stdin)
+    //     .groth16()
+    //     .run()
+    //     .expect("Groth16 proof generation failed");
 
-    // Save the generated proof to a binary file
+    // // Save the generated proof to a binary file
+    // let proof_file = format!("../binaries/{}_proof.bin", args.elf);
+    // proof.save(&proof_file).unwrap();
+
     let proof_file = format!("../binaries/{}_proof.bin", args.elf);
-    proof.save(&proof_file).unwrap();
+    let proof = SP1ProofWithPublicValues::load(&proof_file).unwrap();
+    let fixture = proof_to_fixture(proof);
+    let fixture_file = format!("../binaries/{}_fixture.bin", args.elf);
+
+    // Serialize the fixture using borsh and write it to the fixture file
+    let serialized_fixture = borsh::to_vec(&fixture).expect("Failed to serialize fixture");
+    std::fs::write(&fixture_file, serialized_fixture).expect("Failed to write fixture to file");
+    println!("Fixture saved to {}", fixture_file);
 
     // Load the saved proof and convert it to a Groth16 proof
     let (raw_proof, public_inputs) = SP1ProofWithPublicValues::load(&proof_file)

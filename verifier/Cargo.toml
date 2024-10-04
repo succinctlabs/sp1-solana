@@ -2,7 +2,7 @@
 name = "groth16-solana"
 version = "0.1.0"
 edition = "2021"
-authors = ["Bhargav Annem"]
+authors = ["Bhargav Annem, Yuwen Zhang"]
 description = "A Groth16 verifier implementation"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/succinctlabs/groth16-solana"
@@ -13,8 +13,15 @@ categories = ["cryptography"]
 [dependencies]
 ark-bn254 = "0.4.0"
 ark-serialize = "0.4.2"
+ark-ff = "0.4.2"
 borsh = "1.5.1"
 solana-bn254 = { git = "https://github.com/anza-xyz/agave" }
-groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
+# solana-program = { git = "https://github.com/anza-xyz/agave" }
+# groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
+groth16-solana = { path = "../../groth16-solana-patch" }
 thiserror = "1.0.63"
-ark-ff = "0.4.2"
+
+# sp1-sdk = { version = "2.0.0", default-features = false }
+hex = "0.4.3"
+num-bigint = "0.4.6"
+num-traits = "0.2.19"

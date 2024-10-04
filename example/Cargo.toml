@@ -1,0 +1,7 @@
+[workspace]
+members = ["script"]
+exclude = ["solana/program"]
+resolver = "2"
+
+[workspace.dependencies]
+groth16-solana = { path = "../verifier" }
