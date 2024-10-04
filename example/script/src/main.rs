@@ -13,6 +13,8 @@ pub const SHA2_ELF: &[u8] = include_bytes!("../../elfs/sha2-riscv32im-succinct-z
 pub const TENDERMINT_ELF: &[u8] =
     include_bytes!("../../elfs/tendermint-riscv32im-succinct-zkvm-elf");
 
+pub const GROTH16_VK_BYTES: &[u8] = include_bytes!("../../vk/groth16_v2.0.0.bin");
+
 #[derive(clap::Parser)]
 #[command(name = "zkVM Proof Generator")]
 struct Cli {
@@ -121,6 +123,7 @@ fn main() {
     verify_proof(
         &raw_proof,
         &[vkey_hash.to_vec(), committed_values_digest.to_vec()].concat(),
+        GROTH16_VK_BYTES,
     )
     .expect("Proof verification failed");
 
@@ -160,6 +163,7 @@ mod tests {
             let result = verify_proof(
                 &raw_proof,
                 &[vkey_hash.to_vec(), committed_values_digest.to_vec()].concat(),
+                GROTH16_VK_BYTES,
             );
 
             assert!(result.is_ok(), "Proof verification failed for {}", program);
