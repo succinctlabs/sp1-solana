@@ -1,9 +1,12 @@
 import { describe, test } from 'node:test';
 import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js';
-
 import { start } from 'solana-bankrun';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+chai.use(chaiAsPromised);
 
-export const PROGRAM_ID = new PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS');
+const expect = chai.expect;
+const PROGRAM_ID = new PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS');
 
 // Helper function to read the proof fixture from the provided path
 function createVerifyInstruction(pubkey: PublicKey, proof_path: string): TransactionInstruction {
@@ -16,19 +19,17 @@ function createVerifyInstruction(pubkey: PublicKey, proof_path: string): Transac
   });
 }
 
-describe('Verify Groth16 Solana Native', async () => {
-  // Randomly generate the program keypair and load the program to solana-bankrun
+describe('Verify Groth16 Solana', async () => {
   const context = await start([{ name: 'example_solana_contract', programId: PROGRAM_ID }], []);
   const client = context.banksClient;
-  // Get the payer keypair from the context, this will be used to sign transactions with enough lamports
   const payer = context.payer;
 
-  test('Test verify tx', async () => {
-    const verifyIx: TransactionInstruction = createVerifyInstruction(payer.publicKey, '../proof-fixtures/fibonacci_fixture.bin');
+  // Tests that a valid proof will verify successfully.
+  test('Test Verify Honest Proof Success', async () => {
+    // Initialize transaction. 
     const tx = new Transaction()
-    const blockhash = context.lastBlockhash;
 
-    // Import ComputeBudgetProgram
+    // Import ComputeBudgetProgram.
     const { ComputeBudgetProgram } = require('@solana/web3.js');
 
     // Request a higher compute budget. 
@@ -36,15 +37,52 @@ describe('Verify Groth16 Solana Native', async () => {
       units: 1_000_000,
     });
 
-    // Add the compute budget instructions to the transaction before the main instruction
+    // Add the compute budget instructions to the transaction before the main instruction.
     tx.add(setComputeUnitLimitIx);
+
+    // Set up and add the verify instruction to the transaction.
+    const verifyIx: TransactionInstruction = createVerifyInstruction(payer.publicKey, '../proof-fixtures/fibonacci_fixture.bin');
     tx.add(verifyIx);
+
+    // Set the blockhash. 
+    const blockhash = context.lastBlockhash;
     tx.recentBlockhash = blockhash;
 
-    // Sign the transaction with the payer's keypair
+    // Sign the transaction with the payer's keypair.
     tx.sign(payer);
 
-    // Send transaction to bankrun
+    // Send transaction to bankrun.
     await client.processTransaction(tx);
+  });
+
+  // Tests that an invalid proof will fail to verify.
+  test('Test Verify Malicious Proof Failure', async () => {
+    // Initialize transaction. 
+    const tx = new Transaction()
+
+    // Import ComputeBudgetProgram.
+    const { ComputeBudgetProgram } = require('@solana/web3.js');
+
+    // Request a higher compute budget. 
+    const setComputeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
+      units: 1_000_000,
+    });
+
+    // Add the compute budget instructions to the transaction before the main instruction.
+    tx.add(setComputeUnitLimitIx);
+
+    // Set up and add the verify instruction to the transaction.
+    const verifyIx: TransactionInstruction = createVerifyInstruction(payer.publicKey, '../proof-fixtures/fibonacci_fixture_bad.bin');
+    tx.add(verifyIx);
+
+    // Set the blockhash. 
+    const blockhash = context.lastBlockhash;
+    tx.recentBlockhash = blockhash;
+
+    // Sign the transaction with the payer's keypair.
+    tx.sign(payer);
+
+    // Send transaction to bankrun.
+    await expect(client.processTransaction(tx)).to.be.rejected;
   });
 });

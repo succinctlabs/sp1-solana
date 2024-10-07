@@ -13,13 +13,13 @@ use solana_program::entrypoint;
 entrypoint!(process_instruction);
 
 pub fn process_instruction(
-    program_id: &Pubkey,
+    _program_id: &Pubkey,
     _accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    msg!("Program ID: {}", program_id);
     let fixture = SP1ProofFixture::try_from_slice(instruction_data).unwrap();
     let vk = groth16_solana::GROTH16_VK_BYTES;
-    verify_proof_fixture(&fixture, &vk).unwrap();
+    let result = verify_proof_fixture(&fixture, &vk);
+    msg!("Result: {:?}", result);
     Ok(())
 }
