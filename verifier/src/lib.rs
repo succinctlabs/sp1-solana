@@ -18,6 +18,9 @@ use num_traits::Num;
 #[cfg(feature = "sp1-serialize")]
 use sp1_sdk::SP1ProofWithPublicValues;
 
+/// Convert the endianness of a byte array, chunk by chunk.
+///
+/// Taken from https://github.com/anza-xyz/agave/blob/c54d840/curves/bn254/src/compression.rs#L176-L189
 pub fn convert_endianness<const CHUNK_SIZE: usize, const ARRAY_SIZE: usize>(
     bytes: &[u8; ARRAY_SIZE],
 ) -> [u8; ARRAY_SIZE] {

@@ -103,11 +103,6 @@ fn main() {
     let fixture_file = format!("../proof-fixtures/{}_fixture.bin", args.elf);
     fixture.save(&fixture_file).unwrap();
 
-    // // Serialize the fixture using borsh and write it to the fixture file.
-    // let serialized_fixture = borsh::to_vec(&fixture).expect("Failed to serialize fixture");
-    // std::fs::write(&fixture_file, serialized_fixture).expect("Failed to write fixture to file");
-    // println!("Fixture saved to {}", fixture_file);
-
     // Verify the proof.
     verify_proof_fixture(&fixture, GROTH16_VK_BYTES).expect("Proof verification failed");
     println!("Successfully verified proof for the program!")
