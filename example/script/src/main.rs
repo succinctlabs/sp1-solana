@@ -149,31 +149,17 @@ mod tests {
     #[test]
     fn test_programs() {
         Elf::iter().for_each(|program| {
-            let proof_file = format!("../binaries/{}_proof.bin", program.to_string());
+            let fixture_file = format!("../binaries/{}_fixture.bin", program.to_string());
+            // Read the serialized fixture from the file.
+            let serialized_fixture =
+                std::fs::read(&fixture_file).expect("Failed to read fixture file");
 
-            let (raw_proof, public_inputs) = SP1ProofWithPublicValues::load(&proof_file)
-                .map(|sp1_proof_with_public_values| {
-                    let proof = sp1_proof_with_public_values
-                        .proof
-                        .try_as_groth_16()
-                        .unwrap();
-                    (hex::decode(proof.raw_proof).unwrap(), proof.public_inputs)
-                })
-                .expect("Failed to load proof");
+            // Deserialize the fixture using borsh.
+            let fixture: SP1ProofFixture =
+                borsh::from_slice(&serialized_fixture).expect("Failed to deserialize fixture");
 
-            // Convert public inputs to byte representations.
-            let vkey_hash = BigUint::from_str_radix(&public_inputs[0], 10)
-                .unwrap()
-                .to_bytes_be();
-            let committed_values_digest = BigUint::from_str_radix(&public_inputs[1], 10)
-                .unwrap()
-                .to_bytes_be();
-
-            let result = verify_proof(
-                &raw_proof,
-                &[vkey_hash.to_vec(), committed_values_digest.to_vec()].concat(),
-                GROTH16_VK_BYTES,
-            );
+            // Verify the proof.
+            let result = verify_proof(&fixture.proof, &fixture.public_inputs, GROTH16_VK_BYTES);
 
             assert!(result.is_ok(), "Proof verification failed for {}", program);
         });
