@@ -45,7 +45,20 @@ for `is-prime` assumes the input `n` is 11.
 ## Overview: Solana Program
 
 The code in [`solana/program`](./solana/program) is a simple Solana program that verifies a `SP1ProofFixture` using the `groth16-solana` crate.
-It costs roughly 234000 compute units. 
+It costs roughly 234000 compute units. Here is an excerpt from the program that demonstrates how to load a `SP1ProofFixture` and prepare to verify it. 
+
+```ts
+// Helper function to read the proof fixture from the provided path
+function createVerifyInstruction(pubkey: PublicKey, proof_path: string): TransactionInstruction {
+  const fs = require('fs');
+  const data = fs.readFileSync(proof_path);
+  return new TransactionInstruction({
+    programId: PROGRAM_ID,
+    keys: [{ pubkey: pubkey, isSigner: true, isWritable: true }],
+    data: data,
+  });
+}
+```
 
 ### Running the solana program
 

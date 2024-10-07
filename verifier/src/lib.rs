@@ -1,3 +1,9 @@
+use std::{
+    fs::File,
+    io::{BufReader, BufWriter},
+    path::Path,
+};
+
 use ark_bn254::{Fq, Fq2, G1Affine, G2Affine};
 use ark_ff::PrimeField;
 use ark_serialize::CanonicalSerialize;
@@ -50,6 +56,12 @@ pub enum Error {
     PairingError,
     #[error("Invalid input")]
     InvalidInput,
+    #[error("Borsh serialization error")]
+    BorshSerializeError,
+    #[error("Borsh deserialization error")]
+    BorshDeserializeError,
+    #[error("IO error")]
+    IoError,
 }
 
 const SCALAR_LEN: usize = 32;
@@ -93,6 +105,24 @@ pub struct PublicInputs<const N: usize> {
 pub struct SP1ProofFixture {
     pub proof: Vec<u8>,
     pub public_inputs: Vec<u8>,
+}
+
+impl SP1ProofFixture {
+    pub fn load(path: impl AsRef<Path>) -> Result<Self, Error> {
+        let path = path.as_ref();
+        let file = File::open(path).map_err(|_| Error::IoError)?;
+        let mut reader = BufReader::new(file);
+        let fixture = borsh::from_reader(&mut reader).map_err(|_| Error::BorshDeserializeError)?;
+        Ok(fixture)
+    }
+
+    pub fn save(&self, path: impl AsRef<Path>) -> Result<(), Error> {
+        let path = path.as_ref();
+        let file = File::create(path).map_err(|_| Error::IoError)?;
+        let mut writer = BufWriter::new(file);
+        BorshSerialize::serialize(&self, &mut writer).map_err(|_| Error::BorshSerializeError)?;
+        Ok(())
+    }
 }
 
 #[cfg(feature = "sp1-serialize")]

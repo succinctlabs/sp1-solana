@@ -1,7 +1,7 @@
 {
   "name": "example-solana-contract",
   "version": "0.1.0",
-  "description": "SP1 Solana groth16 example contract",
+  "description": "SP1 Solana Groth16 verification example contract",
   "main": "index.js",
   "author": "yuwen01",
   "license": "Apache-2.0",

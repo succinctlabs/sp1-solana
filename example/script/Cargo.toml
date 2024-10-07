@@ -1,6 +1,6 @@
 [package]
 name = "example"
-authors = ["Bhargav Annem"]
+authors = ["Bhargav Annem, Yuwen Zhang"]
 version = "0.1.0"
 edition = "2021"
 

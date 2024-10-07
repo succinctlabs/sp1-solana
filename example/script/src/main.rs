@@ -101,11 +101,12 @@ fn main() {
     let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
     let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
     let fixture_file = format!("../proof-fixtures/{}_fixture.bin", args.elf);
+    fixture.save(&fixture_file).unwrap();
 
-    // Serialize the fixture using borsh and write it to the fixture file.
-    let serialized_fixture = borsh::to_vec(&fixture).expect("Failed to serialize fixture");
-    std::fs::write(&fixture_file, serialized_fixture).expect("Failed to write fixture to file");
-    println!("Fixture saved to {}", fixture_file);
+    // // Serialize the fixture using borsh and write it to the fixture file.
+    // let serialized_fixture = borsh::to_vec(&fixture).expect("Failed to serialize fixture");
+    // std::fs::write(&fixture_file, serialized_fixture).expect("Failed to write fixture to file");
+    // println!("Fixture saved to {}", fixture_file);
 
     // Verify the proof.
     verify_proof_fixture(&fixture, GROTH16_VK_BYTES).expect("Proof verification failed");
@@ -122,12 +123,7 @@ mod tests {
         Elf::iter().for_each(|program| {
             // Read the serialized fixture from the file.
             let fixture_file = format!("../proof-fixtures/{}_fixture.bin", program.to_string());
-            let serialized_fixture =
-                std::fs::read(&fixture_file).expect("Failed to read fixture file");
-
-            // Deserialize the fixture using borsh.
-            let fixture: SP1ProofFixture =
-                borsh::from_slice(&serialized_fixture).expect("Failed to deserialize fixture");
+            let fixture = SP1ProofFixture::load(&fixture_file).unwrap();
 
             // Verify the proof.
             let result = verify_proof_fixture(&fixture, GROTH16_VK_BYTES);
