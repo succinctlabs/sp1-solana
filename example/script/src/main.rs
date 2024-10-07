@@ -1,5 +1,5 @@
 use clap::Parser;
-use groth16_solana::{verify_proof, SP1ProofFixture};
+use groth16_solana::{verify_proof, SP1ProofFixture, GROTH16_VK_BYTES};
 use num_bigint::BigUint;
 use num_traits::Num;
 use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
@@ -12,9 +12,6 @@ pub const ISPRIME_ELF: &[u8] = include_bytes!("../../elfs/isprime-riscv32im-succ
 pub const SHA2_ELF: &[u8] = include_bytes!("../../elfs/sha2-riscv32im-succinct-zkvm-elf");
 pub const TENDERMINT_ELF: &[u8] =
     include_bytes!("../../elfs/tendermint-riscv32im-succinct-zkvm-elf");
-
-pub(crate) const GROTH16_VK_BYTES: &[u8] =
-    include_bytes!("../../../../.sp1/circuits/v2.0.0/groth16_vk.bin");
 
 pub fn proof_to_fixture(sp1_proof_with_public_values: SP1ProofWithPublicValues) -> SP1ProofFixture {
     let proof = sp1_proof_with_public_values
@@ -50,6 +47,13 @@ struct Cli {
         help = "Specifies the ELF file to use (e.g., fibonacci, is-prime)"
     )]
     elf: String,
+    #[arg(
+        long,
+        value_name = "prove",
+        default_value = "false",
+        help = "Specifies the ELF file to use (e.g., fibonacci, is-prime)"
+    )]
+    prove: bool,
 }
 
 #[derive(Debug, EnumString, EnumIter, Display)]
@@ -76,10 +80,10 @@ impl Elf {
 }
 
 fn main() {
-    // Setup logging for the application
+    // Setup logging for the application.
     utils::setup_logger();
 
-    // Parse command line arguments
+    // Parse command line arguments.
     let args = Cli::parse();
     let mut stdin = SP1Stdin::new();
 
@@ -99,24 +103,29 @@ fn main() {
         Elf::Sha2 | Elf::Tendermint => elf_enum.get_elf(),
     };
 
-    // Initialize the prover client
-    let client = ProverClient::new();
-    let (pk, _) = client.setup(elf);
-
-    // // Generate a proof for the specified program
-    // let proof = client
-    //     .prove(&pk, stdin)
-    //     .groth16()
-    //     .run()
-    //     .expect("Groth16 proof generation failed");
-
-    // // Save the generated proof to a binary file
-    // let proof_file = format!("../binaries/{}_proof.bin", args.elf);
-    // proof.save(&proof_file).unwrap();
-
+    // Where to save / load the proof from.
     let proof_file = format!("../binaries/{}_proof.bin", args.elf);
-    let proof = SP1ProofWithPublicValues::load(&proof_file).unwrap();
-    let fixture = proof_to_fixture(proof);
+
+    // Only generate a proof if the prove flag is set.
+    if args.prove {
+        // Initialize the prover client
+        let client = ProverClient::new();
+        let (pk, _) = client.setup(elf);
+
+        // Generate a proof for the specified program.
+        let proof = client
+            .prove(&pk, stdin)
+            .groth16()
+            .run()
+            .expect("Groth16 proof generation failed");
+
+        // Save the generated proof to `proof_file`.
+        proof.save(&proof_file).unwrap();
+    }
+
+    // Load the proof from the file, and convert it to a fixture.
+    let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
+    let fixture = proof_to_fixture(sp1_proof_with_public_values);
     let fixture_file = format!("../binaries/{}_fixture.bin", args.elf);
 
     // Serialize the fixture using borsh and write it to the fixture file
@@ -124,31 +133,8 @@ fn main() {
     std::fs::write(&fixture_file, serialized_fixture).expect("Failed to write fixture to file");
     println!("Fixture saved to {}", fixture_file);
 
-    // Load the saved proof and convert it to a Groth16 proof
-    let (raw_proof, public_inputs) = SP1ProofWithPublicValues::load(&proof_file)
-        .map(|sp1_proof_with_public_values| {
-            let proof = sp1_proof_with_public_values
-                .proof
-                .try_as_groth_16()
-                .unwrap();
-            (hex::decode(proof.raw_proof).unwrap(), proof.public_inputs)
-        })
-        .expect("Failed to load proof");
-
-    // Convert public inputs to byte representations
-    let vkey_hash = BigUint::from_str_radix(&public_inputs[0], 10)
-        .unwrap()
-        .to_bytes_be();
-    let committed_values_digest = BigUint::from_str_radix(&public_inputs[1], 10)
-        .unwrap()
-        .to_bytes_be();
-
-    verify_proof(
-        &raw_proof,
-        &[vkey_hash.to_vec(), committed_values_digest.to_vec()].concat(),
-        GROTH16_VK_BYTES,
-    )
-    .expect("Proof verification failed");
+    verify_proof(&fixture.proof, &fixture.public_inputs, GROTH16_VK_BYTES)
+        .expect("Proof verification failed");
 
     println!("Successfully verified proof for the program!")
 }
@@ -175,7 +161,7 @@ mod tests {
                 })
                 .expect("Failed to load proof");
 
-            // Convert public inputs to byte representations
+            // Convert public inputs to byte representations.
             let vkey_hash = BigUint::from_str_radix(&public_inputs[0], 10)
                 .unwrap()
                 .to_bytes_be();

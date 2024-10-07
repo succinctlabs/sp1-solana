@@ -21,6 +21,18 @@ cargo build
 RUST_LOG=info cargo run --release --  --elf fibonacci 
 ```
 
+The solana program 
+Pass in the `--prove` flag to generate a fresh proof and save it to a file:
+
+```shell
+cd script
+cargo build
+RUST_LOG=info cargo run --release -- --elf fibonacci --prove
+```
+
+Note: The pre-generated proof for `fibonacci` assumes the input `n` is 20. The pre-generated proof 
+for `is-prime` assumes the input `n` is 11.
+
 ## Usage: Solana Program
 
 The solana program 
