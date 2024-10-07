@@ -13,8 +13,7 @@ pub const SHA2_ELF: &[u8] = include_bytes!("../../elfs/sha2-riscv32im-succinct-z
 pub const TENDERMINT_ELF: &[u8] =
     include_bytes!("../../elfs/tendermint-riscv32im-succinct-zkvm-elf");
 
-pub(crate) const GROTH16_VK_BYTES: &[u8] =
-    include_bytes!("../../../../.sp1/circuits/v2.0.0/groth16_vk.bin");
+pub const GROTH16_VK_BYTES: &[u8] = include_bytes!("../../vk/groth16_v2.0.0.bin");
 
 #[derive(clap::Parser)]
 #[command(name = "zkVM Proof Generator")]
@@ -26,6 +25,13 @@ struct Cli {
         help = "Specifies the ELF file to use (e.g., fibonacci, is-prime)"
     )]
     elf: String,
+    #[arg(
+        long,
+        value_name = "prove",
+        default_value = "false",
+        help = "Specifies the ELF file to use (e.g., fibonacci, is-prime)"
+    )]
+    prove: bool,
 }
 
 #[derive(Debug, EnumString, EnumIter, Display)]
@@ -52,10 +58,10 @@ impl Elf {
 }
 
 fn main() {
-    // Setup logging for the application
+    // Setup logging for the application.
     utils::setup_logger();
 
-    // Parse command line arguments
+    // Parse command line arguments.
     let args = Cli::parse();
     let mut stdin = SP1Stdin::new();
 
@@ -75,20 +81,25 @@ fn main() {
         Elf::Sha2 | Elf::Tendermint => elf_enum.get_elf(),
     };
 
-    // Initialize the prover client
-    let client = ProverClient::new();
-    let (pk, _) = client.setup(elf);
-
-    // Generate a proof for the specified program
-    let proof = client
-        .prove(&pk, stdin)
-        .groth16()
-        .run()
-        .expect("Groth16 proof generation failed");
-
-    // Save the generated proof to a binary file
+    // Where to save / load the proof from.
     let proof_file = format!("../binaries/{}_proof.bin", args.elf);
-    proof.save(&proof_file).unwrap();
+
+    // Only generate a proof if the prove flag is set.
+    if args.prove {
+        // Initialize the prover client
+        let client = ProverClient::new();
+        let (pk, _) = client.setup(elf);
+
+        // Generate a proof for the specified program.
+        let proof = client
+            .prove(&pk, stdin)
+            .groth16()
+            .run()
+            .expect("Groth16 proof generation failed");
+
+        // Save the generated proof to `proof_file`.
+        proof.save(&proof_file).unwrap();
+    }
 
     // Load the saved proof and convert it to a Groth16 proof
     let (raw_proof, public_inputs) = SP1ProofWithPublicValues::load(&proof_file)
@@ -101,7 +112,7 @@ fn main() {
         })
         .expect("Failed to load proof");
 
-    // Convert public inputs to byte representations
+    // Convert public inputs to byte representations.
     let vkey_hash = BigUint::from_str_radix(&public_inputs[0], 10)
         .unwrap()
         .to_bytes_be();
@@ -141,7 +152,7 @@ mod tests {
                 })
                 .expect("Failed to load proof");
 
-            // Convert public inputs to byte representations
+            // Convert public inputs to byte representations.
             let vkey_hash = BigUint::from_str_radix(&public_inputs[0], 10)
                 .unwrap()
                 .to_bytes_be();
