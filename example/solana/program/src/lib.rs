@@ -1,5 +1,5 @@
 use borsh::BorshDeserialize;
-use groth16_solana::{verify_proof, SP1ProofFixture};
+use groth16_solana::{verify_proof_fixture, SP1ProofFixture};
 use solana_program::{
     account_info::AccountInfo, declare_id, entrypoint::ProgramResult, msg, pubkey::Pubkey,
 };
@@ -20,6 +20,6 @@ pub fn process_instruction(
     msg!("Program ID: {}", program_id);
     let fixture = SP1ProofFixture::try_from_slice(instruction_data).unwrap();
     let vk = groth16_solana::GROTH16_VK_BYTES;
-    verify_proof(&fixture.proof, &fixture.public_inputs, &vk).unwrap();
+    verify_proof_fixture(&fixture, &vk).unwrap();
     Ok(())
 }

@@ -5,6 +5,13 @@ use borsh::{BorshDeserialize, BorshSerialize};
 use groth16_solana::groth16::Groth16Verifyingkey;
 use thiserror::Error;
 
+#[cfg(feature = "sp1-serialize")]
+use num_bigint::BigUint;
+#[cfg(feature = "sp1-serialize")]
+use num_traits::Num;
+#[cfg(feature = "sp1-serialize")]
+use sp1_sdk::SP1ProofWithPublicValues;
+
 pub fn convert_endianness<const CHUNK_SIZE: usize, const ARRAY_SIZE: usize>(
     bytes: &[u8; ARRAY_SIZE],
 ) -> [u8; ARRAY_SIZE] {
@@ -73,15 +80,44 @@ pub struct VerificationKey {
     pub vk_ic: Vec<[u8; G1_LEN]>,
 }
 
+/// The public inputs for a Groth16 proof.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PublicInputs<const N: usize> {
     pub inputs: [[u8; SCALAR_LEN]; N],
 }
 
+/// The necessary information for a solana program to verify an SP1 Groth16 proof.
 #[derive(BorshSerialize, BorshDeserialize)]
 pub struct SP1ProofFixture {
     pub proof: Vec<u8>,
     pub public_inputs: Vec<u8>,
+}
+
+#[cfg(feature = "sp1-serialize")]
+impl From<SP1ProofWithPublicValues> for SP1ProofFixture {
+    fn from(sp1_proof_with_public_values: SP1ProofWithPublicValues) -> Self {
+        let proof = sp1_proof_with_public_values
+            .proof
+            .try_as_groth_16()
+            .expect("Failed to convert proof to Groth16 proof");
+
+        let raw_proof = hex::decode(proof.raw_proof).unwrap();
+
+        // Convert public inputs to byte representations.
+        let vkey_hash = BigUint::from_str_radix(&proof.public_inputs[0], 10)
+            .unwrap()
+            .to_bytes_be();
+        let committed_values_digest = BigUint::from_str_radix(&proof.public_inputs[1], 10)
+            .unwrap()
+            .to_bytes_be();
+
+        let public_inputs = [vkey_hash.to_vec(), committed_values_digest.to_vec()].concat();
+
+        SP1ProofFixture {
+            proof: raw_proof,
+            public_inputs,
+        }
+    }
 }
 
 pub fn decompress_g1(g1_bytes: &[u8; 32]) -> Result<[u8; 64], Error> {
@@ -250,7 +286,8 @@ fn load_public_inputs_from_bytes(buffer: &[u8]) -> Result<PublicInputs<2>, Error
     })
 }
 
-pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), Error> {
+/// Verify a proof using raw bytes.
+pub fn verify_proof_raw(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), Error> {
     let proof = load_proof_from_bytes(proof)?;
     let vk = load_groth16_verifying_key_from_bytes(vk)?;
     let public_inputs = load_public_inputs_from_bytes(public_inputs)?;
@@ -282,29 +319,8 @@ pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(),
     }
 }
 
-// pub fn verify_proof_sp1(
-//     sp1_proof_with_public_values: SP1ProofWithPublicValues,
-//     vk: &[u8],
-// ) -> Result<(), Error> {
-//     let proof = sp1_proof_with_public_values
-//         .proof
-//         .try_as_groth_16()
-//         .expect("Failed to convert proof to Groth16 proof");
-
-//     // Load the saved proof and convert it to a Groth16 proof
-//     let (raw_proof, public_inputs) = (hex::decode(proof.raw_proof).unwrap(), proof.public_inputs);
-
-//     // Convert public inputs to byte representations.
-//     let vkey_hash = BigUint::from_str_radix(&public_inputs[0], 10)
-//         .unwrap()
-//         .to_bytes_be();
-//     let committed_values_digest = BigUint::from_str_radix(&public_inputs[1], 10)
-//         .unwrap()
-//         .to_bytes_be();
-
-//     verify_proof(
-//         &raw_proof,
-//         &[vkey_hash.to_vec(), committed_values_digest.to_vec()].concat(),
-//         vk,
-//     )
-// }
+/// Verify a proof using a SP1ProofFixture.
+#[inline]
+pub fn verify_proof_fixture(fixture: &SP1ProofFixture, vk: &[u8]) -> Result<(), Error> {
+    verify_proof_raw(&fixture.proof, &fixture.public_inputs, vk)
+}

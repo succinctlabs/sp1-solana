@@ -1,7 +1,5 @@
 use clap::Parser;
-use groth16_solana::{verify_proof, SP1ProofFixture, GROTH16_VK_BYTES};
-use num_bigint::BigUint;
-use num_traits::Num;
+use groth16_solana::{verify_proof_fixture, SP1ProofFixture, GROTH16_VK_BYTES};
 use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
 use std::str::FromStr;
 use strum_macros::{Display, EnumIter, EnumString};
@@ -12,30 +10,6 @@ pub const ISPRIME_ELF: &[u8] = include_bytes!("../../elfs/isprime-riscv32im-succ
 pub const SHA2_ELF: &[u8] = include_bytes!("../../elfs/sha2-riscv32im-succinct-zkvm-elf");
 pub const TENDERMINT_ELF: &[u8] =
     include_bytes!("../../elfs/tendermint-riscv32im-succinct-zkvm-elf");
-
-pub fn proof_to_fixture(sp1_proof_with_public_values: SP1ProofWithPublicValues) -> SP1ProofFixture {
-    let proof = sp1_proof_with_public_values
-        .proof
-        .try_as_groth_16()
-        .expect("Failed to convert proof to Groth16 proof");
-
-    let raw_proof = hex::decode(proof.raw_proof).unwrap();
-
-    // Convert public inputs to byte representations.
-    let vkey_hash = BigUint::from_str_radix(&proof.public_inputs[0], 10)
-        .unwrap()
-        .to_bytes_be();
-    let committed_values_digest = BigUint::from_str_radix(&proof.public_inputs[1], 10)
-        .unwrap()
-        .to_bytes_be();
-
-    let public_inputs = [vkey_hash.to_vec(), committed_values_digest.to_vec()].concat();
-
-    SP1ProofFixture {
-        proof: raw_proof,
-        public_inputs,
-    }
-}
 
 #[derive(clap::Parser)]
 #[command(name = "zkVM Proof Generator")]
@@ -125,7 +99,7 @@ fn main() {
 
     // Load the proof from the file, and convert it to a fixture.
     let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
-    let fixture = proof_to_fixture(sp1_proof_with_public_values);
+    let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
     let fixture_file = format!("../binaries/{}_fixture.bin", args.elf);
 
     // Serialize the fixture using borsh and write it to the fixture file
@@ -133,8 +107,7 @@ fn main() {
     std::fs::write(&fixture_file, serialized_fixture).expect("Failed to write fixture to file");
     println!("Fixture saved to {}", fixture_file);
 
-    verify_proof(&fixture.proof, &fixture.public_inputs, GROTH16_VK_BYTES)
-        .expect("Proof verification failed");
+    verify_proof_fixture(&fixture, GROTH16_VK_BYTES).expect("Proof verification failed");
 
     println!("Successfully verified proof for the program!")
 }
@@ -142,8 +115,6 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use num_bigint::BigUint;
-    use num_traits::Num;
     use strum::IntoEnumIterator;
 
     #[test]
@@ -159,7 +130,7 @@ mod tests {
                 borsh::from_slice(&serialized_fixture).expect("Failed to deserialize fixture");
 
             // Verify the proof.
-            let result = verify_proof(&fixture.proof, &fixture.public_inputs, GROTH16_VK_BYTES);
+            let result = verify_proof_fixture(&fixture, GROTH16_VK_BYTES);
 
             assert!(result.is_ok(), "Proof verification failed for {}", program);
         });
