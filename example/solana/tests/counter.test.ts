@@ -1,10 +1,20 @@
 import { describe, test } from 'node:test';
-// import { Transaction, type TransactionInstruction } from '@solana/web3.js';
 import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js';
 
-import { assert } from 'chai';
 import { start } from 'solana-bankrun';
-import { PROGRAM_ID, createVerifyInstruction} from '../ts';
+
+export const PROGRAM_ID = new PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS');
+
+// Helper function to read the proof fixture from the provided path
+function createVerifyInstruction(pubkey: PublicKey, proof_path: string): TransactionInstruction {
+  const fs = require('fs');
+  const data = fs.readFileSync(proof_path);
+  return new TransactionInstruction({
+    programId: PROGRAM_ID,
+    keys: [{ pubkey: pubkey, isSigner: true, isWritable: true }],
+    data: data,
+  });
+}
 
 describe('Verify Groth16 Solana Native', async () => {
   // Randomly generate the program keypair and load the program to solana-bankrun
@@ -14,13 +24,14 @@ describe('Verify Groth16 Solana Native', async () => {
   const payer = context.payer;
 
   test('Test verify tx', async () => {
-    const verifyIx: TransactionInstruction = createVerifyInstruction(payer.publicKey, '../binaries/fibonacci_fixture.bin');
+    const verifyIx: TransactionInstruction = createVerifyInstruction(payer.publicKey, '../proof-fixtures/fibonacci_fixture.bin');
     const tx = new Transaction()
     const blockhash = context.lastBlockhash;
+
     // Import ComputeBudgetProgram
     const { ComputeBudgetProgram } = require('@solana/web3.js');
 
-    // Request a higher compute budget (e.g., 1,000,000 units)
+    // Request a higher compute budget. 
     const setComputeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
       units: 1_000_000,
     });

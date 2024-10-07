@@ -78,7 +78,7 @@ fn main() {
     };
 
     // Where to save / load the proof from.
-    let proof_file = format!("../binaries/{}_proof.bin", args.elf);
+    let proof_file = format!("../proofs/{}_proof.bin", args.elf);
 
     // Only generate a proof if the prove flag is set.
     if args.prove {
@@ -100,15 +100,15 @@ fn main() {
     // Load the proof from the file, and convert it to a fixture.
     let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
     let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
-    let fixture_file = format!("../binaries/{}_fixture.bin", args.elf);
+    let fixture_file = format!("../proof-fixtures/{}_fixture.bin", args.elf);
 
-    // Serialize the fixture using borsh and write it to the fixture file
+    // Serialize the fixture using borsh and write it to the fixture file.
     let serialized_fixture = borsh::to_vec(&fixture).expect("Failed to serialize fixture");
     std::fs::write(&fixture_file, serialized_fixture).expect("Failed to write fixture to file");
     println!("Fixture saved to {}", fixture_file);
 
+    // Verify the proof.
     verify_proof_fixture(&fixture, GROTH16_VK_BYTES).expect("Proof verification failed");
-
     println!("Successfully verified proof for the program!")
 }
 
@@ -120,8 +120,8 @@ mod tests {
     #[test]
     fn test_programs() {
         Elf::iter().for_each(|program| {
-            let fixture_file = format!("../binaries/{}_fixture.bin", program.to_string());
             // Read the serialized fixture from the file.
+            let fixture_file = format!("../proof-fixtures/{}_fixture.bin", program.to_string());
             let serialized_fixture =
                 std::fs::read(&fixture_file).expect("Failed to read fixture file");
 
@@ -131,7 +131,6 @@ mod tests {
 
             // Verify the proof.
             let result = verify_proof_fixture(&fixture, GROTH16_VK_BYTES);
-
             assert!(result.is_ok(), "Proof verification failed for {}", program);
         });
     }

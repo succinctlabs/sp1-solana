@@ -87,6 +87,8 @@ pub struct PublicInputs<const N: usize> {
 }
 
 /// The necessary information for a solana program to verify an SP1 Groth16 proof.
+///
+/// TODO: Add helper methods for extracting the program vkey and public inputs from `public_inputs`.
 #[derive(BorshSerialize, BorshDeserialize)]
 pub struct SP1ProofFixture {
     pub proof: Vec<u8>,
