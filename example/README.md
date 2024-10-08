@@ -62,6 +62,16 @@ function createVerifyInstruction(pubkey: PublicKey, proof_path: string): Transac
 
 ### Running the solana program
 
+Running the solana program and tests requires the following
+* [Node.js](https://nodejs.org/en/download)
+* [yarn](https://yarnpkg.com/getting-started/install)
+* [Solana CLI](https://docs.solana.com/cli/install-solana-cli)
+  * Make sure to install the edge version. Run the following: 
+  ```shell
+  sh -c "$(curl -sSfL https://release.anza.xyz/edge/install)"
+  ```
+* [Rust](https://www.rust-lang.org/tools/install)
+
 ```shell
 cd solana
 npm install
