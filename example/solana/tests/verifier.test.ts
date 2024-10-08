@@ -6,7 +6,7 @@ import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 
 const expect = chai.expect;
-const PROGRAM_ID = new PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS');
+const PROGRAM_ID = PublicKey.unique();
 
 // Helper function to read the proof fixture from the provided path
 function createVerifyInstruction(pubkey: PublicKey, proof_path: string): TransactionInstruction {

@@ -1,10 +1,6 @@
 use borsh::BorshDeserialize;
 use groth16_solana::{verify_proof_fixture, SP1ProofFixture};
-use solana_program::{
-    account_info::AccountInfo, declare_id, entrypoint::ProgramResult, msg, pubkey::Pubkey,
-};
-
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+use solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, msg, pubkey::Pubkey};
 
 #[cfg(not(feature = "no-entrypoint"))]
 use solana_program::entrypoint;

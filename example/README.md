@@ -4,48 +4,27 @@ This example demonstrates how to use the `groth16-solana` crate to verify a proo
 
 ## Overview: Script
 
-This script will load a [`SP1ProofWithPublicValues`](https://docs.rs/sp1-sdk/2.0.0/sp1_sdk/proof/struct.SP1ProofWithPublicValues.html)
-from the pre-generated proofs in the [`proofs`](./proofs) directory and verify them. Optionally, you can 
-pass in the `--prove` flag to generate a fresh proof from the provided [`elfs`](./elfs) and save it to the `proofs` directory.
+This script will load a serialized [`SP1ProofWithPublicValues`](https://docs.rs/sp1-sdk/2.0.0/sp1_sdk/proof/struct.SP1ProofWithPublicValues.html)
+from the pre-generated proof [`fibonacci_proof.bin`](./proofs/fibonacci_proof.bin). This is a SP1 Groth16 proof that
+proves that the 20th fibonacci number is 6765.
 
-The loaded `SP1ProofWithPublicValues` will be serialized into a `SP1ProofFixture`, and written to the
-[`proof-fixtures`](./proof-fixtures) directory. The `SP1ProofFixture` can easily be borsh serialized and 
+The loaded `SP1ProofWithPublicValues` will be serialized into a `SP1ProofFixture`, and written to
+[`proof-fixtures/fibonacci_fixture.bin`](./proof-fixtures/fibonacci_fixture.bin). The `SP1ProofFixture` can easily be borsh serialized and 
 deserialized, and is used to verify the proof. 
 
 ### Running the script
 
-To run the example script, you can use the following ELF options:
-
-| ELF Option | Description                   |
-| ---------- | ----------------------------- |
-| fibonacci  | Fibonacci sequence program    |
-| is-prime   | Prime number checking program |
-| sha2       | SHA-2 hashing program         |
-| tendermint | Tendermint consensus program  |
-
-And run the following commands:
+Run the following commands. 
 
 ```shell
 cd script
-cargo build
-RUST_LOG=info cargo run --release --  --elf fibonacci 
+RUST_LOG=info cargo run --release
 ```
-
-Pass in the `--prove` flag to generate a fresh proof from the provided ELF and save it to a file:
-
-```shell
-cd script
-cargo build
-RUST_LOG=info cargo run --release -- --elf fibonacci --prove
-```
-
-Note: The pre-generated proof for `fibonacci` assumes the input `n` is 20. The pre-generated proof 
-for `is-prime` assumes the input `n` is 11.
 
 ## Overview: Solana Program
 
 The code in [`solana/program`](./solana/program) is a simple Solana program that verifies a `SP1ProofFixture` using the `groth16-solana` crate.
-It costs roughly 234000 compute units. Here is an excerpt from the program that demonstrates how to load a `SP1ProofFixture` and prepare to verify it. 
+It costs roughly 230,000 compute units. Here is an excerpt from the program that demonstrates how to load a `SP1ProofFixture` and prepare to verify it. 
 
 ```ts
 // Helper function to read the proof fixture from the provided path
@@ -63,7 +42,8 @@ function createVerifyInstruction(pubkey: PublicKey, proof_path: string): Transac
 ### Running the solana program
 
 Running the solana program and tests requires the following
-* [Node.js](https://nodejs.org/en/download)
+
+* [PNPM](https://pnpm.io/installation)
 * [yarn](https://yarnpkg.com/getting-started/install)
 * [Solana CLI](https://docs.solana.com/cli/install-solana-cli)
   * Make sure to install the edge version. Run the following: 
@@ -74,6 +54,6 @@ Running the solana program and tests requires the following
 
 ```shell
 cd solana
-npm install
+pnpm install
 yarn build-and-test
 ```
