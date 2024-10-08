@@ -11,19 +11,12 @@ keywords = ["cryptography", "zero-knowledge", "groth16", "verifier"]
 categories = ["cryptography"]
 
 [dependencies]
-# arkworks
 ark-bn254 = "0.4.0"
 ark-serialize = "0.4.2"
 ark-ff = "0.4.2"
-
-# solana
 borsh = "1.5.1"
 solana-bn254 = { git = "https://github.com/anza-xyz/agave" }
-
-# groth16 verifier
 groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
-
-# misc
 thiserror = "1.0.63"
 
 # Optional dependencies for SP1 serialization
