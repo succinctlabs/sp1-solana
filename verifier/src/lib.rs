@@ -108,12 +108,10 @@ pub struct PublicInputs<const N: usize> {
 }
 
 /// The necessary information for a solana program to verify an SP1 Groth16 proof.
-///
-/// TODO: Add helper methods for extracting the program vkey and public inputs from `public_inputs`.
 #[derive(BorshSerialize, BorshDeserialize)]
 pub struct SP1ProofFixture {
-    pub proof: Vec<u8>,
-    pub public_inputs: Vec<u8>,
+    pub proof: [u8; 256],
+    pub public_inputs: [u8; 63],
 }
 
 impl SP1ProofFixture {
@@ -133,6 +131,20 @@ impl SP1ProofFixture {
         let mut writer = BufWriter::new(file);
         BorshSerialize::serialize(&self, &mut writer).map_err(|_| Error::BorshSerializeError)?;
         Ok(())
+    }
+
+    /// Retrieves the SP1 commited values digest from the public inputs.
+    pub fn commited_values_digest(&self) -> Result<[u8; 32], Error> {
+        // The committed values digest is the second half of the public inputs
+        let digest_bytes = &self.public_inputs[32..64];
+
+        Ok(digest_bytes.try_into().unwrap())
+    }
+
+    /// Retrieves the SP1 vkey hash from the public inputs.
+    pub fn vkey_hash(&self) -> Result<[u8; 31], Error> {
+        let vkey_hash_bytes = &self.public_inputs[1..32];
+        Ok(vkey_hash_bytes.try_into().unwrap())
     }
 }
 
@@ -158,8 +170,8 @@ impl From<SP1ProofWithPublicValues> for SP1ProofFixture {
         let public_inputs = [vkey_hash.to_vec(), committed_values_digest.to_vec()].concat();
 
         SP1ProofFixture {
-            proof: raw_proof,
-            public_inputs,
+            proof: raw_proof[..256].try_into().unwrap(),
+            public_inputs: public_inputs.try_into().unwrap(),
         }
     }
 }
@@ -306,7 +318,7 @@ fn load_public_inputs_from_bytes(buffer: &[u8]) -> Result<PublicInputs<2>, Error
     Ok(PublicInputs::<2> {
         inputs: [
             bytes[..32].try_into().map_err(|_| Error::InvalidInput)?, // vkey_hash
-            bytes[32..].try_into().map_err(|_| Error::InvalidInput)?, //  committed_values_digest
+            bytes[32..].try_into().map_err(|_| Error::InvalidInput)?, // committed_values_digest
         ],
     })
 }
