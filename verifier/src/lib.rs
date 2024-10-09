@@ -352,7 +352,7 @@ fn load_public_inputs_from_bytes(buffer: &[u8]) -> Result<PublicInputs<2>, Error
 /// The public inputs are the vkey hash and the commited values digest, concatenated.
 /// The proof is a decompressed G1 element, followed by a decompressed G2 element, followed by a
 /// decompressed G1 element.
-fn verify_proof_raw(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), Error> {
+pub fn verify_proof_raw(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), Error> {
     let proof = load_proof_from_bytes(proof)?;
     let vk = load_groth16_verifying_key_from_bytes(vk)?;
     let public_inputs = load_public_inputs_from_bytes(public_inputs)?;
