@@ -24,7 +24,31 @@ RUST_LOG=info cargo run --release
 ## Overview: Solana Program
 
 The code in [`solana/program`](./solana/program) is a simple Solana program that verifies a `SP1ProofFixture` using the `groth16-solana` crate.
-It costs roughly 280,000 compute units. Here is an excerpt from the program that demonstrates how to load a `SP1ProofFixture` and prepare to verify it. 
+It costs roughly 280,000 compute units. 
+
+Here is an excerpt from the solana program that demonstrates how to verify a `SP1ProofFixture` on chain. 
+
+```rust
+pub fn process_instruction(
+    _program_id: &Pubkey,
+    _accounts: &[AccountInfo],
+    instruction_data: &[u8],
+) -> ProgramResult {
+    // Deserialize the fixture from the instruction data.
+    let fixture = SP1ProofFixture::try_from_slice(instruction_data).unwrap();
+
+    // Get the SP1 Groth16 verification key from the `groth16-solana` crate.
+    let vk = groth16_solana::GROTH16_VK_BYTES;
+
+    // Verify the proof.
+    let result = verify_proof_fixture(&fixture, &vk);
+    msg!("Result: {:?}", result);
+    Ok(())
+}
+```
+
+Here is an excerpt from the program that demonstrates how to create an instruction
+that interacts with this example solana program.
 
 ```ts
 // Helper function to read the proof fixture from the provided path
