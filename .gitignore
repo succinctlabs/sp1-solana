@@ -7,3 +7,5 @@ target/
 # Test fixtures
 **/*/tests/fixtures
 
+test_serialized_fixture.bin
+

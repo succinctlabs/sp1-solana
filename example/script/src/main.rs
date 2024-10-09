@@ -18,19 +18,3 @@ fn main() {
     verify_proof_fixture(&fixture, GROTH16_VK_BYTES).expect("Proof verification failed");
     println!("Successfully verified proof for the program!")
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_programs() {
-        // Read the serialized fixture from the file.
-        let fixture_file = "../proof-fixtures/fibonacci_fixture.bin";
-        let fixture = SP1ProofFixture::load(&fixture_file).unwrap();
-
-        // Verify the proof.
-        let result = verify_proof_fixture(&fixture, GROTH16_VK_BYTES);
-        assert!(result.is_ok(), "Proof verification failed for fibonacci");
-    }
-}

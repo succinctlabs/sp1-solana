@@ -2233,7 +2233,6 @@ dependencies = [
  "hex",
  "num-bigint 0.4.6",
  "num-traits",
- "solana-bn254",
  "sp1-sdk",
  "thiserror",
 ]

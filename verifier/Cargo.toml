@@ -11,20 +11,21 @@ keywords = ["cryptography", "zero-knowledge", "groth16", "verifier"]
 categories = ["cryptography"]
 
 [dependencies]
+borsh.workspace = true
 ark-bn254 = "0.4.0"
 ark-serialize = "0.4.2"
 ark-ff = "0.4.2"
-borsh = "1.5.1"
-solana-bn254 = { git = "https://github.com/anza-xyz/agave" }
+num-bigint = { version = "0.4.6" }
+
+
 groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
 thiserror = "1.0.63"
 
 # Optional dependencies for SP1 serialization
 sp1-sdk = { version = "2.0.0", default-features = false, optional = true }
 hex = { version = "0.4.3", optional = true }
-num-bigint = { version = "0.4.6", optional = true }
 num-traits = { version = "0.2.19", optional = true }
 
 [features]
 default = []
-sp1-serialize = ["dep:sp1-sdk", "dep:hex", "dep:num-bigint", "dep:num-traits"]
+sp1-serialize = ["dep:sp1-sdk", "dep:hex", "dep:num-traits"]

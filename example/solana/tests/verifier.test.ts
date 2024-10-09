@@ -41,7 +41,7 @@ describe('Verify Groth16 Solana', async () => {
     tx.add(setComputeUnitLimitIx);
 
     // Set up and add the verify instruction to the transaction.
-    const verifyIx: TransactionInstruction = createVerifyInstruction(payer.publicKey, '../proof-fixtures/fibonacci_fixture.bin');
+    const verifyIx: TransactionInstruction = createVerifyInstruction(payer.publicKey, '../../proof-fixtures/fibonacci_fixture.bin');
     tx.add(verifyIx);
 
     // Set the blockhash. 
@@ -72,7 +72,7 @@ describe('Verify Groth16 Solana', async () => {
     tx.add(setComputeUnitLimitIx);
 
     // Set up and add the verify instruction to the transaction.
-    const verifyIx: TransactionInstruction = createVerifyInstruction(payer.publicKey, '../proof-fixtures/fibonacci_fixture_bad.bin');
+    const verifyIx: TransactionInstruction = createVerifyInstruction(payer.publicKey, '../../proof-fixtures/fibonacci_fixture_bad.bin');
     tx.add(verifyIx);
 
     // Set the blockhash. 
