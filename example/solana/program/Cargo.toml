@@ -15,6 +15,4 @@ default = []
 [dependencies]
 borsh.workspace = true
 solana-program.workspace = true
-bincode.workspace = true
 groth16-solana.workspace = true
-eyre.workspace = true

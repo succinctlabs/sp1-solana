@@ -17,7 +17,6 @@ ark-serialize = "0.4.2"
 ark-ff = "0.4.2"
 num-bigint = { version = "0.4.6" }
 
-
 groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
 thiserror = "1.0.63"
 
