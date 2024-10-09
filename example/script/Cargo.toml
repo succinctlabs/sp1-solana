@@ -1,17 +1,18 @@
 [package]
-name = "example"
+name = "example-script"
 authors = ["Bhargav Annem, Yuwen Zhang"]
 version = "0.1.0"
 edition = "2021"
+publish = false
 
 [dependencies]
+borsh.workspace = true
+groth16-solana = { workspace = true, features = ["sp1-serialize"] }
+
 clap = { version = "4.0", features = ["derive"] }
-groth16-solana = { path = "../../verifier", features = ["sp1-serialize"] }
 sp1-sdk = "2.0.0"
 strum = "0.25"
 strum_macros = "0.25"
-borsh = "1.5.1"
 
 [build-dependencies]
 sp1-helper = "2.0.0"
-sp1-sdk = "2.0.0"
