@@ -6,12 +6,12 @@ fn main() {
     utils::setup_logger();
 
     // Where to save / load the proof from.
-    let proof_file = "../proofs/fibonacci_proof.bin";
+    let proof_file = "../../proofs/fibonacci_proof.bin";
 
     // Load the proof from the file, and convert it to a fixture.
     let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
     let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
-    let fixture_file = "../proof-fixtures/fibonacci_fixture.bin";
+    let fixture_file = "../../proof-fixtures/fibonacci_fixture.bin";
     fixture.save(&fixture_file).unwrap();
 
     // Verify the proof.

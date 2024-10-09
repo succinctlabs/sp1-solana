@@ -24,7 +24,7 @@ RUST_LOG=info cargo run --release
 ## Overview: Solana Program
 
 The code in [`solana/program`](./solana/program) is a simple Solana program that verifies a `SP1ProofFixture` using the `groth16-solana` crate.
-It costs roughly 230,000 compute units. Here is an excerpt from the program that demonstrates how to load a `SP1ProofFixture` and prepare to verify it. 
+It costs roughly 280,000 compute units. Here is an excerpt from the program that demonstrates how to load a `SP1ProofFixture` and prepare to verify it. 
 
 ```ts
 // Helper function to read the proof fixture from the provided path

@@ -10,6 +10,7 @@ use ark_serialize::CanonicalSerialize;
 use borsh::{BorshDeserialize, BorshSerialize};
 use groth16_solana::groth16::Groth16Verifyingkey;
 use num_bigint::BigUint;
+use sha2::{Digest, Sha256};
 use thiserror::Error;
 
 #[cfg(feature = "sp1-serialize")]
@@ -64,6 +65,8 @@ pub enum Error {
     BorshDeserializeError,
     #[error("IO error")]
     IoError,
+    #[error("Groth16 vkey hash mismatch")]
+    Groth16VkeyHashMismatch,
 }
 
 const SCALAR_LEN: usize = 32;
@@ -82,6 +85,8 @@ pub struct Verifier<'a, const N_PUBLIC: usize> {
 }
 
 /// A Groth16 proof.
+///
+/// All Group elements are represented in uncompressed form.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Proof {
     pub pi_a: [u8; 64],
@@ -109,8 +114,12 @@ pub struct PublicInputs<const N: usize> {
 /// The necessary information for a solana program to verify an SP1 Groth16 proof.
 #[derive(BorshSerialize, BorshDeserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SP1ProofFixture {
+    /// The proof is 256 bytes.
     pub proof: [u8; 256],
+    /// The public inputs are 63 bytes.
     pub public_inputs: [u8; 63],
+    /// The first 4 bytes of the Groth16 vkey hash.
+    pub groth16_vkey_hash: [u8; 4],
 }
 
 impl SP1ProofFixture {
@@ -147,6 +156,8 @@ impl SP1ProofFixture {
     }
 
     /// Retrieves the SP1 vkey hash from the public inputs.
+    ///
+    /// This is the vkey hash of the underlying SP1 program, not the Groth16 vkey hash.
     pub fn vkey_hash(&self) -> Result<String, Error> {
         let vkey_hash_bytes = &self.public_inputs[0..31];
 
@@ -184,6 +195,7 @@ impl From<SP1ProofWithPublicValues> for SP1ProofFixture {
         SP1ProofFixture {
             proof: raw_proof[..256].try_into().unwrap(),
             public_inputs: public_inputs.try_into().unwrap(),
+            groth16_vkey_hash: proof.groth16_vkey_hash[..4].try_into().unwrap(),
         }
     }
 }
@@ -336,6 +348,10 @@ fn load_public_inputs_from_bytes(buffer: &[u8]) -> Result<PublicInputs<2>, Error
 }
 
 /// Verify a proof using raw bytes.
+///
+/// The public inputs are the vkey hash and the commited values digest, concatenated.
+/// The proof is a decompressed G1 element, followed by a decompressed G2 element, followed by a
+/// decompressed G1 element.
 fn verify_proof_raw(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), Error> {
     let proof = load_proof_from_bytes(proof)?;
     let vk = load_groth16_verifying_key_from_bytes(vk)?;
@@ -368,9 +384,20 @@ fn verify_proof_raw(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(),
     }
 }
 
-/// Verify a proof using a SP1ProofFixture.
+/// Verify a proof using a [`SP1ProofFixture`].
+///
+/// Checks the Groth16 vkey hash in the fixture against the provided vk.
 #[inline]
 pub fn verify_proof_fixture(fixture: &SP1ProofFixture, vk: &[u8]) -> Result<(), Error> {
+    // Hash the vk and get the first 4 bytes.
+    let groth16_vk_hash: [u8; 4] = Sha256::digest(vk)[..4].try_into().unwrap();
+
+    // Compare against the fixture's groth16 vkey hash.
+    if groth16_vk_hash != fixture.groth16_vkey_hash {
+        return Err(Error::Groth16VkeyHashMismatch);
+    }
+
+    // Verify the proof.
     verify_proof_raw(&fixture.proof, &fixture.public_inputs, vk)
 }
 
