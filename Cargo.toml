@@ -1,8 +1,14 @@
 [workspace]
-members = ["verifier", "example/script", "example/solana/program"]
+members = ["verifier", "example/script", "example/program"]
 resolver = "2"
 
 [workspace.dependencies]
 borsh = "1.5.1"
-solana-program = { git = "https://github.com/anza-xyz/agave" }
+solana-program = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e" }
 groth16-solana = { path = "verifier" }
+
+solana-test-validator = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e" }
+solana-sdk = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e" }
+solana-client = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e" }
+tokio = "1.40.0"
+

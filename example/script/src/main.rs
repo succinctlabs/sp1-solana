@@ -1,7 +1,9 @@
 use groth16_solana::{verify_proof_fixture, SP1ProofFixture, GROTH16_VK_BYTES};
+use solana_sdk::{pubkey::Pubkey, transaction::Transaction};
 use sp1_sdk::{utils, SP1ProofWithPublicValues};
 
-fn main() {
+#[tokio::main]
+async fn main() {
     // Setup logging for the application.
     utils::setup_logger();
 
@@ -16,5 +18,19 @@ fn main() {
 
     // Verify the proof.
     verify_proof_fixture(&fixture, GROTH16_VK_BYTES).expect("Proof verification failed");
-    println!("Successfully verified proof for the program!")
+
+    // Create program test environment
+    let program_id = Pubkey::new_unique();
+    let (mut banks_client, payer, recent_blockhash) = ProgramTest::new(
+        "example-solana-contract",
+        program_id,
+        processor!(example_solana_contract::process_instruction),
+    )
+    .start()
+    .await;
+
+    // Create and send transaction to create account
+    let mut transaction = Transaction::new_with_payer(&[], Some(&payer.pubkey()));
+    transaction.sign(&[&payer], recent_blockhash);
+    banks_client.process_transaction(transaction).await.unwrap();
 }
