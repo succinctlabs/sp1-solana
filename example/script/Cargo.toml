@@ -1,19 +1,16 @@
 [package]
-name = "example"
-authors = ["Bhargav Annem"]
+name = "example-script"
+authors = ["Bhargav Annem, Yuwen Zhang"]
 version = "0.1.0"
 edition = "2021"
+publish = false
 
 [dependencies]
-clap = { version = "4.0", features = ["derive", "env"] }
-hex = "0.4.3"
-num-bigint = "0.4.6"
-num-traits = "0.2.19"
-groth16-solana = { path = "../../verifier" }
+borsh.workspace = true
+sp1-solana = { workspace = true, features = ["sp1-serialize"] }
+
+clap = { version = "4.0", features = ["derive"] }
 sp1-sdk = "2.0.0"
-strum = "0.25"
-strum_macros = "0.25"
 
 [build-dependencies]
 sp1-helper = "2.0.0"
-sp1-sdk = "2.0.0"

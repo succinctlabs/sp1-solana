@@ -1,10 +1,32 @@
-use ark_bn254::{Fq, Fq2, G1Affine, G2Affine};
+use ark_bn254::{Fq, G1Affine};
 use ark_ff::PrimeField;
 use ark_serialize::CanonicalSerialize;
 use borsh::BorshSerialize;
 use groth16_solana::groth16::Groth16Verifyingkey;
-use solana_bn254::compression::prelude::convert_endianness;
 use thiserror::Error;
+
+mod fixture;
+pub use fixture::verify_proof_fixture;
+pub use fixture::SP1ProofFixture;
+
+/// Convert the endianness of a byte array, chunk by chunk.
+///
+/// Taken from https://github.com/anza-xyz/agave/blob/c54d840/curves/bn254/src/compression.rs#L176-L189
+fn convert_endianness<const CHUNK_SIZE: usize, const ARRAY_SIZE: usize>(
+    bytes: &[u8; ARRAY_SIZE],
+) -> [u8; ARRAY_SIZE] {
+    let reversed: [_; ARRAY_SIZE] = bytes
+        .chunks_exact(CHUNK_SIZE)
+        .flat_map(|chunk| chunk.iter().rev().copied())
+        .enumerate()
+        .fold([0u8; ARRAY_SIZE], |mut acc, (i, v)| {
+            acc[i] = v;
+            acc
+        });
+    reversed
+}
+
+pub const GROTH16_VK_BYTES: &[u8] = include_bytes!("../vk/groth16_vk.bin");
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -28,19 +50,34 @@ pub enum Error {
     PairingError,
     #[error("Invalid input")]
     InvalidInput,
+    #[error("Borsh serialization error")]
+    BorshSerializeError,
+    #[error("Borsh deserialization error")]
+    BorshDeserializeError,
+    #[error("IO error")]
+    IoError,
+    #[error("Groth16 vkey hash mismatch")]
+    Groth16VkeyHashMismatch,
 }
 
 const SCALAR_LEN: usize = 32;
 const G1_LEN: usize = 64;
 const G2_LEN: usize = 128;
 
+/// Everything needed to verify a Groth16 proof.
 #[allow(dead_code)]
 pub struct Verifier<'a, const N_PUBLIC: usize> {
+    /// The proof to verify.
     proof: &'a Proof,
+    /// The public inputs to the proof.
     public: &'a PublicInputs<N_PUBLIC>,
+    /// The verification key.
     vk: &'a VerificationKey,
 }
 
+/// A Groth16 proof.
+///
+/// All Group elements are represented in uncompressed form.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Proof {
     pub pi_a: [u8; 64],
@@ -48,6 +85,7 @@ pub struct Proof {
     pub pi_c: [u8; 64],
 }
 
+/// A generic Groth16 verification key over BN254.
 #[derive(Debug, Clone, PartialEq, Eq, BorshSerialize)]
 pub struct VerificationKey {
     pub nr_pubinputs: u32,
@@ -58,18 +96,19 @@ pub struct VerificationKey {
     pub vk_ic: Vec<[u8; G1_LEN]>,
 }
 
+/// The public inputs for a Groth16 proof.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PublicInputs<const N: usize> {
     pub inputs: [[u8; SCALAR_LEN]; N],
 }
 
-pub fn decompress_g1(g1_bytes: &[u8; 32]) -> Result<[u8; 64], Error> {
+fn decompress_g1(g1_bytes: &[u8; 32]) -> Result<[u8; 64], Error> {
     let g1_bytes = gnark_compressed_x_to_ark_compressed_x(g1_bytes)?;
     let g1_bytes = convert_endianness::<32, 32>(&g1_bytes.as_slice().try_into().unwrap());
     groth16_solana::decompression::decompress_g1(&g1_bytes).map_err(|_| Error::G1CompressionError)
 }
 
-pub fn decompress_g2(g2_bytes: &[u8; 64]) -> Result<[u8; 128], Error> {
+fn decompress_g2(g2_bytes: &[u8; 64]) -> Result<[u8; 128], Error> {
     let g2_bytes = gnark_compressed_x_to_ark_compressed_x(g2_bytes)?;
     let g2_bytes = convert_endianness::<64, 64>(&g2_bytes.as_slice().try_into().unwrap());
     groth16_solana::decompression::decompress_g2(&g2_bytes).map_err(|_| Error::G2CompressionError)
@@ -113,24 +152,7 @@ fn gnark_compressed_x_to_ark_compressed_x(x: &[u8]) -> Result<Vec<u8>, Error> {
     Ok(x_copy)
 }
 
-pub fn gnark_uncompressed_bytes_to_g2_point(buf: &[u8]) -> Result<G2Affine, Error> {
-    if buf.len() != 128 {
-        return Err(Error::InvalidInput);
-    };
-
-    let (x_bytes, y_bytes) = buf.split_at(64);
-    let (x0_bytes, x1_bytes) = x_bytes.split_at(32);
-    let (y0_bytes, y1_bytes) = y_bytes.split_at(32);
-
-    let x0 = Fq::from_be_bytes_mod_order(x0_bytes);
-    let x1 = Fq::from_be_bytes_mod_order(x1_bytes);
-    let y0 = Fq::from_be_bytes_mod_order(y0_bytes);
-    let y1 = Fq::from_be_bytes_mod_order(y1_bytes);
-
-    Ok(G2Affine::new_unchecked(Fq2::new(x0, x1), Fq2::new(y0, y1)))
-}
-
-pub(crate) fn uncompressed_bytes_to_g1_point(buf: &[u8]) -> Result<G1Affine, Error> {
+fn uncompressed_bytes_to_g1_point(buf: &[u8]) -> Result<G1Affine, Error> {
     if buf.len() != 64 {
         return Err(Error::InvalidInput);
     };
@@ -153,7 +175,7 @@ fn negate_g1(g1_bytes: &[u8; 64]) -> Result<[u8; 64], Error> {
     ))
 }
 
-pub(crate) fn load_proof_from_bytes(buffer: &[u8]) -> Result<Proof, Error> {
+fn load_proof_from_bytes(buffer: &[u8]) -> Result<Proof, Error> {
     Ok(Proof {
         pi_a: negate_g1(
             &buffer[..64]
@@ -169,9 +191,7 @@ pub(crate) fn load_proof_from_bytes(buffer: &[u8]) -> Result<Proof, Error> {
     })
 }
 
-pub(crate) fn load_groth16_verifying_key_from_bytes(
-    buffer: &[u8],
-) -> Result<VerificationKey, Error> {
+fn load_groth16_verifying_key_from_bytes(buffer: &[u8]) -> Result<VerificationKey, Error> {
     // Note that g1_beta and g1_delta are not used in the verification process.
     let g1_alpha = decompress_g1(buffer[..32].try_into().unwrap())?;
     let g2_beta = decompress_g2(buffer[64..128].try_into().unwrap())?;
@@ -224,12 +244,17 @@ fn load_public_inputs_from_bytes(buffer: &[u8]) -> Result<PublicInputs<2>, Error
     Ok(PublicInputs::<2> {
         inputs: [
             bytes[..32].try_into().map_err(|_| Error::InvalidInput)?, // vkey_hash
-            bytes[32..].try_into().map_err(|_| Error::InvalidInput)?, //  committed_values_digest
+            bytes[32..].try_into().map_err(|_| Error::InvalidInput)?, // committed_values_digest
         ],
     })
 }
 
-pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), Error> {
+/// Verify a proof using raw bytes.
+///
+/// The public inputs are the vkey hash and the commited values digest, concatenated.
+/// The proof is a decompressed G1 element, followed by a decompressed G2 element, followed by a
+/// decompressed G1 element.
+pub fn verify_proof_raw(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(), Error> {
     let proof = load_proof_from_bytes(proof)?;
     let vk = load_groth16_verifying_key_from_bytes(vk)?;
     let public_inputs = load_public_inputs_from_bytes(public_inputs)?;
@@ -258,5 +283,41 @@ pub fn verify_proof(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result<(),
     } else {
         println!("Verification failed.");
         Err(Error::VerificationError)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_verify_fixture() {
+        // Read the serialized fixture from the file.
+        let fixture_file = "../proof-fixtures/fibonacci_fixture.bin";
+        let fixture = SP1ProofFixture::load(&fixture_file).unwrap();
+
+        // Verify the proof.
+        let result = verify_proof_fixture(&fixture, GROTH16_VK_BYTES);
+        assert!(result.is_ok(), "Proof verification failed for fibonacci");
+    }
+
+    #[test]
+    fn test_serialize_fixture_roundtrip() {
+        // Read the serialized fixture from the file.
+        let fixture_file = "../proof-fixtures/fibonacci_fixture.bin";
+        let fixture = SP1ProofFixture::load(&fixture_file).unwrap();
+
+        // Serialize the fixture to a new file.
+        let serialized_fixture_file = "test_serialized_fixture.bin";
+        fixture.save(&serialized_fixture_file).unwrap();
+
+        // Deserialize the fixture from the new file.
+        let deserialized_fixture = SP1ProofFixture::load(&serialized_fixture_file).unwrap();
+
+        // Verify the deserialized fixture is equal to the original fixture.
+        assert_eq!(
+            fixture, deserialized_fixture,
+            "Serialized fixture does not match original"
+        );
     }
 }

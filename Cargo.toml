@@ -1,4 +1,8 @@
 [workspace]
-members = ["verifier"]
-exclude = ["example"]
+members = ["verifier", "example/script", "example/solana/program"]
 resolver = "2"
+
+[workspace.dependencies]
+borsh = "1.5.1"
+solana-program = { git = "https://github.com/anza-xyz/agave" }
+sp1-solana = { path = "verifier" }

@@ -1,4 +1,4 @@
-# `groth16-solana`
+# `sp1-solana`
 
 A Groth16 verifier implementation for Solana using BN254 precompiles. This crate verifies Groth16 proofs generated with SP1, leveraging Solana's BN254 precompiles for efficient cryptographic operations.
 
@@ -15,11 +15,11 @@ A Groth16 verifier implementation for Solana using BN254 precompiles. This crate
 
 ## Installation
 
-Add `groth16-solana` to your `Cargo.toml`:
+Add `sp1-solana` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-groth16-solana = { git = "https://github.com/succinctlabs/groth16-solana" }
+sp1-solana = { git = "https://github.com/succinctlabs/groth16-solana" }
 ```
 
 ## Acknowledgements

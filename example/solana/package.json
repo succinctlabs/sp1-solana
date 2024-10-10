@@ -1,0 +1,29 @@
+{
+  "name": "example-solana-contract",
+  "version": "0.1.0",
+  "description": "SP1 Solana Groth16 verification example contract",
+  "main": "index.js",
+  "author": "yuwen01",
+  "license": "Apache-2.0",
+  "private": false,
+  "scripts": {
+    "test": "pnpm ts-mocha -p ./tests/tsconfig.test.json -t 1000000 ./tests/verifier.test.ts",
+    "build-and-test": "cargo build-sbf --manifest-path=./program/Cargo.toml --sbf-out-dir=./tests/fixtures && pnpm test",
+    "build": "cargo build-sbf --manifest-path=./program/Cargo.toml --sbf-out-dir=./program/target/so",
+    "deploy": "solana program deploy ./program/target/so/example_solana_contract.so"
+  },
+  "devDependencies": {
+    "@types/bn.js": "^5.1.0",
+    "@types/chai": "^4.3.1",
+    "@types/mocha": "^9.1.1",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.0",
+    "mocha": "^9.2.2",
+    "solana-bankrun": "^0.3.0",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.95.3"
+  }
+}
