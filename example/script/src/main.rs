@@ -1,5 +1,5 @@
 use clap::Parser;
-use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
+use sp1_sdk::{utils, HashableKey, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
 use sp1_solana::{verify_proof_fixture, SP1ProofFixture, GROTH16_VK_BYTES};
 
 #[derive(clap::Parser)]
@@ -30,7 +30,9 @@ fn main() {
     if args.prove {
         // Initialize the prover client
         let client = ProverClient::new();
-        let (pk, _) = client.setup(ELF);
+        let (pk, vk) = client.setup(ELF);
+
+        println!("vkey hash: {:?}", vk.bytes32());
 
         // Compute the 20th fibonacci number.
         let mut stdin = SP1Stdin::new();

@@ -87,7 +87,7 @@ dependencies = [
  "cfg-if",
  "const-hex",
  "derive_more",
- "hex-literal",
+ "hex-literal 0.4.1",
  "itoa",
  "k256",
  "keccak-asm",
@@ -1855,7 +1855,7 @@ version = "0.1.0"
 dependencies = [
  "borsh 1.5.1",
  "clap",
- "sp1-helper",
+ "sp1-build",
  "sp1-sdk",
  "sp1-solana",
 ]
@@ -1865,6 +1865,9 @@ name = "example-solana-contract"
 version = "0.1.0"
 dependencies = [
  "borsh 1.5.1",
+ "hex-literal 0.3.4",
+ "num-bigint 0.4.6",
+ "num-traits",
  "solana-program",
  "sp1-solana",
 ]
@@ -2359,6 +2362,12 @@ name = "hex"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
+
+[[package]]
+name = "hex-literal"
+version = "0.3.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7ebdb29d2ea9ed0083cd8cece49bbd968021bd99b0849edb4a9a7ee0fdf6a4e0"
 
 [[package]]
 name = "hex-literal"
@@ -5429,15 +5438,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
-]
-
-[[package]]
-name = "sp1-helper"
-version = "2.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f08124c62d09764810783355cff518477e3f36c8e83343623859afeca6f3eeb"
-dependencies = [
- "sp1-build",
 ]
 
 [[package]]

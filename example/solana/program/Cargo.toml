@@ -16,3 +16,7 @@ default = []
 borsh.workspace = true
 solana-program.workspace = true
 sp1-solana.workspace = true
+
+hex-literal = "0.3.1"
+num-traits = "0.2.19"
+num-bigint.workspace = true

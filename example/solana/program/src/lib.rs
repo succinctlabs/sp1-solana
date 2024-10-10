@@ -1,5 +1,5 @@
 use borsh::BorshDeserialize;
-use solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, msg, pubkey::Pubkey};
+use solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, pubkey::Pubkey};
 use sp1_solana::{verify_proof_fixture, SP1ProofFixture};
 
 #[cfg(not(feature = "no-entrypoint"))]
@@ -7,6 +7,11 @@ use solana_program::entrypoint;
 
 #[cfg(not(feature = "no-entrypoint"))]
 entrypoint!(process_instruction);
+
+// Derived by running `cargo prove vkey --elf ../../sp1-program/elf/riscv32im-succinct-zkvm-elf`
+// TODO:
+const FIBONACCI_VKEY_HASH: &str =
+    "0083e8e370d7f0d1c463337f76c9a60b62ad7cc54c89329107c92c1e62097872";
 
 pub fn process_instruction(
     _program_id: &Pubkey,
@@ -21,6 +26,10 @@ pub fn process_instruction(
 
     // Verify the proof.
     let result = verify_proof_fixture(&fixture, &vk);
-    msg!("Result: {:?}", result);
+    assert!(result.is_ok());
+
+    // Make sure that we're verifying a fibonacci program.
+    assert_eq!(fixture.vkey_hash(), FIBONACCI_VKEY_HASH);
+
     Ok(())
 }

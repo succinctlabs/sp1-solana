@@ -12,19 +12,20 @@ categories = ["cryptography"]
 
 [dependencies]
 borsh.workspace = true
+num-bigint.workspace = true
+
 ark-bn254 = "0.4.0"
 ark-serialize = "0.4.2"
 ark-ff = "0.4.2"
-num-bigint = { version = "0.4.6" }
 sha2 = { version = "0.10.8"}
 groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
 thiserror = "1.0.63"
+hex = { version = "0.4.3" }
 
 # Optional dependencies for SP1 serialization
 sp1-sdk = { version = "2.0.0", default-features = false, optional = true }
-hex = { version = "0.4.3", optional = true }
 num-traits = { version = "0.2.19", optional = true }
 
 [features]
 default = []
-sp1-serialize = ["dep:sp1-sdk", "dep:hex", "dep:num-traits"]
+sp1-serialize = ["dep:sp1-sdk", "dep:num-traits"]

@@ -40,7 +40,7 @@ impl SP1ProofFixture {
     }
 
     /// Retrieves the SP1 commited values digest from the public inputs.
-    pub fn commited_values_digest(&self) -> Result<String, Error> {
+    pub fn commited_values_digest(&self) -> String {
         // The committed values digest is the second half of the public inputs
         let digest_bytes = &self.public_inputs[31..63];
 
@@ -50,22 +50,20 @@ impl SP1ProofFixture {
         // Convert the BigUint to a decimal string
         let digest_string = digest_biguint.to_str_radix(10);
 
-        Ok(digest_string)
+        digest_string
     }
 
     /// Retrieves the SP1 vkey hash from the public inputs.
     ///
     /// This is the vkey hash of the underlying SP1 program, not the Groth16 vkey hash.
-    pub fn vkey_hash(&self) -> Result<String, Error> {
-        let vkey_hash_bytes = &self.public_inputs[0..31];
+    pub fn vkey_hash(&self) -> String {
+        // Prepend a 0 to the first 31 bytes of the public inputs.
+        let mut padded_vkey_hash_bytes = vec![0];
+        padded_vkey_hash_bytes.extend_from_slice(&self.public_inputs[0..31]);
+        let vkey_hash_bytes = padded_vkey_hash_bytes.as_slice();
 
-        // Convert the vkey hash bytes to a BigUint
-        let vkey_hash_biguint = BigUint::from_bytes_be(vkey_hash_bytes);
-
-        // Convert the BigUint to a decimal string
-        let vkey_hash_string = vkey_hash_biguint.to_str_radix(10);
-
-        Ok(vkey_hash_string)
+        // Convert the vkey hash bytes to a hex string
+        hex::encode(vkey_hash_bytes)
     }
 }
 
@@ -125,6 +123,8 @@ mod sp1_serialize {
     #[test]
     fn test_public_inputs() {
         // Read the serialized SP1ProofWithPublicValues from the file.
+
+        use std::str::FromStr;
         let sp1_proof_with_public_values_file = "../proofs/fibonacci_proof.bin";
         let sp1_proof_with_public_values =
             SP1ProofWithPublicValues::load(&sp1_proof_with_public_values_file).unwrap();
@@ -136,6 +136,12 @@ mod sp1_serialize {
             .unwrap();
 
         let vkey_hash = &groth16_proof.public_inputs[0];
+        // Convert vkey_hash from base 10 to hex using the hex crate
+        let vkey_hash_biguint = BigUint::from_str(vkey_hash).unwrap();
+        let mut vkey_hash_bytes = vec![0];
+        vkey_hash_bytes.extend_from_slice(&vkey_hash_biguint.to_bytes_be());
+        let vkey_hash_hex = hex::encode(vkey_hash_bytes);
+
         let commited_values_digest = &groth16_proof.public_inputs[1];
 
         // Convert the SP1ProofWithPublicValues to a SP1ProofFixture.
@@ -143,9 +149,9 @@ mod sp1_serialize {
 
         // Verify the public inputs.
         assert_eq!(
-            fixture.commited_values_digest().unwrap(),
+            fixture.commited_values_digest(),
             commited_values_digest.to_string()
         );
-        assert_eq!(fixture.vkey_hash().unwrap(), vkey_hash.to_string());
+        assert_eq!(fixture.vkey_hash(), vkey_hash_hex);
     }
 }
