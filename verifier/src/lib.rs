@@ -291,7 +291,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_programs() {
+    fn test_verify_fixture() {
         // Read the serialized fixture from the file.
         let fixture_file = "../proof-fixtures/fibonacci_fixture.bin";
         let fixture = SP1ProofFixture::load(&fixture_file).unwrap();

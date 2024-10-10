@@ -1,5 +1,5 @@
 [workspace]
-members = ["verifier", "example/script", "example/solana/program"]
+members = ["verifier", "example/script", "example/solana/program", "example/sp1-program"]
 resolver = "2"
 
 [workspace.dependencies]

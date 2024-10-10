@@ -9,7 +9,7 @@ publish = false
 borsh.workspace = true
 sp1-solana = { workspace = true, features = ["sp1-serialize"] }
 
-clap = { version = "4.0", features = ["derive", "env"] }
+clap = { version = "4.0", features = ["derive"] }
 sp1-sdk = "2.0.0"
 
 [build-dependencies]

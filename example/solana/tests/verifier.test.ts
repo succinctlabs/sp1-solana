@@ -20,7 +20,8 @@ function createVerifyInstruction(pubkey: PublicKey, proof_path: string): Transac
 }
 
 describe('Verify Groth16 Solana', async () => {
-  const context = await start([{ name: 'example_solana_contract', programId: PROGRAM_ID }], []);
+  // Set up the bankrun context. Increase the compute budget to 1M compute units.
+  const context = await start([{ name: 'example_solana_contract', programId: PROGRAM_ID }], [], BigInt(1_000_000));
   const client = context.banksClient;
   const payer = context.payer;
 
@@ -28,17 +29,6 @@ describe('Verify Groth16 Solana', async () => {
   test('Test Verify Honest Proof Success', async () => {
     // Initialize transaction. 
     const tx = new Transaction()
-
-    // Import ComputeBudgetProgram.
-    const { ComputeBudgetProgram } = require('@solana/web3.js');
-
-    // Request a higher compute budget. 
-    const setComputeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
-      units: 1_000_000,
-    });
-
-    // Add the compute budget instructions to the transaction before the main instruction.
-    tx.add(setComputeUnitLimitIx);
 
     // Set up and add the verify instruction to the transaction.
     const verifyIx: TransactionInstruction = createVerifyInstruction(payer.publicKey, '../../proof-fixtures/fibonacci_fixture.bin');
@@ -59,17 +49,6 @@ describe('Verify Groth16 Solana', async () => {
   test('Test Verify Malicious Proof Failure', async () => {
     // Initialize transaction. 
     const tx = new Transaction()
-
-    // Import ComputeBudgetProgram.
-    const { ComputeBudgetProgram } = require('@solana/web3.js');
-
-    // Request a higher compute budget. 
-    const setComputeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
-      units: 1_000_000,
-    });
-
-    // Add the compute budget instructions to the transaction before the main instruction.
-    tx.add(setComputeUnitLimitIx);
 
     // Set up and add the verify instruction to the transaction.
     const verifyIx: TransactionInstruction = createVerifyInstruction(payer.publicKey, '../../proof-fixtures/fibonacci_fixture_bad.bin');
