@@ -23,4 +23,4 @@ sp1-solana = { git = "https://github.com/succinctlabs/groth16-solana" }
 ```
 
 ## Acknowledgements
-This crate uses the [`sp1-solana`](https://github.com/Lightprotocol/sp1-solana/) crate from Light Protocol Labs for the actual Groth16 proof verification, and the [`ark-bn254`](https://github.com/arkworks-rs/algebra) crate for the elliptic curve operations.
+This crate uses the [`groth16-solana`](https://github.com/Lightprotocol/groth16-solana/) crate from Light Protocol Labs for the actual Groth16 proof verification, and the [`ark-bn254`](https://github.com/arkworks-rs/algebra) crate for the elliptic curve operations.
