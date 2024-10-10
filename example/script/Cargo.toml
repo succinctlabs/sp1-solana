@@ -7,7 +7,9 @@ publish = false
 
 [dependencies]
 borsh.workspace = true
-groth16-solana = { workspace = true, features = ["sp1-serialize"] }
+sp1-solana = { workspace = true, features = ["sp1-serialize"] }
+
+clap = { version = "4.0", features = ["derive", "env"] }
 sp1-sdk = "2.0.0"
 
 [build-dependencies]

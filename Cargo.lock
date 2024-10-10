@@ -1854,9 +1854,10 @@ name = "example-script"
 version = "0.1.0"
 dependencies = [
  "borsh 1.5.1",
- "groth16-solana 0.1.0",
+ "clap",
  "sp1-helper",
  "sp1-sdk",
+ "sp1-solana",
 ]
 
 [[package]]
@@ -1864,8 +1865,8 @@ name = "example-solana-contract"
 version = "0.1.0"
 dependencies = [
  "borsh 1.5.1",
- "groth16-solana 0.1.0",
  "solana-program",
+ "sp1-solana",
 ]
 
 [[package]]
@@ -2213,23 +2214,6 @@ dependencies = [
  "num-bigint 0.4.6",
  "solana-bn254",
  "solana-program",
- "thiserror",
-]
-
-[[package]]
-name = "groth16-solana"
-version = "0.1.0"
-dependencies = [
- "ark-bn254",
- "ark-ff 0.4.2",
- "ark-serialize 0.4.2",
- "borsh 1.5.1",
- "groth16-solana 0.0.3",
- "hex",
- "num-bigint 0.4.6",
- "num-traits",
- "sha2 0.10.8",
- "sp1-sdk",
  "thiserror",
 ]
 
@@ -5759,6 +5743,23 @@ dependencies = [
  "tracing",
  "twirp-rs",
  "vergen",
+]
+
+[[package]]
+name = "sp1-solana"
+version = "0.1.0"
+dependencies = [
+ "ark-bn254",
+ "ark-ff 0.4.2",
+ "ark-serialize 0.4.2",
+ "borsh 1.5.1",
+ "groth16-solana",
+ "hex",
+ "num-bigint 0.4.6",
+ "num-traits",
+ "sha2 0.10.8",
+ "sp1-sdk",
+ "thiserror",
 ]
 
 [[package]]

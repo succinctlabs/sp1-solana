@@ -1,5 +1,5 @@
 [package]
-name = "groth16-solana"
+name = "sp1-solana"
 version = "0.1.0"
 edition = "2021"
 authors = ["Bhargav Annem, Yuwen Zhang"]
