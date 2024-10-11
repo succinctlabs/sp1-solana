@@ -7,14 +7,12 @@ publish = false
 
 [dependencies]
 borsh.workspace = true
-groth16-solana = { workspace = true, features = ["sp1-serialize"] }
-# solana-program = { workspace = true }
-# solana-test-validator = { workspace = true }
-solana-client = { workspace = true }
-# solana-sdk = { workspace = true }
-# tokio = { workspace = true }
+sp1-solana = { workspace = true, features = ["sp1-serialize"] }
+# solana-client = { workspace = true }
 
-# sp1-sdk = "2.0.0"
+
+clap = { version = "4.0", features = ["derive"] }
+sp1-sdk = "2.0.0"
 
 [build-dependencies]
 sp1-helper = "2.0.0"

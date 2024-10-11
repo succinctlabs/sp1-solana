@@ -15,4 +15,4 @@ default = []
 [dependencies]
 borsh.workspace = true
 solana-program.workspace = true
-groth16-solana.workspace = true
+sp1-solana.workspace = true
