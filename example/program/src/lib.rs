@@ -1,6 +1,6 @@
 use borsh::BorshDeserialize;
 use solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, pubkey::Pubkey};
-use sp1_solana::{verify_proof_fixture, SP1ProofFixture};
+use sp1_solana::{hash_public_inputs, verify_proof_fixture, SP1ProofFixture};
 
 #[cfg(not(feature = "no-entrypoint"))]
 use solana_program::entrypoint;
@@ -29,7 +29,12 @@ pub fn process_instruction(
     assert!(result.is_ok());
 
     // Make sure that we're verifying a fibonacci program.
-    assert_eq!(fixture.vkey_hash(), FIBONACCI_VKEY_HASH);
+    assert_eq!(&fixture.vkey_hash(), FIBONACCI_VKEY_HASH);
+
+    if let Some(sp1_public_inputs) = &fixture.sp1_public_inputs {
+        let digest = hash_public_inputs(sp1_public_inputs);
+        assert_eq!(digest, fixture.commited_values_digest());
+    }
 
     Ok(())
 }

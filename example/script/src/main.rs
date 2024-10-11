@@ -83,7 +83,7 @@ async fn main() {
 
     // Load the proof from the file, and convert it to a fixture.
     let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
-    let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
+    let fixture = SP1ProofFixture::from_sp1(sp1_proof_with_public_values, true);
     let fixture_file = "../../proof-fixtures/fibonacci_fixture.bin";
     fixture.save(&fixture_file).unwrap();
 

@@ -6,8 +6,11 @@ use groth16_solana::groth16::Groth16Verifyingkey;
 use thiserror::Error;
 
 mod fixture;
+pub use fixture::hash_public_inputs;
 pub use fixture::verify_proof_fixture;
 pub use fixture::SP1ProofFixture;
+
+pub const GROTH16_VK_BYTES: &[u8] = include_bytes!("../vk/groth16_vk.bin");
 
 /// Convert the endianness of a byte array, chunk by chunk.
 ///
@@ -25,8 +28,6 @@ fn convert_endianness<const CHUNK_SIZE: usize, const ARRAY_SIZE: usize>(
         });
     reversed
 }
-
-pub const GROTH16_VK_BYTES: &[u8] = include_bytes!("../vk/groth16_vk.bin");
 
 #[derive(Error, Debug)]
 pub enum Error {
