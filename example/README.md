@@ -4,8 +4,7 @@ This example demonstrates how to use the `sp1-solana` crate to verify a proof ge
 
 ## Overview: Script
 
-This script will load an SP1 [`SP1ProofWithPublicValues`]
-(https://docs.rs/sp1-sdk/2.0.0/sp1_sdk/proof/struct.SP1ProofWithPublicValues.html)
+This script will load an SP1 [`SP1ProofWithPublicValues`](https://docs.rs/sp1-sdk/2.0.0/sp1_sdk/proof/struct.SP1ProofWithPublicValues.html)
 from the pre-generated proof [`fibonacci_proof.bin`](./proofs/fibonacci_proof.bin). This is a SP1 Groth16 proof that
 proves that the 20th fibonacci number is 6765.
 
@@ -31,45 +30,10 @@ RUST_LOG=info cargo run --release -- --prove
 
 ## Overview: Solana Program
 
-The code in [`solana/program`](./solana/program) is a simple Solana contract that verifies a 
+The code in [`program`](./program) is a simple Solana contract that verifies a 
 `SP1ProofFixture` using the `sp1-solana` crate. It costs roughly 280,000 compute units. 
 
-Here is an excerpt from the Solana contract that demonstrates how to verify a `SP1ProofFixture` on chain. 
-
-```rust
-pub fn process_instruction(
-    _program_id: &Pubkey,
-    _accounts: &[AccountInfo],
-    instruction_data: &[u8],
-) -> ProgramResult {
-    // Deserialize the fixture from the instruction data.
-    let fixture = SP1ProofFixture::try_from_slice(instruction_data).unwrap();
-
-    // Get the SP1 Groth16 verification key from the `sp1-solana` crate.
-    let vk = sp1_solana::GROTH16_VK_BYTES;
-
-    // Verify the proof.
-    let result = verify_proof_fixture(&fixture, &vk);
-    msg!("Result: {:?}", result);
-    Ok(())
-}
-```
-
-Here is an excerpt from the program that demonstrates how to create an instruction
-that interacts with this example Solana program.
-
-```ts
-// Helper function to read the proof fixture from the provided path
-function createVerifyInstruction(pubkey: PublicKey, proof_path: string): TransactionInstruction {
-  const fs = require('fs');
-  const data = fs.readFileSync(proof_path);
-  return new TransactionInstruction({
-    programId: PROGRAM_ID,
-    keys: [{ pubkey: pubkey, isSigner: true, isWritable: true }],
-    data: data,
-  });
-}
-```
+**TODO**
 
 ### Running the Solana program
 

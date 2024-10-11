@@ -1,11 +1,23 @@
 [workspace]
-members = ["verifier", "example/script", "example/solana/program"]
+members = ["verifier", "example/script", "example/program"]
+exclude = ["example/sp1-program"]
 resolver = "2"
 
 [workspace.dependencies]
 borsh = "1.5.1"
-solana-program = { git = "https://github.com/anza-xyz/agave" }
+solana-program = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e" }
 sp1-solana = { path = "verifier" }
-
 num-bigint = { version = "0.4.6" }
+example-solana-contract = { path = "example/program" }
+solana-program-test = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e" }
+solana-sdk = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e" }
+solana-inline-spl = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e" }
+tokio = "1.40.0"
+
+[patch.crates-io]
+# See https://github.com/anza-xyz/agave/blob/master/Cargo.toml#L551-L586
+solana-curve25519 = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"}
+solana-program = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"}
+solana-zk-sdk = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e" }
+solana-zk-token-sdk = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"}
 
