@@ -13,12 +13,12 @@ use sha2::{Digest, Sha256};
 pub struct SP1ProofFixture {
     /// The proof is 256 bytes.
     pub proof: [u8; 256],
-    /// The public inputs are 63 bytes.
-    pub public_inputs: [u8; 63],
     /// The first 4 bytes of the Groth16 vkey hash.
     pub groth16_vkey_hash: [u8; 4],
     /// The public inputs of the underlying SP1 program.
-    pub sp1_public_inputs: Option<Vec<u8>>,
+    pub sp1_public_inputs: Vec<u8>,
+    /// The vkey hash of the underlying SP1 program.
+    pub sp1_vkey_hash: [u8; 32],
 }
 
 impl SP1ProofFixture {
@@ -42,24 +42,21 @@ impl SP1ProofFixture {
 
     /// Retrieves the SP1 commited values digest from the public inputs.
     pub fn commited_values_digest(&self) -> [u8; 32] {
-        self.public_inputs[31..63].try_into().unwrap()
+        hash_public_inputs(&self.sp1_public_inputs)
     }
 
-    /// Retrieves the SP1 vkey hash from the public inputs.
-    ///
-    /// This is the vkey hash of the underlying SP1 program, not the Groth16 vkey hash.
-    pub fn vkey_hash(&self) -> String {
-        // Prepend a 0 to the first 31 bytes of the public inputs.
-        let mut padded_vkey_hash_bytes = vec![0];
-        padded_vkey_hash_bytes.extend_from_slice(&self.public_inputs[0..31]);
-        let vkey_hash_bytes = padded_vkey_hash_bytes.as_slice();
-
-        // Convert the vkey hash bytes to a hex string
-        hex::encode(vkey_hash_bytes)
+    /// Formats public values for the Groth16 verifier.
+    pub fn groth16_public_values(&self) -> Vec<u8> {
+        let committed_values_digest = self.commited_values_digest();
+        [
+            self.sp1_vkey_hash[1..].to_vec(),
+            committed_values_digest.to_vec(),
+        ]
+        .concat()
     }
 }
 
-/// Hashes the public inputs in order to match the groth16 verifier's format
+/// Hashes the public inputs in the same format as the Groth16 verifier.
 pub fn hash_public_inputs(public_inputs: &[u8]) -> [u8; 32] {
     let mut result = Sha256::digest(public_inputs);
 
@@ -83,7 +80,7 @@ pub fn verify_proof_fixture(fixture: &SP1ProofFixture, vk: &[u8]) -> Result<(), 
     }
 
     // Verify the proof.
-    verify_proof_raw(&fixture.proof, &fixture.public_inputs, vk)
+    verify_proof_raw(&fixture.proof, &fixture.groth16_public_values(), vk)
 }
 
 #[cfg(feature = "sp1-serialize")]
@@ -94,11 +91,8 @@ mod sp1_serialize {
 
     use super::SP1ProofFixture;
     /// Convert a SP1ProofWithPublicValues to a SP1ProofFixture.
-    impl SP1ProofFixture {
-        pub fn from_sp1(
-            sp1_proof_with_public_values: SP1ProofWithPublicValues,
-            use_public_values: bool,
-        ) -> Self {
+    impl From<SP1ProofWithPublicValues> for SP1ProofFixture {
+        fn from(sp1_proof_with_public_values: SP1ProofWithPublicValues) -> Self {
             let proof = sp1_proof_with_public_values
                 .proof
                 .try_as_groth_16()
@@ -111,63 +105,57 @@ mod sp1_serialize {
                 .unwrap()
                 .to_bytes_be();
 
-            let committed_values_digest = BigUint::from_str_radix(&proof.public_inputs[1], 10)
-                .unwrap()
-                .to_bytes_be();
-
-            let public_inputs = [vkey_hash.to_vec(), committed_values_digest.to_vec()].concat();
-
-            let raw_public_values = if use_public_values {
-                Some(sp1_proof_with_public_values.public_values.to_vec()) // TODO: get rid of this clone
-            } else {
-                None
-            };
+            // To match the standard format, the 31 byte vkey hash is left padded with a 0 byte.
+            let mut padded_vkey_hash = vec![0];
+            padded_vkey_hash.extend_from_slice(&vkey_hash);
+            let vkey_hash = padded_vkey_hash;
 
             SP1ProofFixture {
                 proof: raw_proof[..256].try_into().unwrap(),
-                public_inputs: public_inputs.try_into().unwrap(),
                 groth16_vkey_hash: proof.groth16_vkey_hash[..4].try_into().unwrap(),
-                sp1_public_inputs: raw_public_values,
+                sp1_public_inputs: sp1_proof_with_public_values.public_values.to_vec(),
+                sp1_vkey_hash: vkey_hash.try_into().unwrap(),
             }
         }
     }
 
     #[cfg(feature = "sp1-serialize")]
     #[test]
-    fn test_public_inputs() {
-        use crate::hash_public_inputs;
-        use std::str::FromStr;
+    fn test_verify_from_sp1() {
+        use crate::{verify_proof_fixture, GROTH16_VK_BYTES};
 
         // Read the serialized SP1ProofWithPublicValues from the file.
         let sp1_proof_with_public_values_file = "../proofs/fibonacci_proof.bin";
         let sp1_proof_with_public_values =
             SP1ProofWithPublicValues::load(&sp1_proof_with_public_values_file).unwrap();
 
-        let groth16_proof = sp1_proof_with_public_values
-            .clone()
+        let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
+
+        assert!(verify_proof_fixture(&fixture, &GROTH16_VK_BYTES).is_ok());
+    }
+
+    #[cfg(feature = "sp1-serialize")]
+    #[test]
+    fn test_hash_public_inputs_() {
+        use crate::hash_public_inputs;
+
+        // Read the serialized SP1ProofWithPublicValues from the file.
+        let sp1_proof_with_public_values_file = "../proofs/fibonacci_proof.bin";
+        let sp1_proof_with_public_values =
+            SP1ProofWithPublicValues::load(&sp1_proof_with_public_values_file).unwrap();
+
+        let proof = sp1_proof_with_public_values
             .proof
             .try_as_groth_16()
-            .unwrap();
+            .expect("Failed to convert proof to Groth16 proof");
 
-        // Convert vkey_hash from base 10 to hex using the hex crate.
-        let vkey_hash = &groth16_proof.public_inputs[0];
-        let vkey_hash_biguint = BigUint::from_str(vkey_hash).unwrap();
-        let mut vkey_hash_bytes = vec![0];
-        vkey_hash_bytes.extend_from_slice(&vkey_hash_biguint.to_bytes_be());
-        let vkey_hash_hex = hex::encode(vkey_hash_bytes);
+        let committed_values_digest = BigUint::from_str_radix(&proof.public_inputs[1], 10)
+            .unwrap()
+            .to_bytes_be();
 
-        // let commited_values_digest: &String = &groth16_proof.public_inputs[1];
-
-        // Convert the SP1ProofWithPublicValues to a SP1ProofFixture.
-        let fixture = SP1ProofFixture::from_sp1(sp1_proof_with_public_values, false);
-
-        // Verify the public inputs.
         assert_eq!(
-            &fixture.commited_values_digest(),
-            &hash_public_inputs(fixture.sp1_public_inputs.as_ref().unwrap())
+            committed_values_digest,
+            hash_public_inputs(&sp1_proof_with_public_values.public_values.to_vec())
         );
-
-        // Verify the vkey hash.
-        assert_eq!(fixture.vkey_hash(), vkey_hash_hex);
     }
 }

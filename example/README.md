@@ -31,9 +31,8 @@ RUST_LOG=info cargo run --release -- --prove
 ## Overview: Solana Program
 
 The code in [`program`](./program) is a simple Solana contract that verifies a 
-`SP1ProofFixture` using the `sp1-solana` crate. It costs roughly 280,000 compute units. 
-
-**TODO**
+`SP1ProofFixture` using the `sp1-solana` crate. It costs roughly 280,000 compute units. It also
+demonstrates how to verify the sp1 program vkey and the public inputs.
 
 ### Running the Solana program
 

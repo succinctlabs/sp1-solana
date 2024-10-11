@@ -3,7 +3,7 @@ name = "sp1-solana"
 version = "0.1.0"
 edition = "2021"
 authors = ["Bhargav Annem, Yuwen Zhang"]
-description = "A Groth16 verifier implementation"
+description = "Verifier for SP1 Groth16proofs on Solana"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/succinctlabs/groth16-solana"
 readme = "README.md"
@@ -19,7 +19,7 @@ ark-bn254 = "0.4.0"
 ark-serialize = "0.4.2"
 ark-ff = "0.4.2"
 # groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
-groth16-solana = { path = "../../groth16-solana-patch" }
+groth16-solana = { git = "https://github.com/yuwen01/groth16-solana-patch", rev = "42ea919b62f90868a4003a9a55a471aae7929a81" }
 thiserror = "1.0.63"
 hex = { version = "0.4.3" }
 

@@ -1126,9 +1126,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.1.28"
+version = "1.1.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e80e3b6a3ab07840e1cae9b0666a63970dc28e8ed5ffbcdacbfc760c281bfc1"
+checksum = "58e804ac3194a48bb129643eb1d62fcc20d18c6b8c181704489353d13120bcd1"
 dependencies = [
  "jobserver",
  "libc",
@@ -2394,27 +2394,13 @@ version = "0.1.0"
 dependencies = [
  "borsh 1.5.1",
  "clap",
- "example-solana-contract",
+ "fibonacci-verifier-contract",
  "solana-program-test",
  "solana-sdk",
  "sp1-build",
  "sp1-sdk",
  "sp1-solana",
  "tokio",
-]
-
-[[package]]
-name = "example-solana-contract"
-version = "0.1.0"
-dependencies = [
- "borsh 1.5.1",
- "hex",
- "hex-literal 0.3.4",
- "num-bigint 0.4.6",
- "num-traits",
- "sha2 0.10.8",
- "solana-program",
- "sp1-solana",
 ]
 
 [[package]]
@@ -2495,6 +2481,20 @@ name = "fiat-crypto"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "28dea519a9695b9977216879a3ebfddf92f1c08c05d984f8996aecd6ecdc811d"
+
+[[package]]
+name = "fibonacci-verifier-contract"
+version = "0.1.0"
+dependencies = [
+ "borsh 1.5.1",
+ "hex",
+ "hex-literal 0.3.4",
+ "num-bigint 0.4.6",
+ "num-traits",
+ "sha2 0.10.8",
+ "solana-program",
+ "sp1-solana",
+]
 
 [[package]]
 name = "filetime"
@@ -2822,7 +2822,8 @@ dependencies = [
 
 [[package]]
 name = "groth16-solana"
-version = "0.0.3"
+version = "0.0.4"
+source = "git+https://github.com/yuwen01/groth16-solana-patch?rev=42ea919b62f90868a4003a9a55a471aae7929a81#42ea919b62f90868a4003a9a55a471aae7929a81"
 dependencies = [
  "ark-bn254",
  "ark-ec",
@@ -5821,9 +5822,9 @@ dependencies = [
 
 [[package]]
 name = "scc"
-version = "2.2.0"
+version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "836f1e0f4963ef5288b539b643b35e043e76a32d0f4e47e67febf69576527f50"
+checksum = "553f8299af7450cda9a52d3a370199904e7a46b5ffd1bef187c4a6af3bb6db69"
 dependencies = [
  "sdd",
 ]
@@ -5873,9 +5874,9 @@ dependencies = [
 
 [[package]]
 name = "sdd"
-version = "3.0.3"
+version = "3.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "60a7b59a5d9b0099720b417b6325d91a52cbf5b3dcb5041d864be53eefa58abc"
+checksum = "49c1eeaf4b6a87c7479688c6d52b9f1153cedd3c489300564f932b065c6eab95"
 
 [[package]]
 name = "sec1"

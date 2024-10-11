@@ -46,8 +46,7 @@ jobs:
       - name: "Update lock files"
         run: |
           cargo tree
-          (cd ./example/program && cargo tree)
-          (cd ./example/script && cargo tree)
+          (cd ./example/sp1-program && cargo tree)
 
       - name: "Assert no changes"
         run: |

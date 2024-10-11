@@ -8,7 +8,7 @@ publish = false
 [dependencies]
 borsh.workspace = true
 sp1-solana = { workspace = true, features = ["sp1-serialize"] }
-example-solana-contract = { workspace = true }
+fibonacci-verifier-contract = { workspace = true }
 solana-program-test = { workspace = true }
 solana-sdk = { workspace = true }
 tokio = { workspace = true }

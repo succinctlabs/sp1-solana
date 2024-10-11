@@ -7,7 +7,7 @@ resolver = "2"
 
 # workspace
 sp1-solana = { path = "verifier" }
-example-solana-contract = { path = "example/program" }
+fibonacci-verifier-contract = { path = "example/program" }
 
 # solana
 solana-program = { git = "https://github.com/anza-xyz/agave", rev = "6e62af0f0de6a40e4e22628cbbcf63b1a6da560e" }
