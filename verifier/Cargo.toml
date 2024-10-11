@@ -3,10 +3,10 @@ name = "sp1-solana"
 version = "0.1.0"
 edition = "2021"
 authors = ["Bhargav Annem, Yuwen Zhang"]
-description = "Verifier for SP1 Groth16proofs on Solana"
+description = "Verifier for SP1 Groth16 proofs on Solana"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/succinctlabs/groth16-solana"
-readme = "README.md"
+readme = "../README.md"
 keywords = ["cryptography", "zero-knowledge", "groth16", "verifier"]
 categories = ["cryptography"]
 

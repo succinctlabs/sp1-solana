@@ -4,17 +4,22 @@ This example demonstrates how to use the `sp1-solana` crate to verify a proof ge
 
 ## Overview: Script
 
-This script will load an SP1 [`SP1ProofWithPublicValues`](https://docs.rs/sp1-sdk/2.0.0/sp1_sdk/proof/struct.SP1ProofWithPublicValues.html)
-from the pre-generated proof [`fibonacci_proof.bin`](./proofs/fibonacci_proof.bin). This is a SP1 Groth16 proof that
-proves that the 20th fibonacci number is 6765.
+1. Load an SP1 [`SP1ProofWithPublicValues`](https://docs.rs/sp1-sdk/2.0.0/sp1_sdk/proof/struct.SP1ProofWithPublicValues.html)
+from the pre-generated proof [`fibonacci_proof.bin`](../proofs/fibonacci_proof.bin). This is a SP1 Groth16 proof that
+proves that the 20th fibonacci number is 6765. Optionally, this proof can be freshly generated from
+the [`sp1-program`](../sp1-program).
 
-The loaded `SP1ProofWithPublicValues` will be serialized into a `SP1ProofFixture`, and written to
-[`proof-fixtures/fibonacci_fixture.bin`](./proof-fixtures/fibonacci_fixture.bin). The `SP1ProofFixture`
-can easily be borsh serialized and deserialized, and can be verified on chain.
+2. Serialize the `SP1ProofWithPublicValues` into a `SP1ProofFixture`, which is then written to
+[`proof-fixtures/fibonacci_fixture.bin`](../proof-fixtures/fibonacci_fixture.bin). 
+
+3. Using the [`solana-program-test`](https://docs.rs/solana-program-test/latest/solana_program_test/) crate, send the `SP1ProofFixture` to the 
+[`fibonacci-verifier-contract`](./program). This example smart contract will verify the proof using the `sp1-solana` crate,
+verify that the provided program vkey is correct, and print out the public inputs.
+
 
 ### Running the script
 
-To load the pregenerated proof and verify it, run the following commands. 
+To load the pregenerated proof, serialize it to a fixture, and verify it on chain, run the following commands. 
 
 ```shell
 cd script
@@ -26,29 +31,4 @@ To generate a fresh proof from the program in `sp1-program`, run the following c
 ```shell
 cd script
 RUST_LOG=info cargo run --release -- --prove
-```
-
-## Overview: Solana Program
-
-The code in [`program`](./program) is a simple Solana contract that verifies a 
-`SP1ProofFixture` using the `sp1-solana` crate. It costs roughly 280,000 compute units. It also
-demonstrates how to verify the sp1 program vkey and the public inputs.
-
-### Running the Solana program
-
-Running the Solana program and tests requires the following
-
-* [PNPM](https://pnpm.io/installation)
-* [yarn](https://yarnpkg.com/getting-started/install)
-* [Solana CLI](https://docs.solana.com/cli/install-solana-cli)
-  * Make sure to install the edge version. Run the following: 
-  ```shell
-  sh -c "$(curl -sSfL https://release.anza.xyz/edge/install)"
-  ```
-* [Rust](https://www.rust-lang.org/tools/install)
-
-```shell
-cd solana
-pnpm install
-yarn build-and-test
 ```
