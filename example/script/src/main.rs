@@ -1,4 +1,11 @@
 use clap::Parser;
+use solana_program_test::{processor, ProgramTest};
+use solana_sdk::{
+    instruction::{AccountMeta, Instruction},
+    pubkey::Pubkey,
+    signer::Signer,
+    transaction::Transaction,
+};
 use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
 use sp1_solana::{verify_proof_fixture, SP1ProofFixture, GROTH16_VK_BYTES};
 
@@ -16,7 +23,8 @@ struct Cli {
 
 const ELF: &[u8] = include_bytes!("../../sp1-program/elf/riscv32im-succinct-zkvm-elf");
 
-fn main() {
+#[tokio::main]
+async fn main() {
     // Setup logging for the application.
     utils::setup_logger();
 
@@ -52,6 +60,28 @@ fn main() {
     let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
     let fixture_file = "../../proof-fixtures/fibonacci_fixture.bin";
     fixture.save(&fixture_file).unwrap();
+
+    // Create program test environment
+    let program_id = Pubkey::new_unique();
+    let (banks_client, payer, recent_blockhash) = ProgramTest::new(
+        "example-solana-contract",
+        program_id,
+        processor!(example_solana_contract::process_instruction),
+    )
+    .start()
+    .await;
+
+    // Create your instruction
+    let instruction = Instruction::new_with_borsh(
+        program_id,
+        &fixture,
+        vec![AccountMeta::new(payer.pubkey(), false)],
+    );
+
+    // Create and send transaction
+    let mut transaction = Transaction::new_with_payer(&[instruction], Some(&payer.pubkey()));
+    transaction.sign(&[&payer], recent_blockhash);
+    banks_client.process_transaction(transaction).await.unwrap();
 
     // Verify the proof.
     verify_proof_fixture(&fixture, GROTH16_VK_BYTES).expect("Proof verification failed");

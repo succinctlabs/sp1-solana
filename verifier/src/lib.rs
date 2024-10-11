@@ -1,7 +1,7 @@
 use ark_bn254::{Fq, G1Affine};
 use ark_ff::PrimeField;
 use ark_serialize::CanonicalSerialize;
-use borsh::{BorshDeserialize, BorshSerialize};
+use borsh::BorshSerialize;
 use groth16_solana::groth16::Groth16Verifyingkey;
 use thiserror::Error;
 
