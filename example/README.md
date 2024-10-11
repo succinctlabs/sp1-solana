@@ -10,12 +10,53 @@ proves that the 20th fibonacci number is 6765. Optionally, this proof can be fre
 the [`sp1-program`](../sp1-program).
 
 2. Serialize the `SP1ProofWithPublicValues` into a `SP1ProofFixture`, which is then written to
-[`proof-fixtures/fibonacci_fixture.bin`](../proof-fixtures/fibonacci_fixture.bin). 
+[`proof-fixtures/fibonacci_fixture.bin`](../proof-fixtures/fibonacci_fixture.bin). Here is a snippet 
+from [`script/src/main.rs`](script/src/main.rs) that demonstrates this serialization.
 
-3. Using the [`solana-program-test`](https://docs.rs/solana-program-test/latest/solana_program_test/) crate, send the `SP1ProofFixture` to the 
-[`fibonacci-verifier-contract`](./program). This example smart contract will verify the proof using the `sp1-solana` crate,
-verify that the provided program vkey is correct, and print out the public inputs.
+```rust
+// Load the proof from the file, and convert it to a fixture.
+let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
+let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
+```
 
+3. Using the [`solana-program-test`](https://docs.rs/solana-program-test/latest/solana_program_test/) framework, send the `SP1ProofFixture` to the 
+[`fibonacci-verifier-contract`](./program). This smart contract will verify the proof using the `sp1-solana` crate,
+verify that the provided program vkey is correct, and print out the public inputs. Here is a snippet that demonstrates
+how to do some common operations on the SP1 proof fixture.
+
+```rust
+// Derived by running `cargo prove vkey --elf ../../sp1-program/elf/riscv32im-succinct-zkvm-elf`.
+const FIBONACCI_VKEY_HASH: &str =
+    "0083e8e370d7f0d1c463337f76c9a60b62ad7cc54c89329107c92c1e62097872";
+
+pub fn process_instruction(
+    _program_id: &Pubkey,
+    _accounts: &[AccountInfo],
+    instruction_data: &[u8],
+) -> ProgramResult {
+    // Deserialize the fixture from the instruction data.
+    let fixture = SP1ProofFixture::try_from_slice(instruction_data).unwrap();
+
+    // Get the SP1 Groth16 verification key from the `groth16-solana` crate.
+    let vk = sp1_solana::GROTH16_VK_BYTES;
+
+    // Verify the proof.
+    let result = verify_proof_fixture(&fixture, &vk);
+    assert!(result.is_ok());
+
+    // Make sure that we're verifying a fibonacci program.
+    assert_eq!(FIBONACCI_VKEY_HASH, hex::encode(fixture.sp1_vkey_hash));
+
+    // Print out the public values.
+    let mut reader = fixture.sp1_public_inputs.as_slice();
+    let n = u32::deserialize(&mut reader).unwrap();
+    let a = u32::deserialize(&mut reader).unwrap();
+    let b = u32::deserialize(&mut reader).unwrap();
+    msg!("Public values: (n: {}, a: {}, b: {})", n, a, b);
+
+    Ok(())
+}
+```
 
 ### Running the script
 
