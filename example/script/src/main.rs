@@ -6,7 +6,7 @@ use solana_sdk::{
     signer::Signer,
     transaction::Transaction,
 };
-use sp1_sdk::{utils, HashableKey, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
+use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
 use sp1_solana::SP1ProofFixture;
 
 #[derive(clap::Parser)]
@@ -23,7 +23,7 @@ struct Cli {
 
 const ELF: &[u8] = include_bytes!("../../sp1-program/elf/riscv32im-succinct-zkvm-elf");
 
-async fn run_example_instruction(fixture: SP1ProofFixture) {
+async fn run_verify_instruction(fixture: SP1ProofFixture) {
     let program_id = Pubkey::new_unique();
 
     // Create program test environment
@@ -62,11 +62,9 @@ async fn main() {
     if args.prove {
         // Initialize the prover client
         let client = ProverClient::new();
-        let (pk, vk) = client.setup(ELF);
+        let (pk, _vk) = client.setup(ELF);
 
-        println!("vkey hash: {:?}", vk.bytes32());
-
-        // Compute the 20th fibonacci number.
+        // In our SP1 program, compute the 20th fibonacci number.
         let mut stdin = SP1Stdin::new();
         stdin.write(&20u32);
 
@@ -87,7 +85,8 @@ async fn main() {
     let fixture_file = "../../proof-fixtures/fibonacci_fixture.bin";
     fixture.save(&fixture_file).unwrap();
 
-    run_example_instruction(fixture).await;
+    // Run the example instruction in a test environment
+    run_verify_instruction(fixture).await;
 }
 
 #[cfg(test)]
@@ -99,7 +98,7 @@ mod tests {
         let fixture_file = "../../proof-fixtures/fibonacci_fixture.bin";
         let fixture = SP1ProofFixture::load(&fixture_file).unwrap();
 
-        run_example_instruction(fixture).await;
+        run_verify_instruction(fixture).await;
     }
 
     #[tokio::test]
@@ -108,6 +107,6 @@ mod tests {
         let fixture_file = "../../proof-fixtures/fibonacci_fixture_bad.bin";
         let fixture = SP1ProofFixture::load(&fixture_file).unwrap();
 
-        run_example_instruction(fixture).await;
+        run_verify_instruction(fixture).await;
     }
 }

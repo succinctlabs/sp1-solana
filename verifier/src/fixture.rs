@@ -100,7 +100,7 @@ mod sp1_serialize {
 
             let raw_proof = hex::decode(proof.raw_proof).unwrap();
 
-            // Convert public inputs and vkey hash to bytes.
+            // Convert vkey hash to bytes.
             let vkey_hash = BigUint::from_str_radix(&proof.public_inputs[0], 10)
                 .unwrap()
                 .to_bytes_be();
@@ -129,6 +129,7 @@ mod sp1_serialize {
         let sp1_proof_with_public_values =
             SP1ProofWithPublicValues::load(&sp1_proof_with_public_values_file).unwrap();
 
+        // Convert to a fixture.
         let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
 
         assert!(verify_proof_fixture(&fixture, &GROTH16_VK_BYTES).is_ok());

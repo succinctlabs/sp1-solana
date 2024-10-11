@@ -8,7 +8,7 @@ use solana_program::entrypoint;
 #[cfg(not(feature = "no-entrypoint"))]
 entrypoint!(process_instruction);
 
-// Derived by running `cargo prove vkey --elf ../../sp1-program/elf/riscv32im-succinct-zkvm-elf`
+// Derived by running `cargo prove vkey --elf ../../sp1-program/elf/riscv32im-succinct-zkvm-elf`.
 const FIBONACCI_VKEY_HASH: &str =
     "0083e8e370d7f0d1c463337f76c9a60b62ad7cc54c89329107c92c1e62097872";
 
