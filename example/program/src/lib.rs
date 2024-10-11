@@ -1,5 +1,5 @@
 use borsh::BorshDeserialize;
-use solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, pubkey::Pubkey};
+use solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, msg, pubkey::Pubkey};
 use sp1_solana::{hash_public_inputs, verify_proof_fixture, SP1ProofFixture};
 
 #[cfg(not(feature = "no-entrypoint"))]
@@ -31,9 +31,19 @@ pub fn process_instruction(
     // Make sure that we're verifying a fibonacci program.
     assert_eq!(&fixture.vkey_hash(), FIBONACCI_VKEY_HASH);
 
+    // Verify that the provided public inputs match the proof fixture's committed values digest.
     if let Some(sp1_public_inputs) = &fixture.sp1_public_inputs {
         let digest = hash_public_inputs(sp1_public_inputs);
         assert_eq!(digest, fixture.commited_values_digest());
+    }
+
+    // Print out the public values.
+    if let Some(sp1_public_inputs) = &fixture.sp1_public_inputs {
+        let mut reader = sp1_public_inputs.as_slice();
+        let n = u32::deserialize(&mut reader).unwrap();
+        let a = u32::deserialize(&mut reader).unwrap();
+        let b = u32::deserialize(&mut reader).unwrap();
+        msg!("Public values: (n: {}, a: {}, b: {})", n, a, b);
     }
 
     Ok(())
