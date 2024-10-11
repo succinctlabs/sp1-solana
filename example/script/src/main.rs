@@ -7,7 +7,7 @@ use solana_sdk::{
     transaction::Transaction,
 };
 use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
-use sp1_solana::{verify_proof_fixture, SP1ProofFixture, GROTH16_VK_BYTES};
+use sp1_solana::SP1ProofFixture;
 
 #[derive(clap::Parser)]
 #[command(name = "zkVM Proof Generator")]
@@ -22,6 +22,30 @@ struct Cli {
 }
 
 const ELF: &[u8] = include_bytes!("../../sp1-program/elf/riscv32im-succinct-zkvm-elf");
+
+async fn run_example_instruction(fixture: SP1ProofFixture) {
+    let program_id = Pubkey::new_unique();
+
+    // Create program test environment
+    let (banks_client, payer, recent_blockhash) = ProgramTest::new(
+        "example-solana-contract",
+        program_id,
+        processor!(example_solana_contract::process_instruction),
+    )
+    .start()
+    .await;
+
+    let instruction = Instruction::new_with_borsh(
+        program_id,
+        &fixture,
+        vec![AccountMeta::new(payer.pubkey(), false)],
+    );
+
+    // Create and send transaction
+    let mut transaction = Transaction::new_with_payer(&[instruction], Some(&payer.pubkey()));
+    transaction.sign(&[&payer], recent_blockhash);
+    banks_client.process_transaction(transaction).await.unwrap();
+}
 
 #[tokio::main]
 async fn main() {
@@ -61,29 +85,27 @@ async fn main() {
     let fixture_file = "../../proof-fixtures/fibonacci_fixture.bin";
     fixture.save(&fixture_file).unwrap();
 
-    // Create program test environment
-    let program_id = Pubkey::new_unique();
-    let (banks_client, payer, recent_blockhash) = ProgramTest::new(
-        "example-solana-contract",
-        program_id,
-        processor!(example_solana_contract::process_instruction),
-    )
-    .start()
-    .await;
+    run_example_instruction(fixture).await;
+}
 
-    // Create your instruction
-    let instruction = Instruction::new_with_borsh(
-        program_id,
-        &fixture,
-        vec![AccountMeta::new(payer.pubkey(), false)],
-    );
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    // Create and send transaction
-    let mut transaction = Transaction::new_with_payer(&[instruction], Some(&payer.pubkey()));
-    transaction.sign(&[&payer], recent_blockhash);
-    banks_client.process_transaction(transaction).await.unwrap();
+    #[tokio::test]
+    async fn test_honest_proof_succeeds() {
+        let fixture_file = "../../proof-fixtures/fibonacci_fixture.bin";
+        let fixture = SP1ProofFixture::load(&fixture_file).unwrap();
 
-    // Verify the proof.
-    verify_proof_fixture(&fixture, GROTH16_VK_BYTES).expect("Proof verification failed");
-    println!("Successfully verified proof for the program!")
+        run_example_instruction(fixture).await;
+    }
+
+    #[tokio::test]
+    #[should_panic]
+    async fn test_malicious_proof_fails() {
+        let fixture_file = "../../proof-fixtures/fibonacci_fixture_bad.bin";
+        let fixture = SP1ProofFixture::load(&fixture_file).unwrap();
+
+        run_example_instruction(fixture).await;
+    }
 }

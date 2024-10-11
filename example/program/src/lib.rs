@@ -22,5 +22,6 @@ pub fn process_instruction(
     // Verify the proof.
     let result = verify_proof_fixture(&fixture, &vk);
     msg!("Result: {:?}", result);
+    assert!(result.is_ok());
     Ok(())
 }
