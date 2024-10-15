@@ -113,6 +113,15 @@ cd script
 RUST_LOG=info cargo run --release -- --prove
 ```
 
+### Deploying the Example Solana Program to Devnet
+
+```shell
+cd example/program
+cargo build-sbf --sbf-out-dir ./target
+solana config set -ud
+solana program deploy --program-id target/fibonacci_verifier_contract-keypair.json target/fibonacci_verifier_contract.so
+```
+
 ## Installation
 
 Add `sp1-solana` to your `Cargo.toml`:
