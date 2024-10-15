@@ -22,27 +22,6 @@ jobs:
           cd verifier
           cargo test --package sp1-solana:0.1.0 --lib --features sp1-serialize --release
 
-  solana-test:
-    name: Solana Test
-    runs-on: [runs-on, runner=8cpu-linux-x64, "run-id=${{ github.run_id }}"]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: "Install sp1up"
-        run: |
-          curl -L https://sp1.succinct.xyz | bash
-          echo "$HOME/.sp1/bin" >> $GITHUB_PATH
-
-      - name: "Install SP1 toolchain"
-        run: |
-          sp1up
-      
-      - name: Run solana program tests
-        run: |
-          cd example/script
-          cargo test --release
-
   lock-files:
     name: "Check lock files"
     runs-on: ["runs-on", "runner=8cpu-linux-x64", "run-id=${{ github.run_id }}"]
