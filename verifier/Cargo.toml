@@ -21,12 +21,7 @@ ark-ff = "0.4.2"
 # groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
 groth16-solana = { git = "https://github.com/yuwen01/groth16-solana-patch", rev = "42ea919b62f90868a4003a9a55a471aae7929a81" }
 thiserror = "1.0.63"
-hex = { version = "0.4.3" }
 
-# Optional dependencies for SP1 serialization
-sp1-sdk = { version = "2.0.0", default-features = false, optional = true }
-num-traits = { version = "0.2.19", optional = true }
-
-[features]
-default = []
-sp1-serialize = ["dep:sp1-sdk", "dep:num-traits"]
+[dev-dependencies]
+sp1-sdk = { version = "2.0.0", default-features = false}
+num-traits = { version = "0.2.19" }

@@ -8,8 +8,7 @@ use thiserror::Error;
 
 pub const GROTH16_VK_BYTES: &[u8] = include_bytes!("../vk/groth16_vk.bin");
 
-#[cfg(feature = "sp1-serialize")]
-pub mod extract;
+mod test;
 
 #[derive(Error, Debug)]
 pub enum Error {

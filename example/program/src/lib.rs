@@ -12,8 +12,8 @@ use solana_program::entrypoint;
 entrypoint!(process_instruction);
 
 // Derived by `vk.bytes32()` on the program's vkey.
-const FIBONACCI_VKEY_HASH: &str =
-    "0083e8e370d7f0d1c463337f76c9a60b62ad7cc54c89329107c92c1e62097872";
+const FIBONACCI_VKEY_HASH: [u8; 32] =
+    hex_literal::hex!("0083e8e370d7f0d1c463337f76c9a60b62ad7cc54c89329107c92c1e62097872");
 
 /// The instruction data for the program.
 #[derive(BorshDeserialize, BorshSerialize)]
@@ -34,13 +34,11 @@ pub fn process_instruction(
     // Get the SP1 Groth16 verification key from the `groth16-solana` crate.
     let vk = sp1_solana::GROTH16_VK_BYTES;
 
-    let program_vkey_bytes = hex::decode(FIBONACCI_VKEY_HASH).unwrap();
-
     // Verify the proof.
     verify_proof(
         &groth16_proof.proof,
         &groth16_proof.sp1_public_inputs,
-        &program_vkey_bytes[..32].try_into().unwrap(),
+        &FIBONACCI_VKEY_HASH,
         &vk,
     )
     .map_err(|_| ProgramError::InvalidInstructionData)?;

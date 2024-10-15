@@ -2,15 +2,17 @@ use num_bigint::BigUint;
 use num_traits::Num;
 use sp1_sdk::SP1ProofWithPublicValues;
 
-/// Formats the following from SP1ProofWithPublicValues:
-/// - Groth16 proof
-/// - SP1 public inputs
-/// - SP1 vkey hash
-pub fn extract_groth16_components(
-    sp1_proof_with_public_values: SP1ProofWithPublicValues,
-) -> (Vec<u8>, Vec<u8>, [u8; 32]) {
-    // Solana Groth16 proofs are encoded the same way as Ethereum Groth16 proofs.
+#[test]
+fn test_verify_from_sp1() {
+    use crate::{verify_proof, GROTH16_VK_BYTES};
+
+    // Read the serialized SP1ProofWithPublicValues from the file.
+    let sp1_proof_with_public_values_file = "../proofs/fibonacci_proof.bin";
+    let sp1_proof_with_public_values =
+        SP1ProofWithPublicValues::load(&sp1_proof_with_public_values_file).unwrap();
+
     let proof_bytes = sp1_proof_with_public_values.bytes();
+    let sp1_public_inputs = sp1_proof_with_public_values.public_values.to_vec();
 
     let proof = sp1_proof_with_public_values
         .proof
@@ -27,30 +29,10 @@ pub fn extract_groth16_components(
     padded_vkey_hash.extend_from_slice(&vkey_hash);
     let vkey_hash = padded_vkey_hash;
 
-    (
-        proof_bytes,
-        sp1_proof_with_public_values.public_values.to_vec(),
-        vkey_hash[..32].try_into().unwrap(),
-    )
-}
-
-#[test]
-fn test_verify_from_sp1() {
-    use crate::{verify_proof, GROTH16_VK_BYTES};
-
-    // Read the serialized SP1ProofWithPublicValues from the file.
-    let sp1_proof_with_public_values_file = "../proofs/fibonacci_proof.bin";
-    let sp1_proof_with_public_values =
-        SP1ProofWithPublicValues::load(&sp1_proof_with_public_values_file).unwrap();
-
-    // Convert to a groth16_proof.
-    let (groth16_proof, sp1_public_inputs, sp1_vkey_hash) =
-        extract_groth16_components(sp1_proof_with_public_values);
-
     assert!(verify_proof(
-        &groth16_proof,
+        &proof_bytes,
         &sp1_public_inputs,
-        &sp1_vkey_hash,
+        &vkey_hash[..32].try_into().unwrap(),
         &GROTH16_VK_BYTES
     )
     .is_ok());
