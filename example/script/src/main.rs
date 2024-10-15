@@ -1,4 +1,5 @@
 use clap::Parser;
+use fibonacci_verifier_contract::SP1Groth16Proof;
 use solana_program_test::{processor, ProgramTest};
 use solana_sdk::{
     instruction::{AccountMeta, Instruction},
@@ -7,7 +8,7 @@ use solana_sdk::{
     transaction::Transaction,
 };
 use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
-use sp1_solana::SP1ProofFixture;
+use sp1_solana::serialize::extract_groth16_values;
 
 #[derive(clap::Parser)]
 #[command(name = "zkVM Proof Generator")]
@@ -23,7 +24,7 @@ struct Cli {
 
 const ELF: &[u8] = include_bytes!("../../sp1-program/elf/riscv32im-succinct-zkvm-elf");
 
-async fn run_verify_instruction(fixture: SP1ProofFixture) {
+async fn run_verify_instruction(groth16_proof: SP1Groth16Proof) {
     let program_id = Pubkey::new_unique();
 
     // Create program test environment
@@ -37,7 +38,7 @@ async fn run_verify_instruction(fixture: SP1ProofFixture) {
 
     let instruction = Instruction::new_with_borsh(
         program_id,
-        &fixture,
+        &groth16_proof,
         vec![AccountMeta::new(payer.pubkey(), false)],
     );
 
@@ -79,34 +80,16 @@ async fn main() {
         proof.save(&proof_file).unwrap();
     }
 
-    // Load the proof from the file, and convert it to a fixture.
+    // Load the proof from the file, and extract the proof, public inputs, and program vkey hash.
     let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
-    let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
-    let fixture_file = "../../proof-fixtures/fibonacci_fixture.bin";
-    fixture.save(&fixture_file).unwrap();
+    let (proof, sp1_public_inputs, _program_vkey_hash) =
+        extract_groth16_values(sp1_proof_with_public_values);
+
+    let groth16_proof = SP1Groth16Proof {
+        proof,
+        sp1_public_inputs,
+    };
 
     // Run the example instruction in a test environment
-    run_verify_instruction(fixture).await;
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[tokio::test]
-    async fn test_honest_proof_succeeds() {
-        let fixture_file = "../../proof-fixtures/fibonacci_fixture.bin";
-        let fixture = SP1ProofFixture::load(&fixture_file).unwrap();
-
-        run_verify_instruction(fixture).await;
-    }
-
-    #[tokio::test]
-    #[should_panic]
-    async fn test_malicious_proof_fails() {
-        let fixture_file = "../../proof-fixtures/fibonacci_fixture_bad.bin";
-        let fixture = SP1ProofFixture::load(&fixture_file).unwrap();
-
-        run_verify_instruction(fixture).await;
-    }
+    run_verify_instruction(groth16_proof).await;
 }

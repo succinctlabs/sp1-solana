@@ -9,20 +9,19 @@ from the pre-generated proof [`fibonacci_proof.bin`](../proofs/fibonacci_proof.b
 proves that the 20th fibonacci number is 6765. Optionally, this proof can be freshly generated from
 the [`sp1-program`](../sp1-program).
 
-2. Serialize the `SP1ProofWithPublicValues` into a `SP1ProofFixture`, which is then written to
-[`proof-fixtures/fibonacci_fixture.bin`](../proof-fixtures/fibonacci_fixture.bin). Here is a snippet 
-from [`script/src/main.rs`](script/src/main.rs) that demonstrates this serialization.
+2. Convert the `SP1ProofWithPublicValues` into a `SP1Groth16Proof`. The `SP1Groth16Proof` struct is Borsh-serializable,
+and is ready for use on chain. Here is a snippet that demonstrates this conversion.
 
 ```rust
-// Load the proof from the file, and convert it to a fixture.
+// Load the proof from the file, and convert it to a [`SP1Groth16Proof`].
 let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
-let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
+let groth16_proof = SP1Groth16Proof::from(sp1_proof_with_public_values);
 ```
 
-3. Using the [`solana-program-test`](https://docs.rs/solana-program-test/latest/solana_program_test/) framework, send the `SP1ProofFixture` to the 
+3. Using the [`solana-program-test`](https://docs.rs/solana-program-test/latest/solana_program_test/) framework, send the `SP1Groth16Proof` to the 
 [`fibonacci-verifier-contract`](./program). This smart contract will verify the proof using the `sp1-solana` crate,
 verify that the provided program vkey is correct, and print out the public inputs. Here is a snippet that demonstrates
-how to do some common operations on the SP1 proof fixture.
+how to do some common operations on the SP1 Groth16 proof.
 
 ```rust
 // Derived by running `cargo prove vkey --elf ../../sp1-program/elf/riscv32im-succinct-zkvm-elf`.
@@ -34,21 +33,21 @@ pub fn process_instruction(
     _accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    // Deserialize the fixture from the instruction data.
-    let fixture = SP1ProofFixture::try_from_slice(instruction_data).unwrap();
+    // Deserialize the groth16_proof from the instruction data.
+    let groth16_proof = SP1Groth16Proof::try_from_slice(instruction_data).unwrap();
 
     // Get the SP1 Groth16 verification key from the `groth16-solana` crate.
     let vk = sp1_solana::GROTH16_VK_BYTES;
 
     // Verify the proof.
-    let result = verify_proof_fixture(&fixture, &vk);
+    let result = verify_sp1_groth16_proof(&groth16_proof, &vk);
     assert!(result.is_ok());
 
     // Make sure that we're verifying a fibonacci program.
-    assert_eq!(FIBONACCI_VKEY_HASH, hex::encode(fixture.sp1_vkey_hash));
+    assert_eq!(FIBONACCI_VKEY_HASH, hex::encode(groth16_proof.sp1_vkey_hash));
 
     // Print out the public values.
-    let mut reader = fixture.sp1_public_inputs.as_slice();
+    let mut reader = groth16_proof.sp1_public_inputs.as_slice();
     let n = u32::deserialize(&mut reader).unwrap();
     let a = u32::deserialize(&mut reader).unwrap();
     let b = u32::deserialize(&mut reader).unwrap();
@@ -60,7 +59,7 @@ pub fn process_instruction(
 
 ### Running the script
 
-To load the pregenerated proof, serialize it to a fixture, and verify it on chain, run the following commands. 
+To load the pregenerated proof, convert it to a [`SP1Groth16Proof`], and verify it on chain, run the following commands. 
 
 ```shell
 cd script
