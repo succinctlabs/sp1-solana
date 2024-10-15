@@ -8,6 +8,7 @@ use thiserror::Error;
 
 pub const GROTH16_VK_BYTES: &[u8] = include_bytes!("../vk/groth16_vk.bin");
 
+#[cfg(test)]
 mod test;
 
 #[derive(Error, Debug)]

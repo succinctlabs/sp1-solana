@@ -20,7 +20,7 @@ jobs:
       - name: Run tests
         run: |
           cd verifier
-          cargo test --package sp1-solana:0.1.0 --lib --features sp1-serialize --release
+          cargo test --package sp1-solana --lib -- test --show-output 
 
   lock-files:
     name: "Check lock files"

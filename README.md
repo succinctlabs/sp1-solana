@@ -46,15 +46,16 @@ pub struct SP1Groth16Proof {
 
 ...
 
-let (proof, sp1_public_inputs, _program_vkey_hash) =
-    extract_groth16_components(sp1_proof_with_public_values);
+// Load the proof from the file, and extract the proof, public inputs, and program vkey hash.
+let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
 
 let groth16_proof = SP1Groth16Proof {
-    proof,
-    sp1_public_inputs,
+    proof: sp1_proof_with_public_values.bytes(),
+    sp1_public_inputs: sp1_proof_with_public_values.public_values.to_vec(),
 };
 
-/// Now we can send the Borsh serialized `SP1Groth16Proof` to the solana contract.
+// Send the proof to the contract, and verify it on `solana-program-test`.
+run_verify_instruction(groth16_proof).await;
 ```
 
 3. Using the [`solana-program-test`](https://docs.rs/solana-program-test/latest/solana_program_test/) framework, send the `SP1Groth16Proof` to the 
@@ -63,7 +64,7 @@ crate against the fibonacci sp1 program vkey and print out the public inputs. He
 how to do some common operations on the SP1 Groth16 proof.
 
 ```rust
-// Derived by `vk.bytes32()` on the program's vkey.
+// Derived by running `vk.bytes32()` on the program's vkey.
 const FIBONACCI_VKEY_HASH: &str =
     "0083e8e370d7f0d1c463337f76c9a60b62ad7cc54c89329107c92c1e62097872";
 
@@ -98,8 +99,7 @@ pub fn process_instruction(
 
 ### Running the script
 
-To load the pregenerated proof, convert it to a [`SP1Groth16Proof`], and verify it on in 
-`solana-program-test`, run the following commands. 
+To load the pregenerated proof and verify it on `solana-program-test`, run the following commands. 
 
 ```shell
 cd script
@@ -116,7 +116,7 @@ RUST_LOG=info cargo run --release -- --prove
 ### Deploying the Example Solana Program to Devnet
 
 Run the following commands to build and deploy the example solana program to devnet. These commands
-assume you've already created a Solana keypair locally, and you have the edge solana CLI tools.
+assume you've already created a Solana keypair locally, and you have the edge solana CLI tools [^1].
 Request [devnet sol](https://faucet.solana.com/) as necessary. 
 
 ```shell
@@ -137,3 +137,8 @@ sp1-solana = { git = "https://github.com/succinctlabs/groth16-solana" }
 
 ## Acknowledgements
 This crate uses the [`groth16-solana`](https://github.com/Lightprotocol/groth16-solana/) crate from Light Protocol Labs for the Groth16 proof verification, and the [`ark-bn254`](https://github.com/arkworks-rs/algebra) crate for the elliptic curve operations.
+
+[^1]: Run this command to install the edge solana CLI.
+```shell
+sh -c "$(curl -sSfL https://release.anza.xyz/edge/install)"
+```

@@ -52,7 +52,7 @@ async fn main() {
     // Setup logging for the application.
     utils::setup_logger();
 
-    // Where to save / load the proof from.
+    // Where to save / load the sp1 proof from.
     let proof_file = "../../proofs/fibonacci_proof.bin";
 
     // Parse command line arguments.
@@ -79,14 +79,13 @@ async fn main() {
         proof.save(&proof_file).unwrap();
     }
 
-    // Load the proof from the file, and extract the proof, public inputs, and program vkey hash.
+    // Load the proof from the file, and convert it to a Borsh-serializable `SP1Groth16Proof`.
     let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
-
     let groth16_proof = SP1Groth16Proof {
         proof: sp1_proof_with_public_values.bytes(),
         sp1_public_inputs: sp1_proof_with_public_values.public_values.to_vec(),
     };
 
-    // Run the example instruction in a test environment
+    // Send the proof to the contract, and verify it on `solana-program-test`.
     run_verify_instruction(groth16_proof).await;
 }
