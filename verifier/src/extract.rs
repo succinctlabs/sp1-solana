@@ -2,11 +2,11 @@ use num_bigint::BigUint;
 use num_traits::Num;
 use sp1_sdk::SP1ProofWithPublicValues;
 
-/// Extracts the following from SP1ProofWithPublicValues:
+/// Formats the following from SP1ProofWithPublicValues:
 /// - Groth16 proof
 /// - SP1 public inputs
 /// - SP1 vkey hash
-pub fn extract_groth16_values(
+pub fn extract_groth16_components(
     sp1_proof_with_public_values: SP1ProofWithPublicValues,
 ) -> (Vec<u8>, Vec<u8>, [u8; 32]) {
     // Solana Groth16 proofs are encoded the same way as Ethereum Groth16 proofs.
@@ -45,7 +45,7 @@ fn test_verify_from_sp1() {
 
     // Convert to a groth16_proof.
     let (groth16_proof, sp1_public_inputs, sp1_vkey_hash) =
-        extract_groth16_values(sp1_proof_with_public_values);
+        extract_groth16_components(sp1_proof_with_public_values);
 
     assert!(verify_proof(
         &groth16_proof,

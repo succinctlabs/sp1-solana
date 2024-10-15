@@ -8,7 +8,7 @@ use solana_sdk::{
     transaction::Transaction,
 };
 use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
-use sp1_solana::serialize::extract_groth16_values;
+use sp1_solana::extract::extract_groth16_components;
 
 #[derive(clap::Parser)]
 #[command(name = "zkVM Proof Generator")]
@@ -82,8 +82,8 @@ async fn main() {
 
     // Load the proof from the file, and extract the proof, public inputs, and program vkey hash.
     let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
-    let (proof, sp1_public_inputs, _program_vkey_hash) =
-        extract_groth16_values(sp1_proof_with_public_values);
+    let (proof, sp1_public_inputs, _sp1_vkey_hash) =
+        extract_groth16_components(sp1_proof_with_public_values);
 
     let groth16_proof = SP1Groth16Proof {
         proof,
