@@ -563,9 +563,9 @@ dependencies = [
 
 [[package]]
 name = "async-compression"
-version = "0.4.14"
+version = "0.4.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "998282f8f49ccd6116b0ed8a4de0fbd3151697920e7c7533416d6e25e76434a7"
+checksum = "e26a9844c659a2a293d239c7910b752f8487fe122c6c8bd1659bf85a6507c302"
 dependencies = [
  "brotli",
  "flate2",
@@ -655,7 +655,7 @@ dependencies = [
  "http 1.1.0",
  "http-body 1.0.1",
  "http-body-util",
- "hyper 1.4.1",
+ "hyper 1.5.0",
  "hyper-util",
  "itoa",
  "matchit",
@@ -1028,9 +1028,9 @@ checksum = "c3ac9f8b63eca6fd385229b3675f6cc0dc5c8a5c8a54a59d4f52ffd670d87b0c"
 
 [[package]]
 name = "bytemuck"
-version = "1.18.0"
+version = "1.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94bbb0ad554ad961ddc5da507a12a29b14e4ae5bda06b19f575a3e6079d2e2ae"
+checksum = "8334215b81e418a0a7bdb8ef0849474f40bb10c8b71f1c4ed315cff49f32494d"
 dependencies = [
  "bytemuck_derive",
 ]
@@ -1126,9 +1126,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.1.29"
+version = "1.1.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "58e804ac3194a48bb129643eb1d62fcc20d18c6b8c181704489353d13120bcd1"
+checksum = "b16803a61b81d9eabb7eae2588776c4c1e584b738ede45fdbb4c972cec1e9945"
 dependencies = [
  "jobserver",
  "libc",
@@ -2487,7 +2487,7 @@ dependencies = [
  "borsh 1.5.1",
  "hex-literal 0.3.4",
  "sha2 0.10.8",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "sp1-solana",
 ]
 
@@ -2502,6 +2502,21 @@ dependencies = [
  "libredox",
  "windows-sys 0.59.0",
 ]
+
+[[package]]
+name = "five8_const"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "72b4f62f0f8ca357f93ae90c8c2dd1041a1f665fde2f889ea9b1787903829015"
+dependencies = [
+ "five8_core",
+]
+
+[[package]]
+name = "five8_core"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "94474d15a76982be62ca8a39570dccce148d98c238ebb7408b0a21b2c4bdddc4"
 
 [[package]]
 name = "fixed-hash"
@@ -2817,16 +2832,16 @@ dependencies = [
 
 [[package]]
 name = "groth16-solana"
-version = "0.0.4"
-source = "git+https://github.com/yuwen01/groth16-solana-patch?rev=42ea919b62f90868a4003a9a55a471aae7929a81#42ea919b62f90868a4003a9a55a471aae7929a81"
+version = "0.0.3"
+source = "git+https://github.com/sp1-patches/groth16-solana?branch=patch-v0.0.3#db82addc31e22e8146b8dd81166f87e4053a7044"
 dependencies = [
  "ark-bn254",
  "ark-ec",
  "ark-ff 0.4.2",
  "ark-serialize 0.4.2",
  "num-bigint 0.4.6",
- "solana-bn254",
- "solana-program",
+ "solana-bn254 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave)",
  "thiserror",
 ]
 
@@ -3130,9 +3145,9 @@ checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
 
 [[package]]
 name = "hyper"
-version = "0.14.30"
+version = "0.14.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a152ddd61dfaec7273fe8419ab357f33aee0d914c5f4efbf0d96fa749eea5ec9"
+checksum = "8c08302e8fa335b151b788c775ff56e7a03ae64ff85c548ee820fecb70356e85"
 dependencies = [
  "bytes",
  "futures-channel",
@@ -3154,9 +3169,9 @@ dependencies = [
 
 [[package]]
 name = "hyper"
-version = "1.4.1"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "50dfd22e0e76d0f662d429a5f80fcaf3855009297eab6a0a9f8543834744ba05"
+checksum = "bbbff0a806a4728c99295b254c8838933b5b082d75e3cb70c8dab21fdfbcfa9a"
 dependencies = [
  "bytes",
  "futures-channel",
@@ -3181,7 +3196,7 @@ checksum = "ec3efd23720e2049821a693cbc7e65ea87c72f1c58ff2f9522ff332b1491e590"
 dependencies = [
  "futures-util",
  "http 0.2.12",
- "hyper 0.14.30",
+ "hyper 0.14.31",
  "rustls 0.21.12",
  "tokio",
  "tokio-rustls 0.24.1",
@@ -3195,7 +3210,7 @@ checksum = "08afdbb5c31130e3034af566421053ab03787c640246a446327f550d11bcb333"
 dependencies = [
  "futures-util",
  "http 1.1.0",
- "hyper 1.4.1",
+ "hyper 1.5.0",
  "hyper-util",
  "rustls 0.23.14",
  "rustls-pki-types",
@@ -3213,7 +3228,7 @@ checksum = "70206fc6890eaca9fde8a0bf71caa2ddfc9fe045ac9e5c70df101a7dbde866e0"
 dependencies = [
  "bytes",
  "http-body-util",
- "hyper 1.4.1",
+ "hyper 1.5.0",
  "hyper-util",
  "native-tls",
  "tokio",
@@ -3232,7 +3247,7 @@ dependencies = [
  "futures-util",
  "http 1.1.0",
  "http-body 1.0.1",
- "hyper 1.4.1",
+ "hyper 1.5.0",
  "pin-project-lite",
  "socket2",
  "tokio",
@@ -4274,9 +4289,9 @@ dependencies = [
 
 [[package]]
 name = "openssl"
-version = "0.10.66"
+version = "0.10.67"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9529f4786b70a3e8c61e11179af17ab6188ad8d0ded78c5529441ed39d4bd9c1"
+checksum = "7b8cefcf97f41316955f9294cd61f639bdcfa9f2f230faac6cb896aa8ab64704"
 dependencies = [
  "bitflags 2.6.0",
  "cfg-if",
@@ -4306,9 +4321,9 @@ checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
 
 [[package]]
 name = "openssl-sys"
-version = "0.9.103"
+version = "0.9.104"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f9e8deee91df40a943c71b917e5874b951d32a802526c85721ce3b776c929d6"
+checksum = "45abf306cbf99debc8195b66b7346498d7b10c210de50418b5ccd7ceba08c741"
 dependencies = [
  "cc",
  "libc",
@@ -4763,9 +4778,9 @@ dependencies = [
 
 [[package]]
 name = "pest"
-version = "2.7.13"
+version = "2.7.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fdbef9d1d47087a895abd220ed25eb4ad973a5e26f6a4367b038c25e28dfc2d9"
+checksum = "879952a81a83930934cbf1786752d6dedc3b1f29e8f8fb2ad1d0a36f377cf442"
 dependencies = [
  "memchr",
  "thiserror",
@@ -5353,7 +5368,7 @@ dependencies = [
  "h2 0.3.26",
  "http 0.2.12",
  "http-body 0.4.6",
- "hyper 0.14.30",
+ "hyper 0.14.31",
  "hyper-rustls 0.24.2",
  "ipnet",
  "js-sys",
@@ -5397,7 +5412,7 @@ dependencies = [
  "http 1.1.0",
  "http-body 1.0.1",
  "http-body-util",
- "hyper 1.4.1",
+ "hyper 1.5.0",
  "hyper-rustls 0.27.3",
  "hyper-tls",
  "hyper-util",
@@ -5697,9 +5712,9 @@ dependencies = [
 
 [[package]]
 name = "rustls-pki-types"
-version = "1.9.0"
+version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e696e35370c65c9c541198af4543ccd580cf17fc25d8e05c5a242b202488c55"
+checksum = "16f1201b3c9a7ee8039bcadc17b7e605e2945b27eee7631788c1bd2b0643674b"
 
 [[package]]
 name = "rustls-platform-verifier"
@@ -5751,9 +5766,9 @@ dependencies = [
 
 [[package]]
 name = "rustversion"
-version = "1.0.17"
+version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "955d28af4278de8121b7ebeb796b6a45735dc01436d898801014aced2773a3d6"
+checksum = "0e819f2bc632f285be6d7cd36e25940d45b2391dd6d9b939e79de557f7014248"
 
 [[package]]
 name = "rusty-fork"
@@ -5817,9 +5832,9 @@ dependencies = [
 
 [[package]]
 name = "scc"
-version = "2.2.1"
+version = "2.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "553f8299af7450cda9a52d3a370199904e7a46b5ffd1bef187c4a6af3bb6db69"
+checksum = "f2c1f7fc6deb21665a9060dfc7d271be784669295a31babdcd4dd2c79ae8cbfb"
 dependencies = [
  "sdd",
 ]
@@ -6259,7 +6274,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_derive",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
 ]
 
 [[package]]
@@ -6293,9 +6308,21 @@ source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf
 dependencies = [
  "bincode",
  "serde",
- "solana-program-error",
- "solana-program-memory",
- "solana-pubkey",
+ "solana-program-error 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-program-memory 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+]
+
+[[package]]
+name = "solana-account-info"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "bincode",
+ "serde",
+ "solana-program-error 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-program-memory 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave)",
 ]
 
 [[package]]
@@ -6355,7 +6382,7 @@ dependencies = [
  "num-traits",
  "solana-feature-set",
  "solana-log-collector",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-program-runtime",
  "solana-sdk",
  "thiserror",
@@ -6370,6 +6397,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-atomic-u64"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "parking_lot",
+]
+
+[[package]]
 name = "solana-banks-client"
 version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
@@ -6377,7 +6412,7 @@ dependencies = [
  "borsh 1.5.1",
  "futures",
  "solana-banks-interface",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-sdk",
  "tarpc",
  "thiserror",
@@ -6423,7 +6458,17 @@ source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf
 dependencies = [
  "bincode",
  "serde",
- "solana-instruction",
+ "solana-instruction 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+]
+
+[[package]]
+name = "solana-bincode"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "bincode",
+ "serde",
+ "solana-instruction 2.1.0 (git+https://github.com/anza-xyz/agave)",
 ]
 
 [[package]]
@@ -6436,7 +6481,21 @@ dependencies = [
  "ark-ff 0.4.2",
  "ark-serialize 0.4.2",
  "bytemuck",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "thiserror",
+]
+
+[[package]]
+name = "solana-bn254"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "ark-bn254",
+ "ark-ec",
+ "ark-ff 0.4.2",
+ "ark-serialize 0.4.2",
+ "bytemuck",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave)",
  "thiserror",
 ]
 
@@ -6450,14 +6509,14 @@ dependencies = [
  "libsecp256k1",
  "log",
  "scopeguard",
- "solana-bn254",
+ "solana-bn254 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-compute-budget",
  "solana-curve25519",
  "solana-feature-set",
  "solana-log-collector",
  "solana-measure",
  "solana-poseidon",
- "solana-program-memory",
+ "solana-program-memory 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-program-runtime",
  "solana-sdk",
  "solana-timings",
@@ -6541,7 +6600,17 @@ source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf
 dependencies = [
  "serde",
  "serde_derive",
- "solana-sdk-macro",
+ "solana-sdk-macro 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+]
+
+[[package]]
+name = "solana-clock"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "serde",
+ "serde_derive",
+ "solana-sdk-macro 2.1.0 (git+https://github.com/anza-xyz/agave)",
 ]
 
 [[package]]
@@ -6573,7 +6642,7 @@ dependencies = [
  "solana-log-collector",
  "solana-program-runtime",
  "solana-sdk",
- "solana-short-vec",
+ "solana-short-vec 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
 ]
 
 [[package]]
@@ -6622,7 +6691,7 @@ dependencies = [
  "bytemuck",
  "bytemuck_derive",
  "curve25519-dalek 4.1.3",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "thiserror",
 ]
 
@@ -6635,9 +6704,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-decode-error"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
 name = "solana-define-syscall"
 version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
+
+[[package]]
+name = "solana-define-syscall"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
 
 [[package]]
 name = "solana-derivation-path"
@@ -6651,12 +6733,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-epoch-schedule"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "serde",
+ "serde_derive",
+ "solana-sdk-macro 2.1.0 (git+https://github.com/anza-xyz/agave)",
+]
+
+[[package]]
 name = "solana-feature-set"
 version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
 dependencies = [
  "lazy_static",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
 ]
 
 [[package]]
@@ -6680,8 +6772,25 @@ dependencies = [
  "js-sys",
  "serde",
  "serde_derive",
- "solana-atomic-u64",
- "solana-sanitize",
+ "solana-atomic-u64 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-sanitize 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "solana-hash"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "borsh 1.5.1",
+ "bs58",
+ "bytemuck",
+ "bytemuck_derive",
+ "js-sys",
+ "serde",
+ "serde_derive",
+ "solana-atomic-u64 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-sanitize 2.1.0 (git+https://github.com/anza-xyz/agave)",
  "wasm-bindgen",
 ]
 
@@ -6691,7 +6800,7 @@ version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
 dependencies = [
  "bytemuck",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
 ]
 
 [[package]]
@@ -6706,8 +6815,25 @@ dependencies = [
  "num-traits",
  "serde",
  "serde_derive",
- "solana-define-syscall",
- "solana-pubkey",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "solana-instruction"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "bincode",
+ "borsh 1.5.1",
+ "getrandom 0.2.15",
+ "js-sys",
+ "num-traits",
+ "serde",
+ "serde_derive",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave)",
  "wasm-bindgen",
 ]
 
@@ -6779,8 +6905,21 @@ name = "solana-msg"
 version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
 dependencies = [
- "solana-define-syscall",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
 ]
+
+[[package]]
+name = "solana-msg"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave)",
+]
+
+[[package]]
+name = "solana-native-token"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
 
 [[package]]
 name = "solana-net-utils"
@@ -6828,7 +6967,7 @@ dependencies = [
  "solana-metrics",
  "solana-rayon-threadlimit",
  "solana-sdk",
- "solana-short-vec",
+ "solana-short-vec 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-vote-program",
 ]
 
@@ -6839,7 +6978,7 @@ source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf
 dependencies = [
  "ark-bn254",
  "light-poseidon",
- "solana-define-syscall",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "thiserror",
 ]
 
@@ -6876,30 +7015,105 @@ dependencies = [
  "serde_derive",
  "sha2 0.10.8",
  "sha3",
- "solana-account-info",
- "solana-atomic-u64",
- "solana-bincode",
- "solana-clock",
- "solana-decode-error",
- "solana-define-syscall",
- "solana-hash",
- "solana-instruction",
- "solana-msg",
- "solana-program-error",
- "solana-program-memory",
- "solana-program-option",
- "solana-program-pack",
- "solana-pubkey",
- "solana-rent",
- "solana-sanitize",
- "solana-sdk-macro",
- "solana-secp256k1-recover",
- "solana-serde-varint",
- "solana-serialize-utils",
- "solana-sha256-hasher",
- "solana-short-vec",
+ "solana-account-info 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-atomic-u64 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-bincode 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-clock 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-decode-error 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-hash 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-instruction 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-msg 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-program-error 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-program-memory 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-program-option 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-program-pack 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-rent 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-sanitize 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-sdk-macro 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-secp256k1-recover 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-serde-varint 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-serialize-utils 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-sha256-hasher 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-short-vec 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "thiserror",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "solana-program"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "base64 0.22.1",
+ "bincode",
+ "bitflags 2.6.0",
+ "blake3",
+ "borsh 0.10.4",
+ "borsh 1.5.1",
+ "bs58",
+ "bv",
+ "bytemuck",
+ "bytemuck_derive",
+ "console_error_panic_hook",
+ "console_log",
+ "curve25519-dalek 4.1.3",
+ "five8_const",
+ "getrandom 0.2.15",
+ "js-sys",
+ "lazy_static",
+ "log",
+ "memoffset",
+ "num-bigint 0.4.6",
+ "num-derive",
+ "num-traits",
+ "parking_lot",
+ "rand 0.8.5",
+ "serde",
+ "serde_bytes",
+ "serde_derive",
+ "sha2 0.10.8",
+ "sha3",
+ "solana-account-info 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-atomic-u64 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-bincode 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-clock 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-decode-error 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-epoch-schedule",
+ "solana-hash 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-instruction 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-msg 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-native-token",
+ "solana-program-entrypoint",
+ "solana-program-error 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-program-memory 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-program-option 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-program-pack 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-rent 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-sanitize 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-sdk-macro 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-secp256k1-recover 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-serde-varint 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-serialize-utils 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-sha256-hasher 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-short-vec 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-slot-hashes",
+ "thiserror",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "solana-program-entrypoint"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "solana-account-info 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-msg 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-program-error 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave)",
 ]
 
 [[package]]
@@ -6911,10 +7125,25 @@ dependencies = [
  "num-traits",
  "serde",
  "serde_derive",
- "solana-decode-error",
- "solana-instruction",
- "solana-msg",
- "solana-pubkey",
+ "solana-decode-error 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-instruction 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-msg 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+]
+
+[[package]]
+name = "solana-program-error"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "borsh 1.5.1",
+ "num-traits",
+ "serde",
+ "serde_derive",
+ "solana-decode-error 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-instruction 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-msg 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave)",
 ]
 
 [[package]]
@@ -6923,7 +7152,16 @@ version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
 dependencies = [
  "num-traits",
- "solana-define-syscall",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+]
+
+[[package]]
+name = "solana-program-memory"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "num-traits",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave)",
 ]
 
 [[package]]
@@ -6932,11 +7170,24 @@ version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
 
 [[package]]
+name = "solana-program-option"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+
+[[package]]
 name = "solana-program-pack"
 version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
 dependencies = [
- "solana-program-error",
+ "solana-program-error 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+]
+
+[[package]]
+name = "solana-program-pack"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "solana-program-error 2.1.0 (git+https://github.com/anza-xyz/agave)",
 ]
 
 [[package]]
@@ -6989,7 +7240,7 @@ dependencies = [
  "solana-compute-budget",
  "solana-feature-set",
  "solana-inline-spl",
- "solana-instruction",
+ "solana-instruction 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-log-collector",
  "solana-logger",
  "solana-program-runtime",
@@ -7019,11 +7270,36 @@ dependencies = [
  "num-traits",
  "serde",
  "serde_derive",
- "solana-atomic-u64",
- "solana-decode-error",
- "solana-define-syscall",
- "solana-sanitize",
- "solana-sha256-hasher",
+ "solana-atomic-u64 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-decode-error 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-sanitize 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-sha256-hasher 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "solana-pubkey"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "borsh 0.10.4",
+ "borsh 1.5.1",
+ "bs58",
+ "bytemuck",
+ "bytemuck_derive",
+ "curve25519-dalek 4.1.3",
+ "five8_const",
+ "getrandom 0.2.15",
+ "js-sys",
+ "num-traits",
+ "serde",
+ "serde_derive",
+ "solana-atomic-u64 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-decode-error 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-sanitize 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-sha256-hasher 2.1.0 (git+https://github.com/anza-xyz/agave)",
  "wasm-bindgen",
 ]
 
@@ -7092,7 +7368,17 @@ source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf
 dependencies = [
  "serde",
  "serde_derive",
- "solana-sdk-macro",
+ "solana-sdk-macro 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+]
+
+[[package]]
+name = "solana-rent"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "serde",
+ "serde_derive",
+ "solana-sdk-macro 2.1.0 (git+https://github.com/anza-xyz/agave)",
 ]
 
 [[package]]
@@ -7213,7 +7499,7 @@ dependencies = [
  "solana-measure",
  "solana-metrics",
  "solana-perf",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-program-runtime",
  "solana-rayon-threadlimit",
  "solana-runtime-transaction",
@@ -7251,7 +7537,7 @@ dependencies = [
  "log",
  "solana-builtins-default-costs",
  "solana-compute-budget",
- "solana-pubkey",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-sdk",
  "solana-svm-transaction",
  "thiserror",
@@ -7261,6 +7547,11 @@ dependencies = [
 name = "solana-sanitize"
 version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
+
+[[package]]
+name = "solana-sanitize"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
 
 [[package]]
 name = "solana-sdk"
@@ -7301,17 +7592,17 @@ dependencies = [
  "sha3",
  "siphasher",
  "solana-account",
- "solana-bn254",
- "solana-decode-error",
+ "solana-bn254 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-decode-error 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-derivation-path",
  "solana-feature-set",
- "solana-program",
- "solana-program-memory",
- "solana-sanitize",
- "solana-sdk-macro",
- "solana-secp256k1-recover",
- "solana-serde-varint",
- "solana-short-vec",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-program-memory 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-sanitize 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-sdk-macro 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-secp256k1-recover 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-serde-varint 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-short-vec 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-signature",
  "thiserror",
  "wasm-bindgen",
@@ -7329,13 +7620,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-sdk-macro"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "bs58",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.79",
+]
+
+[[package]]
 name = "solana-secp256k1-recover"
 version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
 dependencies = [
  "borsh 1.5.1",
  "libsecp256k1",
- "solana-define-syscall",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "thiserror",
+]
+
+[[package]]
+name = "solana-secp256k1-recover"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "libsecp256k1",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave)",
  "thiserror",
 ]
 
@@ -7370,13 +7682,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-serde-varint"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "solana-serialize-utils"
 version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
 dependencies = [
- "solana-instruction",
- "solana-pubkey",
- "solana-sanitize",
+ "solana-instruction 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-sanitize 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+]
+
+[[package]]
+name = "solana-serialize-utils"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "solana-instruction 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-pubkey 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-sanitize 2.1.0 (git+https://github.com/anza-xyz/agave)",
 ]
 
 [[package]]
@@ -7385,14 +7715,32 @@ version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
 dependencies = [
  "sha2 0.10.8",
- "solana-define-syscall",
- "solana-hash",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-hash 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+]
+
+[[package]]
+name = "solana-sha256-hasher"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "sha2 0.10.8",
+ "solana-define-syscall 2.1.0 (git+https://github.com/anza-xyz/agave)",
+ "solana-hash 2.1.0 (git+https://github.com/anza-xyz/agave)",
 ]
 
 [[package]]
 name = "solana-short-vec"
 version = "2.1.0"
 source = "git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e#6e62af0f0de6a40e4e22628cbbcf63b1a6da560e"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "solana-short-vec"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
 dependencies = [
  "serde",
 ]
@@ -7408,7 +7756,17 @@ dependencies = [
  "rand 0.8.5",
  "serde",
  "serde_derive",
- "solana-sanitize",
+ "solana-sanitize 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+]
+
+[[package]]
+name = "solana-slot-hashes"
+version = "2.1.0"
+source = "git+https://github.com/anza-xyz/agave#a458839ff1114c614ca416f17c4bf2c2da9c9af6"
+dependencies = [
+ "serde",
+ "serde_derive",
+ "solana-hash 2.1.0 (git+https://github.com/anza-xyz/agave)",
 ]
 
 [[package]]
@@ -7581,7 +7939,7 @@ dependencies = [
  "rand 0.8.5",
  "solana-perf",
  "solana-sdk",
- "solana-short-vec",
+ "solana-short-vec 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
 ]
 
 [[package]]
@@ -7660,8 +8018,8 @@ dependencies = [
  "serde",
  "serde_derive",
  "solana-feature-set",
- "solana-sanitize",
- "solana-serde-varint",
+ "solana-sanitize 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
+ "solana-serde-varint 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
 ]
 
 [[package]]
@@ -7690,7 +8048,7 @@ dependencies = [
  "serde_derive",
  "solana-feature-set",
  "solana-metrics",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-program-runtime",
  "solana-sdk",
  "thiserror",
@@ -7732,7 +8090,7 @@ dependencies = [
  "serde_json",
  "sha3",
  "solana-derivation-path",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-sdk",
  "subtle",
  "thiserror",
@@ -7778,7 +8136,7 @@ dependencies = [
  "sha3",
  "solana-curve25519",
  "solana-derivation-path",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-sdk",
  "subtle",
  "thiserror",
@@ -8346,7 +8704,7 @@ dependencies = [
  "borsh 1.5.1",
  "num-derive",
  "num-traits",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "spl-token",
  "spl-token-2022",
  "thiserror",
@@ -8359,7 +8717,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a38ea8b6dedb7065887f12d62ed62c1743aa70749e8558f963609793f6fb12bc"
 dependencies = [
  "bytemuck",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "spl-discriminator-derive",
 ]
 
@@ -8393,7 +8751,7 @@ version = "5.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a0dba2f2bb6419523405d21c301a32c9f9568354d4742552e7972af801f4bdb3"
 dependencies = [
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
 ]
 
 [[package]]
@@ -8405,7 +8763,7 @@ dependencies = [
  "borsh 1.5.1",
  "bytemuck",
  "bytemuck_derive",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-zk-token-sdk",
  "spl-program-error",
 ]
@@ -8418,7 +8776,7 @@ checksum = "d7b28bed65356558133751cc32b48a7a5ddfc59ac4e941314630bbed1ac10532"
 dependencies = [
  "num-derive",
  "num-traits",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "spl-program-error-derive",
  "thiserror",
 ]
@@ -8442,7 +8800,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "37a75a5f0fcc58126693ed78a17042e9dc53f07e357d6be91789f7d62aff61a4"
 dependencies = [
  "bytemuck",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "spl-discriminator",
  "spl-pod",
  "spl-program-error",
@@ -8460,7 +8818,7 @@ dependencies = [
  "num-derive",
  "num-traits",
  "num_enum 0.7.3",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "thiserror",
 ]
 
@@ -8475,7 +8833,7 @@ dependencies = [
  "num-derive",
  "num-traits",
  "num_enum 0.7.3",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "solana-security-txt",
  "solana-zk-token-sdk",
  "spl-memo",
@@ -8495,7 +8853,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "df8752b85a5ecc1d9f3a43bce3dd9a6a053673aacf5deb513d1cbb88d3534ffd"
 dependencies = [
  "bytemuck",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "spl-discriminator",
  "spl-pod",
  "spl-program-error",
@@ -8508,7 +8866,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c6c2318ddff97e006ed9b1291ebec0750a78547f870f62a69c56fe3b46a5d8fc"
 dependencies = [
  "borsh 1.5.1",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "spl-discriminator",
  "spl-pod",
  "spl-program-error",
@@ -8523,7 +8881,7 @@ checksum = "a110f33d941275d9f868b96daaa993f1e73b6806cc8836e43075b4d3ad8338a7"
 dependencies = [
  "arrayref",
  "bytemuck",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "spl-discriminator",
  "spl-pod",
  "spl-program-error",
@@ -8538,7 +8896,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bdcd73ec187bc409464c60759232e309f83b52a18a9c5610bf281c9c6432918c"
 dependencies = [
  "bytemuck",
- "solana-program",
+ "solana-program 2.1.0 (git+https://github.com/anza-xyz/agave?rev=6e62af0f0de6a40e4e22628cbbcf63b1a6da560e)",
  "spl-discriminator",
  "spl-pod",
  "spl-program-error",
@@ -9299,7 +9657,7 @@ dependencies = [
  "futures",
  "http 1.1.0",
  "http-body-util",
- "hyper 1.4.1",
+ "hyper 1.5.0",
  "prost",
  "reqwest 0.12.8",
  "serde",
