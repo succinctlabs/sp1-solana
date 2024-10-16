@@ -18,8 +18,7 @@ sha2.workspace = true
 ark-bn254 = "0.4.0"
 ark-serialize = "0.4.2"
 ark-ff = "0.4.2"
-# groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
-groth16-solana = { git = "https://github.com/yuwen01/groth16-solana-patch", rev = "42ea919b62f90868a4003a9a55a471aae7929a81" }
+groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
 thiserror = "1.0.63"
 
 [dev-dependencies]
