@@ -27,19 +27,19 @@ pub fn process_instruction(
     _accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    // Deserialize the groth16_proof from the instruction data.
+    // Deserialize the SP1Groth16Proof from the instruction data.
     let groth16_proof = SP1Groth16Proof::try_from_slice(instruction_data)
         .map_err(|_| ProgramError::InvalidInstructionData)?;
 
-    // Get the SP1 Groth16 verification key from the `groth16-solana` crate.
-    let vk = sp1_solana::GROTH16_VK_BYTES;
+    // Get the SP1 Groth16 verification key from the `sp1-solana` crate.
+    let vk = sp1_solana::GROTH16_VK_2_0_0_BYTES;
 
     // Verify the proof.
     verify_proof(
         &groth16_proof.proof,
         &groth16_proof.sp1_public_inputs,
         &FIBONACCI_VKEY_HASH,
-        &vk,
+        vk,
     )
     .map_err(|_| ProgramError::InvalidInstructionData)?;
 

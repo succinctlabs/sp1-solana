@@ -73,18 +73,21 @@ pub fn process_instruction(
     _accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    // Deserialize the `SP1Groth16Proof` from the instruction data.
-    let groth16_proof = SP1Groth16Proof::try_from_slice(instruction_data).unwrap();
+    // Deserialize the SP1Groth16Proof from the instruction data.
+    let groth16_proof = SP1Groth16Proof::try_from_slice(instruction_data)
+        .map_err(|_| ProgramError::InvalidInstructionData)?;
 
     // Get the SP1 Groth16 verification key from the `sp1-solana` crate.
-    let vk = sp1_solana::GROTH16_VK_BYTES;
+    let vk = sp1_solana::GROTH16_VK_2_0_0_BYTES;
 
     // Verify the proof.
-    let result = verify_sp1_groth16_proof(&groth16_proof, &vk);
-    assert!(result.is_ok());
-
-    // Make sure that we're verifying a fibonacci program.
-    assert_eq!(FIBONACCI_VKEY_HASH, hex::encode(groth16_proof.sp1_vkey_hash));
+    verify_proof(
+        &groth16_proof.proof,
+        &groth16_proof.sp1_public_inputs,
+        &FIBONACCI_VKEY_HASH,
+        vk,
+    )
+    .map_err(|_| ProgramError::InvalidInstructionData)?;
 
     // Print out the public values.
     let mut reader = groth16_proof.sp1_public_inputs.as_slice();
