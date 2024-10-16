@@ -32,14 +32,14 @@ pub fn process_instruction(
         .map_err(|_| ProgramError::InvalidInstructionData)?;
 
     // Get the SP1 Groth16 verification key from the `groth16-solana` crate.
-    let vk = sp1_solana::GROTH16_VK_BYTES;
+    let vk = sp1_solana::GROTH16_VK_2_0_0_BYTES;
 
     // Verify the proof.
     verify_proof(
         &groth16_proof.proof,
         &groth16_proof.sp1_public_inputs,
         &FIBONACCI_VKEY_HASH,
-        &vk,
+        vk,
     )
     .map_err(|_| ProgramError::InvalidInstructionData)?;
 
