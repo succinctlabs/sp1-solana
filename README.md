@@ -8,7 +8,7 @@ This crate verifies Groth16 proofs generated with SP1, leveraging Solana's BN254
 
 ## Repository Overview
 
-The `sp1-solana` library itself is in the [`verifier`](verifier) directory. `example/program` contains an example Solana program that uses this library to verify SP1 proofs, and `example/script` contains an example Solana script that invokes this program.
+The `sp1-solana` library itself is in the [`verifier`](verifier) directory. [`example/program`](example/program) contains an example Solana program that uses this library to verify SP1 proofs, and [`example/script`](example/script) contains an example Solana script that invokes this program.
 
 ## Features
 
@@ -21,7 +21,7 @@ The `sp1-solana` library itself is in the [`verifier`](verifier) directory. `exa
 
 - Rust
 - Edge Solana CLI
-    - Install with 
+    - Install with the following command:
     ```shell
     sh -c "$(curl -sSfL https://release.anza.xyz/edge/install)"
     ```
@@ -36,13 +36,12 @@ from the pre-generated proof [`fibonacci_proof.bin`](../proofs/fibonacci_proof.b
 proves that the 20th fibonacci number is 6765. Optionally, this proof can be freshly generated from
 the [`sp1-program`](../sp1-program).
 
-2. Extract the proof, public inputs, and program vkey hash from the `SP1ProofWithPublicValues`. 
+2. Extract the proof and public inputs from the `SP1ProofWithPublicValues`. 
 
 * The `proof` is the Groth16 proof, serialized in [SP1's standard format](https://docs.rs/sp1-sdk/2.0.0/sp1_sdk/proof/struct.SP1ProofWithPublicValues.html#method.bytes)
 * The `sp1_public_inputs` are the public inputs to the underlying sp1 program. 
-* The `program_vkey_hash` is the hash of the underlying sp1 program's verification key. 
 
-Here is a snippet that demonstrates this extraction. 
+Here is a snippet from the [example script](./example/script/src/main.rs) that demonstrates this.
 
 ```rust
 
@@ -68,9 +67,9 @@ run_verify_instruction(groth16_proof).await;
 ```
 
 3. Using the [`solana-program-test`](https://docs.rs/solana-program-test/latest/solana_program_test/) framework, send the `SP1Groth16Proof` to the 
-[`fibonacci-verifier-contract`](./program). This smart contract will verify the proof using the `sp1-solana`
-crate against the fibonacci sp1 program vkey and print out the public inputs. Here is a snippet that demonstrates
-how to do some common operations on the SP1 Groth16 proof.
+[`fibonacci-verifier-contract`](./example/program). This smart contract will verify the proof using the `sp1-solana`
+crate against the fibonacci SP1 program vkey and print out the public inputs. Here is a snippet that demonstrates
+how to perform the verification and read the public inputs on chain. 
 
 ```rust
 // Derived by running `vk.bytes32()` on the program's vkey.
