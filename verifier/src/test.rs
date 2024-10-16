@@ -4,7 +4,7 @@ use sp1_sdk::SP1ProofWithPublicValues;
 
 #[test]
 fn test_verify_from_sp1() {
-    use crate::{verify_proof, GROTH16_VK_BYTES};
+    use crate::{verify_proof, GROTH16_VK_2_0_0_BYTES};
 
     // Read the serialized SP1ProofWithPublicValues from the file.
     let sp1_proof_with_public_values_file = "../proofs/fibonacci_proof.bin";
@@ -33,7 +33,7 @@ fn test_verify_from_sp1() {
         &proof_bytes,
         &sp1_public_inputs,
         &vkey_hash[..32].try_into().unwrap(),
-        &GROTH16_VK_BYTES
+        &GROTH16_VK_2_0_0_BYTES
     )
     .is_ok());
 }

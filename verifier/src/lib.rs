@@ -6,7 +6,9 @@ use groth16_solana::groth16::Groth16Verifyingkey;
 use sha2::{Digest, Sha256};
 use thiserror::Error;
 
-pub const GROTH16_VK_BYTES: &[u8] = include_bytes!("../vk/groth16_vk.bin");
+/// Groth16 verification keys for different SP1 versions.
+pub const GROTH16_VK_1_2_0_BYTES: &[u8] = include_bytes!("../vk/v1.2.0/groth16_vk.bin");
+pub const GROTH16_VK_2_0_0_BYTES: &[u8] = include_bytes!("../vk/v2.0.0/groth16_vk.bin");
 
 #[cfg(test)]
 mod test;
