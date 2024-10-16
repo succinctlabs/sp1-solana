@@ -6,11 +6,13 @@ edition = "2021"
 publish = false
 
 [dependencies]
-borsh.workspace = true
-sp1-solana = { workspace = true, features = ["sp1-serialize"] }
+fibonacci-verifier-contract.workspace = true
+solana-program-test.workspace = true
+solana-sdk.workspace = true
+tokio.workspace = true
 
 clap = { version = "4.0", features = ["derive"] }
 sp1-sdk = "2.0.0"
 
 [build-dependencies]
-sp1-helper = "2.0.0"
+sp1-build = "2.0.0"

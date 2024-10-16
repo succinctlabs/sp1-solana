@@ -1,5 +1,5 @@
 [package]
-name = "example-solana-contract"
+name = "fibonacci-verifier-contract"
 version = "0.1.0"
 edition = "2021"
 publish = false
@@ -16,3 +16,6 @@ default = []
 borsh.workspace = true
 solana-program.workspace = true
 sp1-solana.workspace = true
+sha2.workspace = true
+
+hex-literal = "0.3.1"

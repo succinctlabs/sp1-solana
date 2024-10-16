@@ -1,6 +1,13 @@
 use clap::Parser;
+use fibonacci_verifier_contract::SP1Groth16Proof;
+use solana_program_test::{processor, ProgramTest};
+use solana_sdk::{
+    instruction::{AccountMeta, Instruction},
+    pubkey::Pubkey,
+    signer::Signer,
+    transaction::Transaction,
+};
 use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
-use sp1_solana::{verify_proof_fixture, SP1ProofFixture, GROTH16_VK_BYTES};
 
 #[derive(clap::Parser)]
 #[command(name = "zkVM Proof Generator")]
@@ -16,11 +23,36 @@ struct Cli {
 
 const ELF: &[u8] = include_bytes!("../../sp1-program/elf/riscv32im-succinct-zkvm-elf");
 
-fn main() {
+async fn run_verify_instruction(groth16_proof: SP1Groth16Proof) {
+    let program_id = Pubkey::new_unique();
+
+    // Create program test environment
+    let (banks_client, payer, recent_blockhash) = ProgramTest::new(
+        "fibonacci-verifier-contract",
+        program_id,
+        processor!(fibonacci_verifier_contract::process_instruction),
+    )
+    .start()
+    .await;
+
+    let instruction = Instruction::new_with_borsh(
+        program_id,
+        &groth16_proof,
+        vec![AccountMeta::new(payer.pubkey(), false)],
+    );
+
+    // Create and send transaction
+    let mut transaction = Transaction::new_with_payer(&[instruction], Some(&payer.pubkey()));
+    transaction.sign(&[&payer], recent_blockhash);
+    banks_client.process_transaction(transaction).await.unwrap();
+}
+
+#[tokio::main]
+async fn main() {
     // Setup logging for the application.
     utils::setup_logger();
 
-    // Where to save / load the proof from.
+    // Where to save / load the sp1 proof from.
     let proof_file = "../../proofs/fibonacci_proof.bin";
 
     // Parse command line arguments.
@@ -30,9 +62,9 @@ fn main() {
     if args.prove {
         // Initialize the prover client
         let client = ProverClient::new();
-        let (pk, _) = client.setup(ELF);
+        let (pk, _vk) = client.setup(ELF);
 
-        // Compute the 20th fibonacci number.
+        // In our SP1 program, compute the 20th fibonacci number.
         let mut stdin = SP1Stdin::new();
         stdin.write(&20u32);
 
@@ -47,13 +79,13 @@ fn main() {
         proof.save(&proof_file).unwrap();
     }
 
-    // Load the proof from the file, and convert it to a fixture.
+    // Load the proof from the file, and convert it to a Borsh-serializable `SP1Groth16Proof`.
     let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
-    let fixture = SP1ProofFixture::from(sp1_proof_with_public_values);
-    let fixture_file = "../../proof-fixtures/fibonacci_fixture.bin";
-    fixture.save(&fixture_file).unwrap();
+    let groth16_proof = SP1Groth16Proof {
+        proof: sp1_proof_with_public_values.bytes(),
+        sp1_public_inputs: sp1_proof_with_public_values.public_values.to_vec(),
+    };
 
-    // Verify the proof.
-    verify_proof_fixture(&fixture, GROTH16_VK_BYTES).expect("Proof verification failed");
-    println!("Successfully verified proof for the program!")
+    // Send the proof to the contract, and verify it on `solana-program-test`.
+    run_verify_instruction(groth16_proof).await;
 }

@@ -3,28 +3,25 @@ name = "sp1-solana"
 version = "0.1.0"
 edition = "2021"
 authors = ["Bhargav Annem, Yuwen Zhang"]
-description = "A Groth16 verifier implementation"
+description = "Verifier for SP1 Groth16 proofs on Solana"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/succinctlabs/groth16-solana"
-readme = "README.md"
+readme = "../README.md"
 keywords = ["cryptography", "zero-knowledge", "groth16", "verifier"]
 categories = ["cryptography"]
 
 [dependencies]
 borsh.workspace = true
+num-bigint.workspace = true
+sha2.workspace = true
+
 ark-bn254 = "0.4.0"
 ark-serialize = "0.4.2"
 ark-ff = "0.4.2"
-num-bigint = { version = "0.4.6" }
-sha2 = { version = "0.10.8"}
-groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
+# groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
+groth16-solana = { git = "https://github.com/yuwen01/groth16-solana-patch", rev = "42ea919b62f90868a4003a9a55a471aae7929a81" }
 thiserror = "1.0.63"
 
-# Optional dependencies for SP1 serialization
-sp1-sdk = { version = "2.0.0", default-features = false, optional = true }
-hex = { version = "0.4.3", optional = true }
-num-traits = { version = "0.2.19", optional = true }
-
-[features]
-default = []
-sp1-serialize = ["dep:sp1-sdk", "dep:hex", "dep:num-traits"]
+[dev-dependencies]
+sp1-sdk = { version = "2.0.0", default-features = false}
+num-traits = { version = "0.2.19" }

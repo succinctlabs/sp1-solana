@@ -20,34 +20,7 @@ jobs:
       - name: Run tests
         run: |
           cd verifier
-          cargo test --package sp1-solana:0.1.0 --lib --features sp1-serialize
-
-  solana-test:
-    name: Solana Test
-    runs-on: [runs-on, runner=8cpu-linux-x64, "run-id=${{ github.run_id }}"]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install Solana CLI tools
-        run: |
-          sh -c "$(curl -sSfL https://release.anza.xyz/edge/install)"
-          echo "/home/runner/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4.0.0
-        with:
-          version: 9
-
-      - name: Install dependencies
-        run: |
-          cd example/solana
-          pnpm install
-      
-      - name: Run build-and-test script
-        run: |
-          cd example/solana
-          yarn build-and-test
+          cargo test --package sp1-solana --lib -- test --show-output 
 
   lock-files:
     name: "Check lock files"
@@ -61,8 +34,7 @@ jobs:
       - name: "Update lock files"
         run: |
           cargo tree
-          (cd ./example/solana/program && cargo tree)
-          (cd ./example/script && cargo tree)
+          (cd ./example/sp1-program && cargo tree)
 
       - name: "Assert no changes"
         run: |
