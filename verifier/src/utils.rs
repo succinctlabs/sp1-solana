@@ -1,3 +1,9 @@
+//! Utility functions for the SP1 Groth16 Solana verifier.
+//!
+//! This module contains functions for decompressing G1 and G2 points, as well as
+//! for loading proofs into a form appropriate for verification. This is necessary to coerce
+//! SP1 Groth16 proofs into the form expected by the `groth16_solana` crate.
+
 use ark_bn254::{Fq, G1Affine};
 use ark_ff::PrimeField;
 use ark_serialize::CanonicalSerialize;

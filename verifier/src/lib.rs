@@ -1,3 +1,22 @@
+//! # Verifier
+//!
+//! This crate contains utilities for verifying SP1 Groth16 proofs on Solana.
+//!
+//! # Example
+//! ```
+//! use sp1_sdk::proof::SP1ProofWithPublicValues;
+//! use sp1_solana::{verify_proof, GROTH16_VK_2_0_0_BYTES};
+//!
+//! let sp1_proof_with_public_values_file = "../proofs/fibonacci_proof.bin";
+//! let sp1_proof_with_public_values =
+//!     SP1ProofWithPublicValues::load(&sp1_proof_with_public_values_file).unwrap();
+//! let proof_bytes = sp1_proof_with_public_values.bytes();
+//! let sp1_public_inputs = sp1_proof_with_public_values.public_values.to_vec();
+//! let vkey_hash = "0x0083e8e370d7f0d1c463337f76c9a60b62ad7cc54c89329107c92c1e62097872";
+//!
+//! verify_proof(&proof_bytes, &sp1_public_inputs, &vkey_hash, &GROTH16_VK_2_0_0_BYTES).unwrap();
+//! ```
+
 use groth16_solana::groth16::Groth16Verifyingkey;
 use sha2::{Digest, Sha256};
 
