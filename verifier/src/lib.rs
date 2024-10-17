@@ -5,13 +5,10 @@ use sha2::{Digest, Sha256};
 mod test;
 
 mod utils;
-use utils::{
-    decode_sp1_vkey_hash, groth16_public_values, load_groth16_verifying_key_from_bytes,
-    load_proof_from_bytes, load_public_inputs_from_bytes, Error,
-};
+use utils::*;
 
 /// Groth16 verification keys for different SP1 versions.
-pub const GROTH16_VK_1_2_0_BYTES: &[u8] = include_bytes!("../vk/v1.2.0/groth16_vk.bin");
+pub const GROTH16_VK_3_0_0_RC4_BYTES: &[u8] = include_bytes!("../vk/v3.0.0rc4/groth16_vk.bin");
 pub const GROTH16_VK_2_0_0_BYTES: &[u8] = include_bytes!("../vk/v2.0.0/groth16_vk.bin");
 
 /// Verifies a proof using raw bytes, without any checks.
