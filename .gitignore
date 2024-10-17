@@ -9,3 +9,4 @@ target/
 
 test_serialized_fixture.bin
 
+.DS_Store

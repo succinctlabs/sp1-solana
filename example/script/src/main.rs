@@ -21,8 +21,10 @@ struct Cli {
     prove: bool,
 }
 
+/// The ELF binary of the SP1 program.
 const ELF: &[u8] = include_bytes!("../../sp1-program/elf/riscv32im-succinct-zkvm-elf");
 
+/// Invokes the solana program using Solana Program Test.
 async fn run_verify_instruction(groth16_proof: SP1Groth16Proof) {
     let program_id = Pubkey::new_unique();
 
@@ -62,7 +64,12 @@ async fn main() {
     if args.prove {
         // Initialize the prover client
         let client = ProverClient::new();
-        let (pk, _vk) = client.setup(ELF);
+        let (pk, vk) = client.setup(ELF);
+
+        println!(
+            "Program Verification Key Bytes {:?}",
+            sp1_sdk::HashableKey::bytes32(&vk)
+        );
 
         // In our SP1 program, compute the 20th fibonacci number.
         let mut stdin = SP1Stdin::new();
