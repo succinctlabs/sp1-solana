@@ -66,7 +66,10 @@ async fn main() {
         let client = ProverClient::new();
         let (pk, vk) = client.setup(ELF);
 
-        println!("vkey bytes {:?}", sp1_sdk::HashableKey::bytes32(&vk));
+        println!(
+            "Program Verification Key Bytes {:?}",
+            sp1_sdk::HashableKey::bytes32(&vk)
+        );
 
         // In our SP1 program, compute the 20th fibonacci number.
         let mut stdin = SP1Stdin::new();
