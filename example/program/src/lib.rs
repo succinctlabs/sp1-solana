@@ -11,9 +11,16 @@ use solana_program::entrypoint;
 #[cfg(not(feature = "no-entrypoint"))]
 entrypoint!(process_instruction);
 
-// Derived by running `vk.bytes32()` on the program's vkey.
-const FIBONACCI_VKEY_HASH: [u8; 32] =
-    hex_literal::hex!("0083e8e370d7f0d1c463337f76c9a60b62ad7cc54c89329107c92c1e62097872");
+#[cfg(not(doctest))]
+/// Derived as follows:
+///
+/// ```
+/// let client = sp1_sdk::ProverClient::new();
+/// let (pk, vk) = client.setup(YOUR_ELF_HERE);
+/// let vkey_hash = vk.bytes32();
+/// ```
+const FIBONACCI_VKEY_HASH: &str =
+    "0x0083e8e370d7f0d1c463337f76c9a60b62ad7cc54c89329107c92c1e62097872";
 
 /// The instruction data for the program.
 #[derive(BorshDeserialize, BorshSerialize)]
