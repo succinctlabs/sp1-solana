@@ -93,6 +93,8 @@ async fn main() {
         sp1_public_inputs: sp1_proof_with_public_values.public_values.to_vec(),
     };
 
+    println!("len of proof {:?}", groth16_proof.proof.len());
+
     // Send the proof to the contract, and verify it on `solana-program-test`.
     run_verify_instruction(groth16_proof).await;
 }
