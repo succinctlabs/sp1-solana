@@ -20,7 +20,7 @@ entrypoint!(process_instruction);
 /// let vkey_hash = vk.bytes32();
 /// ```
 const FIBONACCI_VKEY_HASH: &str =
-    "0x0083e8e370d7f0d1c463337f76c9a60b62ad7cc54c89329107c92c1e62097872";
+    "0x0054c0e58911dd8b993c6d8f249aa50a2e523114ec4b7ef9dd355c5f6bfbf3ce";
 
 /// The instruction data for the program.
 #[derive(BorshDeserialize, BorshSerialize)]
