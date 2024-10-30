@@ -69,8 +69,16 @@ run_verify_instruction(groth16_proof).await;
 
 3. Using the [`solana-program-test`](https://docs.rs/solana-program-test/latest/solana_program_test/) framework, send the `SP1Groth16Proof` to the
 [`fibonacci-verifier-contract`](./example/program). This smart contract will verify the proof using the `sp1-solana`
-crate against the fibonacci SP1 program vkey and print out the public inputs. Here is a snippet that demonstrates
-how to perform the verification and read the public inputs on chain.
+crate against the fibonacci SP1 program vkey and print out the public inputs.
+
+> [!NOTE]
+> In this example, a Groth16 proof and public values are directly passed into the contract as transaction data.
+> In real use cases, this may not be reasonable, since the upper limit for transaction data is 1232 bytes.
+> Groth16 proofs themselves are already 260 bytes, and public inputs can potentially be very large.
+> See [this article](https://solana.com/developers/courses/program-optimization/lookup-tables) for a discussion
+> on how to handle this.
+
+Here is a snippet that demonstrates how to perform the verification and read the public inputs on chain.
 
 ```rust
 // Derived by running `vk.bytes32()` on the program's vkey.
