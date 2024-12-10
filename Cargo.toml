@@ -1,6 +1,5 @@
 [workspace]
-members = ["verifier", "example/script", "example/program"]
-exclude = ["example/sp1-program"]
+members = ["verifier", "example/script", "example/program", "example/sp1-program"]
 resolver = "2"
 
 [workspace.dependencies]
@@ -21,6 +20,10 @@ num-traits = "0.2.19"
 tokio = "1.40.0"
 sha2 = "0.10.8"
 
+# sp1
+sp1-sdk = { version = "3.0.0", default-features = false }
+sp1-zkvm = { version = "3.0.0" }
+sp1-build = { version = "3.0.0" }
 
 [patch.crates-io]
 # See https://github.com/anza-xyz/agave/blob/master/Cargo.toml#L551-L586

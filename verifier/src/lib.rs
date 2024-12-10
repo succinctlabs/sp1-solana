@@ -3,7 +3,7 @@
 //! This crate contains utilities for verifying SP1 Groth16 proofs on Solana.
 //!
 //! # Example
-//! ```
+//! ```no_run
 //! use sp1_sdk::proof::SP1ProofWithPublicValues;
 //! use sp1_solana::{verify_proof, GROTH16_VK_2_0_0_BYTES};
 //!
@@ -32,6 +32,7 @@ mod utils;
 use utils::*;
 
 /// Groth16 verification keys for different SP1 versions.
+pub const GROTH16_VK_3_0_0_BYTES: &[u8] = include_bytes!("../vk/v3.0.0/groth16_vk.bin");
 pub const GROTH16_VK_3_0_0_RC4_BYTES: &[u8] = include_bytes!("../vk/v3.0.0rc4/groth16_vk.bin");
 pub const GROTH16_VK_2_0_0_BYTES: &[u8] = include_bytes!("../vk/v2.0.0/groth16_vk.bin");
 

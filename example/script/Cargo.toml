@@ -12,7 +12,7 @@ solana-sdk.workspace = true
 tokio.workspace = true
 
 clap = { version = "4.0", features = ["derive"] }
-sp1-sdk = "2.0.0"
+sp1-sdk.workspace = true
 
 [build-dependencies]
-sp1-build = "2.0.0"
+sp1-build.workspace = true
