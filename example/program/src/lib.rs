@@ -6,10 +6,7 @@ use solana_program::{
 use sp1_solana::verify_proof;
 
 #[cfg(not(feature = "no-entrypoint"))]
-use solana_program::entrypoint;
-
-#[cfg(not(feature = "no-entrypoint"))]
-entrypoint!(process_instruction);
+solana_program::entrypoint!(process_instruction);
 
 #[cfg(not(doctest))]
 /// Derived as follows:
@@ -20,7 +17,7 @@ entrypoint!(process_instruction);
 /// let vkey_hash = vk.bytes32();
 /// ```
 const FIBONACCI_VKEY_HASH: &str =
-    "0x0054c0e58911dd8b993c6d8f249aa50a2e523114ec4b7ef9dd355c5f6bfbf3ce";
+    "0x007a04fa063e8b4a76f65e95923df3319e13e2187c0543368aeb372609555f83";
 
 /// The instruction data for the program.
 #[derive(BorshDeserialize, BorshSerialize)]
@@ -39,7 +36,7 @@ pub fn process_instruction(
         .map_err(|_| ProgramError::InvalidInstructionData)?;
 
     // Get the SP1 Groth16 verification key from the `sp1-solana` crate.
-    let vk = sp1_solana::GROTH16_VK_2_0_0_BYTES;
+    let vk = sp1_solana::GROTH16_VK_3_0_0_BYTES;
 
     // Verify the proof.
     verify_proof(

@@ -11,14 +11,13 @@ keywords = ["cryptography", "zero-knowledge", "groth16", "verifier"]
 categories = ["cryptography"]
 
 [dependencies]
-borsh.workspace = true
 num-bigint.workspace = true
 sha2.workspace = true
+groth16-solana.workspace = true
 
 ark-bn254 = "0.4.0"
 ark-serialize = "0.4.2"
 ark-ff = "0.4.2"
-groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
 thiserror = "1.0.63"
 hex = "0.4.3"
 

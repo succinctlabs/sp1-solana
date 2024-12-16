@@ -1,3 +1,11 @@
+use sp1_build::BuildArgs;
+
 fn main() {
-    sp1_build::build_program("../sp1-program");
+    sp1_build::build_program_with_args(
+        "../sp1-program",
+        BuildArgs {
+            docker: true,
+            ..Default::default()
+        },
+    );
 }

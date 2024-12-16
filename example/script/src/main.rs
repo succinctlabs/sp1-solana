@@ -7,7 +7,7 @@ use solana_sdk::{
     signer::Signer,
     transaction::Transaction,
 };
-use sp1_sdk::{utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
+use sp1_sdk::{include_elf, utils, ProverClient, SP1ProofWithPublicValues, SP1Stdin};
 
 #[derive(clap::Parser)]
 #[command(name = "zkVM Proof Generator")]
@@ -22,7 +22,7 @@ struct Cli {
 }
 
 /// The ELF binary of the SP1 program.
-const ELF: &[u8] = include_bytes!("../../sp1-program/elf/riscv32im-succinct-zkvm-elf");
+const ELF: &[u8] = include_elf!("fibonacci-program");
 
 /// Invokes the solana program using Solana Program Test.
 async fn run_verify_instruction(groth16_proof: SP1Groth16Proof) {
