@@ -62,15 +62,9 @@ pub fn verify_proof_raw(proof: &[u8], public_inputs: &[u8], vk: &[u8]) -> Result
         &public_inputs.inputs,
         &vk,
     )
-    .map_err(|err| {
-        println!("error internal: {:?}", err);
-        Error::VerificationError
-    })?;
+    .map_err(|_| Error::VerificationError)?;
 
-    if verifier.verify().map_err(|err| {
-        println!("error internal2: {:?}", err);
-        Error::VerificationError
-    })? {
+    if verifier.verify().map_err(|_| Error::VerificationError)? {
         println!("Verification successful.");
         Ok(())
     } else {
