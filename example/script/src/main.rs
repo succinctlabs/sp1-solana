@@ -63,7 +63,7 @@ async fn main() {
     // Only generate a proof if the prove flag is set.
     if args.prove {
         // Initialize the prover client
-        let client = ProverClient::new();
+        let client = ProverClient::from_env();
         let (pk, vk) = client.setup(ELF);
 
         println!(
@@ -77,7 +77,7 @@ async fn main() {
 
         // Generate a proof for the fibonacci program.
         let proof = client
-            .prove(&pk, stdin)
+            .prove(&pk, &stdin)
             .groth16()
             .run()
             .expect("Groth16 proof generation failed");
