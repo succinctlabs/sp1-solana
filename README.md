@@ -143,11 +143,11 @@ Request [devnet sol](https://faucet.solana.com/) as necessary.
 cd example/program
 cargo build-sbf --sbf-out-dir ./target
 solana config set -ud
-solana program deploy --program-id target/fibonacci_verifier_contract-keypair.json target/fibonacci_verifier_contract.so --compute-unit-limit 300000
+solana program deploy --program-id target/fibonacci_verifier_contract-keypair.json target/fibonacci_verifier_contract.so
 ```
 
 > [!NOTE]
-> The Solana on-chain verifier takes around 280K compute units to deploy (which is greater than the default limit of 200K). As such, we've passed the `--compute-unit-limit` flag as 300K.
+> The Solana on-chain verifier takes around 280K compute units to deploy (which is greater than the default limit of 200K). When interacting with the program, you may need to increase the compute unit limit.
 
 ## Installation
 
