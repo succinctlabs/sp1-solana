@@ -17,7 +17,7 @@ solana_program::entrypoint!(process_instruction);
 /// let vkey_hash = vk.bytes32();
 /// ```
 const FIBONACCI_VKEY_HASH: &str =
-    "0x007a04fa063e8b4a76f65e95923df3319e13e2187c0543368aeb372609555f83";
+    "0x008d5e2aa8fe6d5f0f9b1ad59034a47517fe5f4a5439c7db4e5cc923f783a887";
 
 /// The instruction data for the program.
 #[derive(BorshDeserialize, BorshSerialize)]

@@ -146,6 +146,9 @@ solana config set -ud
 solana program deploy --program-id target/fibonacci_verifier_contract-keypair.json target/fibonacci_verifier_contract.so
 ```
 
+> [!NOTE]
+> The Solana on-chain verifier takes around 280K compute units to deploy (which is greater than the default limit of 200K). When interacting with the program, you may need to increase the compute unit limit.
+
 ## Installation
 
 Add `sp1-solana` to your `Cargo.toml`:
