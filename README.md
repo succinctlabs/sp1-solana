@@ -35,7 +35,7 @@ Running the script will perform the following steps:
 1. Load an SP1 [`SP1ProofWithPublicValues`](https://docs.rs/sp1-sdk/2.0.0/sp1_sdk/proof/struct.SP1ProofWithPublicValues.html)
 from the pre-generated proof [`fibonacci_proof.bin`](../proofs/fibonacci_proof.bin). This is a SP1 Groth16 proof that
 proves that the 20th fibonacci number is 6765. Optionally, this proof can be freshly generated from
-the [`sp1-program`](../sp1-program).
+the [`sp1-program`](./example/sp1-program).
 
 2. Extract the proof and public inputs from the `SP1ProofWithPublicValues`.
 
