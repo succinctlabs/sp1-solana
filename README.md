@@ -33,7 +33,7 @@ The [example](./example) demonstrates how to use the `sp1-solana` crate to verif
 Running the script will perform the following steps:
 
 1. Load an SP1 [`SP1ProofWithPublicValues`](https://docs.rs/sp1-sdk/2.0.0/sp1_sdk/proof/struct.SP1ProofWithPublicValues.html)
-from the pre-generated proof [`fibonacci_proof.bin`](../proofs/fibonacci_proof.bin). This is a SP1 Groth16 proof that
+from the pre-generated proof [`fibonacci_proof.bin`](../proofs/fibonacci_proof.bin). This is an SP1 Groth16 proof that
 proves that the 20th fibonacci number is 6765. Optionally, this proof can be freshly generated from
 the [`sp1-program`](../sp1-program).
 
@@ -121,6 +121,8 @@ pub fn process_instruction(
 
 To load the pregenerated proof and verify it on `solana-program-test`, run the following commands.
 
+Verifying a small proof like this should take around 280k compute units.
+
 ```shell
 cd script
 RUST_LOG=info cargo run --release
@@ -135,8 +137,8 @@ RUST_LOG=info cargo run --release -- --prove
 
 ### Deploying the Example Solana Program to Devnet
 
-Run the following commands to build and deploy the example solana program to devnet. These commands
-assume you've already created a Solana keypair locally, and you have the edge solana CLI tools.
+Run the following commands to build and deploy the example Solana program to devnet. These commands
+assume you've already created a Solana keypair locally, and you have the edge Solana CLI tools.
 Request [devnet sol](https://faucet.solana.com/) as necessary.
 
 ```shell
