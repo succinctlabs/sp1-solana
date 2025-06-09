@@ -116,12 +116,12 @@ fn decompress_g2(g2_bytes: &[u8; 64]) -> Result<[u8; 128], Error> {
 }
 
 const GNARK_MASK: u8 = 0b11 << 6;
-const GNARK_COMPRESSED_POSTIVE: u8 = 0b10 << 6;
+const GNARK_COMPRESSED_POSITIVE: u8 = 0b10 << 6;
 const GNARK_COMPRESSED_NEGATIVE: u8 = 0b11 << 6;
 const GNARK_COMPRESSED_INFINITY: u8 = 0b01 << 6;
 
 const ARK_MASK: u8 = 0b11 << 6;
-const ARK_COMPRESSED_POSTIVE: u8 = 0b00 << 6;
+const ARK_COMPRESSED_POSITIVE: u8 = 0b00 << 6;
 const ARK_COMPRESSED_NEGATIVE: u8 = 0b10 << 6;
 const ARK_COMPRESSED_INFINITY: u8 = 0b01 << 6;
 
@@ -129,7 +129,7 @@ fn gnark_flag_to_ark_flag(msb: u8) -> Result<u8, Error> {
     let gnark_flag = msb & GNARK_MASK;
 
     let ark_flag = match gnark_flag {
-        GNARK_COMPRESSED_POSTIVE => ARK_COMPRESSED_POSTIVE,
+        GNARK_COMPRESSED_POSITIVE => ARK_COMPRESSED_POSITIVE,
         GNARK_COMPRESSED_NEGATIVE => ARK_COMPRESSED_NEGATIVE,
         GNARK_COMPRESSED_INFINITY => ARK_COMPRESSED_INFINITY,
         _ => {

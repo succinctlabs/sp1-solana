@@ -96,7 +96,7 @@ pub fn verify_proof(
     // the given groth16_vk.
     //
     // SP1 prepends the raw Groth16 proof with the first 4 bytes of the groth16 vkey to
-    // faciliate this check.
+    // facilitate this check.
     if groth16_vk_hash != proof[..4] {
         return Err(Error::Groth16VkeyHashMismatch);
     }
