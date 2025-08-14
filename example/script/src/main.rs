@@ -83,11 +83,11 @@ async fn main() {
             .expect("Groth16 proof generation failed");
 
         // Save the generated proof to `proof_file`.
-        proof.save(&proof_file).unwrap();
+        proof.save(proof_file).unwrap();
     }
 
     // Load the proof from the file, and convert it to a Borsh-serializable `SP1Groth16Proof`.
-    let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(&proof_file).unwrap();
+    let sp1_proof_with_public_values = SP1ProofWithPublicValues::load(proof_file).unwrap();
     let groth16_proof = SP1Groth16Proof {
         proof: sp1_proof_with_public_values.bytes(),
         sp1_public_inputs: sp1_proof_with_public_values.public_values.to_vec(),

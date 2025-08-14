@@ -257,7 +257,7 @@ pub fn hash_public_inputs(public_inputs: &[u8]) -> [u8; 32] {
 
     // The Groth16 verifier operates over a 254 bit field (BN254), so we need to zero
     // out the first 3 bits. The same logic happens in the SP1 Ethereum verifier contract.
-    result[0] = result[0] & 0x1F;
+    result[0] &= 0x1F;
 
     result.into()
 }
