@@ -20,7 +20,7 @@ solana-sdk = { version = "=2.1.6" }
 borsh = "1.5.1"
 
 # light protocol groth16 verifier
-groth16-solana = { git = "https://github.com/sp1-patches/groth16-solana", branch = "patch-v0.0.3" }
+groth16-solana = "0.2.0"
 
 # misc
 num-bigint = "0.4.6"

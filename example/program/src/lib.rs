@@ -42,7 +42,7 @@ pub fn process_instruction(
     verify_proof(
         &groth16_proof.proof,
         &groth16_proof.sp1_public_inputs,
-        &FIBONACCI_VKEY_HASH,
+        FIBONACCI_VKEY_HASH,
         vk,
     )
     .map_err(|_| ProgramError::InvalidInstructionData)?;

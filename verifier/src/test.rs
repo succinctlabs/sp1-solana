@@ -9,7 +9,7 @@ fn test_verify_from_sp1() {
     // Read the serialized SP1ProofWithPublicValues from the file.
     let sp1_proof_with_public_values_file = "../proofs/fibonacci_proof.bin";
     let sp1_proof_with_public_values =
-        SP1ProofWithPublicValues::load(&sp1_proof_with_public_values_file).unwrap();
+        SP1ProofWithPublicValues::load(sp1_proof_with_public_values_file).unwrap();
 
     let proof_bytes = sp1_proof_with_public_values.bytes();
     let sp1_public_inputs = sp1_proof_with_public_values.public_values.to_vec();
@@ -35,7 +35,7 @@ fn test_verify_from_sp1() {
         &proof_bytes,
         &sp1_public_inputs,
         &sp1_vkey_hash,
-        &GROTH16_VK_5_0_0_BYTES
+        GROTH16_VK_5_0_0_BYTES
     )
     .is_ok());
 }
@@ -47,7 +47,7 @@ fn test_hash_public_inputs_() {
     // Read the serialized SP1ProofWithPublicValues from the file.
     let sp1_proof_with_public_values_file = "../proofs/fibonacci_proof.bin";
     let sp1_proof_with_public_values =
-        SP1ProofWithPublicValues::load(&sp1_proof_with_public_values_file).unwrap();
+        SP1ProofWithPublicValues::load(sp1_proof_with_public_values_file).unwrap();
 
     let proof = sp1_proof_with_public_values
         .proof
